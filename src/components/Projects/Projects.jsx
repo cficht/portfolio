@@ -1,12 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { CSS3DRenderer, CSS3DObject } from '../../renderers/CSS3DRenderer';
 import { GLTFLoader } from '../../loaders/GLTFLoader';
 import { projects } from '../../data/projects';
 import styles from '../App/App.css';
+import { fetchScheme } from '../../services/color-api';
 
 const Projects = () => {
+  const [colorScheme, setColorScheme] = useState([]);
   let camera, glScene, cssScene, glRenderer, cssRenderer, controls, plane;
   let count = 0;
   let nextRotate = false;
@@ -14,36 +16,47 @@ const Projects = () => {
   let changeProject = false;
   let projectObject;
   let selectedObject;
+  const setWidth = window.innerWidth;
+  const setHeight = window.innerHeight;
   glScene = new THREE.Scene();
   cssScene = new THREE.Scene();
 
-  // {
-  //   const bgLoader = new THREE.CubeTextureLoader();
-  //   const texture = bgLoader.load([
-  //     'space2/pos-x.jpg',
-  //     'space2/neg-x.jpg',
-  //     'space2/pos-y.jpg',
-  //     'space2/neg-y.jpg',
-  //     'space2/pos-z.jpg',
-  //     'black',
-  //   ]);
-  //   glScene.background = texture;
-  // }
 
-  // initialRotation = cssScene.quaternion;
+
   const OrbitControls = ThreeOrbitControls(THREE);
 
   useEffect(() => {
+    //analogic, complement, analogic-complement
+    fetchScheme('analogic-complement')
+      .then(scheme => setColorScheme(scheme));
+  }, []);
+
+  useEffect(() => {
+    if(colorScheme.length === 0) return;
     camera = new THREE.PerspectiveCamera(
       45,
-      window.innerWidth / window.innerHeight,
+      setWidth / setHeight,
       1,
       10000);
     camera.position.set(0, 100, 1500);
+
+    // const bgLoader = new THREE.CubeTextureLoader();
+    // const texture = bgLoader.load([
+    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[4].slice(1)}`,
+    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[4].slice(1)}`,
+    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[1].slice(1)}`,
+    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[1].slice(1)}`,
+    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[5].slice(1)}`,
+    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[5].slice(1)}`,
+    // ]);
+    // glScene.background = texture;
   
     glRenderer = createGlRenderer();
     cssRenderer = createCssRenderer(); 
-    document.body.appendChild(cssRenderer.domElement);
+    const holder = document.createElement('div');
+    holder.className = styles.three_box;
+    document.body.appendChild(holder);
+    holder.appendChild(cssRenderer.domElement);
     cssRenderer.domElement.appendChild(glRenderer.domElement);
   
     const ambientLight = new THREE.AmbientLight(0x555555);
@@ -63,32 +76,34 @@ const Projects = () => {
     update();
 
     controls = new OrbitControls(camera, glRenderer.domElement);
-    controls.minDistance = 700;
-    controls.maxDistance = 3000;
+    // controls.minDistance = 700;
+    // controls.maxDistance = 2000;
     controls.maxAzimuthAngle = 1.5;
     controls.minAzimuthAngle = -1.5;
     controls.enableKeys = false;
+    controls.enableZoom = false;
 
     cssRenderer.domElement.addEventListener('click', onClick, true);
-  }, []);
+  }, [colorScheme]);
 
   function createGlRenderer() {
-    var glRenderer = new THREE.WebGLRenderer({ alpha:true });  
-    glRenderer.setClearColor(0xECF8FF);
+    const glRenderer = new THREE.WebGLRenderer({ alpha:true });  
     glRenderer.setPixelRatio(window.devicePixelRatio);
-    glRenderer.setSize(window.innerWidth, window.innerHeight);  
+    glRenderer.setSize(setWidth, setHeight);  
     glRenderer.domElement.style.position = 'absolute';
     glRenderer.domElement.style.zIndex = 1;
-    glRenderer.domElement.style.top = 0;  
+    glRenderer.domElement.style.top = 0; 
+    glRenderer.domElement.className = styles.three_box; 
     return glRenderer;
   }
 
   function createCssRenderer() {  
     const cssRenderer = new CSS3DRenderer();  
-    cssRenderer.setSize(window.innerWidth, window.innerHeight);  
+    cssRenderer.setSize(window.innerWidth, setHeight);  
     cssRenderer.domElement.style.position = 'absolute';
-    glRenderer.domElement.style.zIndex = 0;
+    cssRenderer.domElement.style.zIndex = 0;
     cssRenderer.domElement.style.top = 0;  
+    cssRenderer.domElement.className = styles.three_box;
     return cssRenderer;
   }
 
@@ -173,9 +188,9 @@ const Projects = () => {
     cssScene.add(cssObject);
   }
 
-  function createColoredMaterial() { 
+  function createColoredMaterial(fromScheme) { 
     const material = new THREE.MeshBasicMaterial({
-      color: Math.floor(Math.random() * 16777215),
+      color: fromScheme,
       shading: THREE.FlatShading,
       side: THREE.DoubleSide
     }); 
@@ -197,7 +212,7 @@ const Projects = () => {
       });
       geometry.center();
       const material = new THREE.MeshToonMaterial({
-        color: 'black',
+        color: colorScheme[0],
         flatShading: true,
       });
       const mesh = new THREE.Mesh(geometry, material);
@@ -222,7 +237,7 @@ const Projects = () => {
 
     const mesh2 = new THREE.Mesh(
       new THREE.ExtrudeBufferGeometry(triangleShape, extrudeSettings),
-      createColoredMaterial()); 
+      createColoredMaterial(colorScheme[5])); 
     mesh2.position.x = -600;
     mesh2.position.y = 0;
     mesh2.position.z = 0;
@@ -231,7 +246,7 @@ const Projects = () => {
 
     const mesh3 = new THREE.Mesh(
       new THREE.ExtrudeBufferGeometry(triangleShape2, extrudeSettings),
-      createColoredMaterial());  
+      createColoredMaterial(colorScheme[5]));  
     mesh3.position.x = 600;
     mesh3.position.y = 0;
     mesh3.position.z = 0;
@@ -245,15 +260,31 @@ const Projects = () => {
       root.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0));
       root.scale.set(512, 512, 512); 
       glScene.add(root);
-    });     
+    });  
+    
+    const textureLoader = new THREE.TextureLoader();
+    const materials = [
+      new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[3].slice(1)}`), side: THREE.DoubleSide }),
+      new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[3].slice(1)}`), side: THREE.DoubleSide  }),
+      new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[1].slice(1)}`), side: THREE.DoubleSide  }),
+      new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[1].slice(1)}`), side: THREE.DoubleSide  }),
+      new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[3].slice(1)}`), side: THREE.DoubleSide  }),
+      new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[3].slice(1)}`), side: THREE.DoubleSide  })
+    ];
+    const geometry = new THREE.BoxGeometry(10000, 5000, 10000);
+    const boxMesh = new THREE.Mesh(geometry, materials);
+    boxMesh.position.x = 0;
+    boxMesh.position.y = 0;
+    boxMesh.position.z = 0;
+    glScene.add(boxMesh);
   }
 
   function onClick(event) {
     if(nextRotate || lastRotate) return;
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+    mouse.x = (event.clientX / setWidth) * 2 - 1;
+    mouse.y = - (event.clientY / setHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(glScene.children, true); //array
     if(intersects.length > 0) {
@@ -289,7 +320,7 @@ const Projects = () => {
           newProject();
           changeProject = true;
         }
-        if(glScene.children[6]) glScene.children[6].rotation.y += 0.06;
+        if(glScene.children[7]) glScene.children[7].rotation.y += 0.06;
         glScene.children[2].rotation.y += 0.06;
         cssScene.rotation.y += 0.06;
       } else {
@@ -305,7 +336,7 @@ const Projects = () => {
           newProject();
           changeProject = true;
         }
-        if(glScene.children[6]) glScene.children[6].rotation.y -= 0.06;
+        if(glScene.children[7]) glScene.children[7].rotation.y -= 0.06;
         glScene.children[2].rotation.y -= 0.06;
         cssScene.rotation.y -= 0.06;
       } else {
@@ -321,7 +352,9 @@ const Projects = () => {
   }
 
   return (
-    <div ref={ref => (ref)} />
+    <div className={styles.three_box}>
+      <div ref={ref => (ref)} />
+    </div> 
   );
 };
 

@@ -6,6 +6,7 @@ export default function App() {
   return (
     <>
       <div className={styles.three_box}>
+        <h1>HEY</h1>
         <Projects />
       </div>
     </>
