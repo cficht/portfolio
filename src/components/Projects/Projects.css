@@ -1,0 +1,13 @@
+.three_box {
+  display: flex;
+  justify-content: center;
+}
+
+.project {
+  padding: 10px;
+  margin-left: 10px;
+}
+
+.project h1{
+  color: red;
+}
