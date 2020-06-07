@@ -9,8 +9,8 @@ import { fetchScheme } from '../../services/color-api';
 import styles from './Projects.css';
 
 const Projects = () => {
-  const [colorScheme, setColorScheme] = useState([]);
-  let camera, glScene, cssScene, glRenderer, cssRenderer, controls, planeObject, frameObject, nameObject, logoObject;
+  const [firstScheme, setFirstScheme] = useState([]);
+  let camera, glScene, cssScene, glRenderer, cssRenderer, controls, planeObject, frameObject, nameObject, logoObject, leftArrowObject, rightArrowObject, schemeCopy;
   let count = 0;
   let nextRotate = false;
   let lastRotate = false;
@@ -25,12 +25,12 @@ const Projects = () => {
 
   useEffect(() => {
     //analogic, complement, analogic-complement
-    fetchScheme('analogic-complement')
-      .then(scheme => setColorScheme(scheme));
+    fetchScheme(projects[count].logoColor.slice(1), 'analogic')
+      .then(scheme => setFirstScheme(scheme));
   }, []);
 
   useEffect(() => {
-    if(colorScheme.length === 0) return;
+    if(firstScheme.length === 0) return;
     camera = new THREE.PerspectiveCamera(
       45,
       setWidth / setHeight,
@@ -40,14 +40,14 @@ const Projects = () => {
 
     // const bgLoader = new THREE.CubeTextureLoader();
     // const texture = bgLoader.load([
-    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[3].slice(1)}`,
-    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[3].slice(1)}`,
-    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[1].slice(1)}`,
-    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[1].slice(1)}`,
-    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[3].slice(1)}`,
-    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[3].slice(1)}`,
+    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`,
+    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`,
+    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[1].slice(1)}`,
+    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[1].slice(1)}`,
+    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`,
+    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`,
     // ]);
-    glScene.background = 'green';
+    // glScene.background = texture;
   
     glRenderer = createGlRenderer();
     cssRenderer = createCssRenderer(); 
@@ -68,21 +68,22 @@ const Projects = () => {
       1200, 700,
       new THREE.Vector3(-700, -200, 0),
       new THREE.Vector3(0, 0, 0),
-      0
+      0,
+      firstScheme
     );
     create3dGeometry();  
     update();
 
     controls = new OrbitControls(camera, glRenderer.domElement);
-    // controls.minDistance = 700;
-    // controls.maxDistance = 2000;
     controls.maxAzimuthAngle = 1.5;
     controls.minAzimuthAngle = -1.5;
+    // controls.minDistance = 700;
+    // controls.maxDistance = 2000;
     // controls.enableKeys = false;
     // controls.enableZoom = false;
 
     cssRenderer.domElement.addEventListener('click', onClick, true);
-  }, [colorScheme]);
+  }, [firstScheme]);
 
   function createGlRenderer() {
     const glRenderer = new THREE.WebGLRenderer({ alpha:true });  
@@ -130,10 +131,6 @@ const Projects = () => {
     element.style.opacity = 1;
     element.className = styles.project;
 
-    // const title = document.createElement('h1');
-    // title.textContent = projects[number].name;
-    // element.appendChild(title);
-
     const stack = document.createElement('h3');
     stack.textContent = projects[number].stack;
     element.appendChild(stack);
@@ -171,7 +168,7 @@ const Projects = () => {
     return cssObject;
   }
 
-  function create3dPage(w, h, position, rotation, number) {  
+  function create3dPage(w, h, position, rotation, number, colors) {  
     if(!planeObject) { 
       planeObject = createPlane(
         w, h,
@@ -201,7 +198,7 @@ const Projects = () => {
       });
       geometry.center();
       const material = new THREE.MeshToonMaterial({
-        color: colorScheme[0],
+        color: colors[2],
         flatShading: true,
       });
       const mesh = new THREE.Mesh(geometry, material);
@@ -251,22 +248,24 @@ const Projects = () => {
 
     const mesh2 = new THREE.Mesh(
       new THREE.ExtrudeBufferGeometry(triangleShape, extrudeSettings),
-      createColoredMaterial(colorScheme[5])); 
+      createColoredMaterial(firstScheme[5])); 
     mesh2.position.x = -1400;
     mesh2.position.y = 600;
     mesh2.position.z = 0;
-    mesh2.userData = 'LAST';  
-    glScene.add(mesh2);  
+    mesh2.userData = 'LAST';
+    leftArrowObject = mesh2;
+    glScene.add(mesh2);   
 
     const mesh3 = new THREE.Mesh(
       new THREE.ExtrudeBufferGeometry(triangleShape2, extrudeSettings),
-      createColoredMaterial(colorScheme[5]));  
+      createColoredMaterial(firstScheme[5]));  
     mesh3.position.x = 0;
     mesh3.position.y = 600;
     mesh3.position.z = 0;
-    mesh3.userData = 'NEXT';  
+    mesh3.userData = 'NEXT'; 
+    rightArrowObject = mesh3; 
     glScene.add(mesh3);
-   
+ 
     const gltfLoader = new GLTFLoader();
     const url = 'models/pictureframe_1/scene.gltf';
     gltfLoader.load(url, (gltf) => {
@@ -277,17 +276,18 @@ const Projects = () => {
       root.position.y = -200;
       frameObject = root;
       glScene.add(root);
-    });  
+    }); 
+    
     
     // BACKGROUND
     // const textureLoader = new THREE.TextureLoader();
     // const materials = [
-    //   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[3].slice(1)}`), side: THREE.DoubleSide }),
-    //   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[3].slice(1)}`), side: THREE.DoubleSide  }),
-    //   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[1].slice(1)}`), side: THREE.DoubleSide  }),
-    //   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[1].slice(1)}`), side: THREE.DoubleSide  }),
-    //   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[3].slice(1)}`), side: THREE.DoubleSide  }),
-    //   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${colorScheme[3].slice(1)}`), side: THREE.DoubleSide  })
+    //   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`), side: THREE.DoubleSide }),
+    //   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`), side: THREE.DoubleSide  }),
+    //   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[1].slice(1)}`), side: THREE.DoubleSide  }),
+    //   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[1].slice(1)}`), side: THREE.DoubleSide  }),
+    //   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`), side: THREE.DoubleSide  }),
+    //   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`), side: THREE.DoubleSide  })
     // ];
     // const geometry = new THREE.BoxGeometry(10000, 5000, 10000);
     // const boxMesh = new THREE.Mesh(geometry, materials);
@@ -295,7 +295,6 @@ const Projects = () => {
     // boxMesh.position.y = 0;
     // boxMesh.position.z = 0;
     // glScene.add(boxMesh);
-
   }
 
   function onClick(event) {
@@ -322,33 +321,59 @@ const Projects = () => {
   }
 
   function newProject() {
-    cssScene.remove(projectObject);
-    create3dPage(
-      1200, 700,
-      new THREE.Vector3(-700, -200, 0),
-      projectObject.rotation,
-      count
-    );
+    fetchScheme(projects[count].logoColor.slice(1), 'analogic')
+      .then(scheme => {
+        schemeCopy = scheme;
+        cssScene.remove(projectObject);
+        create3dPage(
+          1200, 700,
+          new THREE.Vector3(-700, -200, 0),
+          projectObject.rotation,
+          count,
+          schemeCopy
+        );
+        leftArrowObject.material.color.set(schemeCopy[5]);
+        rightArrowObject.material.color.set(schemeCopy[5]);
+      });
   }
 
   // UPDATE
   function update() {  
+    if(logoObject) logoObject.rotation.y += .03;
     if(nextRotate) {
-      if(cssScene.children[0].quaternion._y >= 0) {
-        if(cssScene.children[0].quaternion._y >= .99 && changeProject === false) {
-          newProject();
-          changeProject = true;
-        }
-        if(frameObject) frameObject.rotation.y += 0.06;
-        planeObject.rotation.y += 0.06;
-        cssScene.children[0].rotation.y += 0.06;
-      } else {
+      cssScene.position.x -= 100;
+      glScene.position.x -= 100;
+      if(glScene.position.x < -5000 && changeProject === false) {
+        cssScene.position.x = 5000;
+        glScene.position.x = 5000;
+        newProject();
+        changeProject = true;
+      }
+      if(glScene.position.x < 0 & changeProject === true) {
         nextRotate = false;
         lastRotate = false;
         changeProject = false;
-        cssScene.children[0].rotation.set(0, 0, 0);
+        cssScene.position.x = 0;
+        glScene.position.x = 0;
       }
     }
+
+    // if(nextRotate) {
+    //   if(cssScene.children[0].quaternion._y >= 0) {
+    //     if(cssScene.children[0].quaternion._y >= .99 && changeProject === false) {
+    //       newProject();
+    //       changeProject = true;
+    //     }
+    //     if(frameObject) frameObject.rotation.y += 0.06;
+    //     planeObject.rotation.y += 0.06;
+    //     cssScene.children[0].rotation.y += 0.06;
+    //   } else {
+    //     nextRotate = false;
+    //     lastRotate = false;
+    //     changeProject = false;
+    //     cssScene.children[0].rotation.set(0, 0, 0);
+    //   }
+    // }
     if(lastRotate) {
       if(cssScene.children[0].quaternion._y <= 0) {
         if(cssScene.children[0].quaternion._y <= -.99 && changeProject === false) {
