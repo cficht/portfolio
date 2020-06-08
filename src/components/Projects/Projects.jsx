@@ -1,27 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
-import { CSS3DRenderer, CSS3DObject } from '../../renderers/CSS3DRenderer';
+import { createGlRenderer, createCssRenderer, createPlane, createProjectCssObject, createColoredMaterial } from '../../utilities/three-create';
 import { GLTFLoader } from '../../loaders/GLTFLoader';
 import { STLLoader } from '../../loaders/STLLoader.js';
 import { projects } from '../../data/projects';
 import { fetchScheme } from '../../services/color-api';
+
+
 import styles from './Projects.css';
 
 const Projects = () => {
   const [firstScheme, setFirstScheme] = useState([]);
-  let camera, glScene, cssScene, glRenderer, cssRenderer, controls, planeObject, frameObject, nameObject, logoObject, leftArrowObject, rightArrowObject, schemeCopy;
+  let camera, glScene, cssScene, glRenderer, cssRenderer, controls, cssObject, selectedObject, planeObject, frameObject, nameObject, logoObject, leftArrowObject, rightArrowObject, schemeCopy;
   let count = 0;
   let nextRotate = false;
   let lastRotate = false;
   let changeProject = false;
-  let projectObject;
-  let selectedObject;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   glScene = new THREE.Scene();
   cssScene = new THREE.Scene();
   const OrbitControls = ThreeOrbitControls(THREE);
+
+  const defaultPositions = {
+    cssObject: new THREE.Vector3(-700, -200, 0),
+    planeObject: new THREE.Vector3(-700, -200, 0),
+    frameObject: new THREE.Vector3(-700, -200, 0),
+    nameObject: new THREE.Vector3(-700, -600, 0),
+    logoObject: new THREE.Vector3(1000, 600, 0),
+    leftArrowObject: new THREE.Vector3(-1400, 600, 0), 
+    rightArrowObject: new THREE.Vector3(0, 600, 0)
+  };
 
   useEffect(() => {
     //analogic, complement, analogic-complement
@@ -37,20 +47,9 @@ const Projects = () => {
       1,
       10000);
     camera.position.set(0, 100, 2000);
-
-    // const bgLoader = new THREE.CubeTextureLoader();
-    // const texture = bgLoader.load([
-    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`,
-    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`,
-    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[1].slice(1)}`,
-    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[1].slice(1)}`,
-    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`,
-    //   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`,
-    // ]);
-    // glScene.background = texture;
   
-    glRenderer = createGlRenderer();
-    cssRenderer = createCssRenderer(); 
+    glRenderer = createGlRenderer(setWidth, setHeight, styles.three_box);
+    cssRenderer = createCssRenderer(setWidth, setHeight, styles.three_box); 
     const holder = document.createElement('div');
     holder.className = styles.three_box;
     document.body.appendChild(holder);
@@ -77,160 +76,88 @@ const Projects = () => {
     controls = new OrbitControls(camera, glRenderer.domElement);
     controls.maxAzimuthAngle = 1.5;
     controls.minAzimuthAngle = -1.5;
-    // controls.minDistance = 700;
-    // controls.maxDistance = 2000;
-    // controls.enableKeys = false;
-    // controls.enableZoom = false;
 
     cssRenderer.domElement.addEventListener('click', onClick, true);
   }, [firstScheme]);
 
-  function createGlRenderer() {
-    const glRenderer = new THREE.WebGLRenderer({ alpha:true });  
-    glRenderer.setClearColor(0xECF8FF);
-    glRenderer.setPixelRatio(window.devicePixelRatio);
-    glRenderer.setSize(setWidth, setHeight);  
-    glRenderer.domElement.style.position = 'absolute';
-    glRenderer.domElement.style.zIndex = 1;
-    glRenderer.domElement.style.top = 0; 
-    glRenderer.domElement.className = styles.three_box; 
-    return glRenderer;
-  }
-
-  function createCssRenderer() {  
-    const cssRenderer = new CSS3DRenderer();  
-    cssRenderer.setSize(window.innerWidth, setHeight);  
-    cssRenderer.domElement.style.position = 'absolute';
-    cssRenderer.domElement.style.zIndex = 0;
-    cssRenderer.domElement.style.top = 0;  
-    cssRenderer.domElement.className = styles.three_box;
-    return cssRenderer;
-  }
-
-  function createPlane(w, h, position, rotation) {  
-    const material = new THREE.MeshBasicMaterial({
-      color: 0x000000,
-      opacity: 0.0,
-      side: THREE.DoubleSide
-    });  
-    const geometry = new THREE.PlaneGeometry(w, h);  
-    const mesh = new THREE.Mesh(geometry, material);  
-    mesh.position.x = position.x;
-    mesh.position.y = position.y;
-    mesh.position.z = position.z;  
-    mesh.rotation.x = rotation.x;
-    mesh.rotation.y = rotation.y;
-    mesh.rotation.z = rotation.z;  
-    return mesh;
-  }
-
-  function createCssObject(w, h, position, rotation, number) {  
-    const element = document.createElement('div');
-    element.style.width = (w - 100) + 'px';
-    element.style.height = h + 'px';
-    element.style.opacity = 1;
-    element.className = styles.project;
-
-    const stack = document.createElement('h3');
-    stack.textContent = projects[number].stack;
-    element.appendChild(stack);
-
-    const desc = document.createElement('p');
-    desc.textContent = projects[number].description;
-    element.appendChild(desc);
-
-    const github = document.createElement('a');
-    github.title = 'Github link';
-    github.textContent = 'Github';
-    github.href = projects[number].github;
-    element.appendChild(github);
-
-    const lBreak = document.createElement('br');
-    element.appendChild(lBreak);
-
-    const site = document.createElement('a');
-    site.title = 'site link';
-    site.textContent = 'Site';
-    site.href = projects[number].site;
-    element.appendChild(site);
-
-    const cssObject = new CSS3DObject(element);
-    projectObject = cssObject;
-
-    cssObject.position.x = position.x;
-    cssObject.position.y = position.y;
-    cssObject.position.z = position.z;
-
-    cssObject.rotation.x = rotation.x;
-    cssObject.rotation.y = rotation.y;
-    cssObject.rotation.z = rotation.z;
-
-    return cssObject;
-  }
-
   function create3dPage(w, h, position, rotation, number, colors) {  
     if(!planeObject) { 
-      planeObject = createPlane(
-        w, h,
-        position,
-        rotation);  
+      planeObject = createPlane(w, h, position, rotation);  
       glScene.add(planeObject);  
     }
-    const cssObject = createCssObject(
-      w, h,
-      position,
-      rotation,
-      number);  
-    cssScene.add(cssObject);
-
-    if(nameObject) glScene.remove(nameObject);
+    
+    if(!cssObject) {
+      cssObject = createProjectCssObject(w, h, position, rotation, number, projects, styles.project);  
+      cssScene.add(cssObject);
+    } else {
+      const newPos = cssObject.position;
+      cssScene.remove(cssObject);
+      cssObject = createProjectCssObject(w, h, newPos, rotation, number, projects, styles.project);  
+      cssScene.add(cssObject);
+    }
+    
     const fontLoader = new THREE.FontLoader();
-    fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
-      const geometry = new THREE.TextGeometry(`${projects[number].name}`, {
-        font: font,
-        size: 1,
-        height: 0.5,
-        curveSegments: 4,
-        bevelEnabled: true,
-        bevelThickness: 0.02,
-        bevelSize: 0.05,
-        bevelSegments: 3
+    if(nameObject) {
+      fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
+        nameObject.geometry = new THREE.TextGeometry(`${projects[number].name}`, {
+          font: font,
+          size: 1,
+          height: 0.5,
+          curveSegments: 4,
+          bevelEnabled: true,
+          bevelThickness: 0.02,
+          bevelSize: 0.05,
+          bevelSegments: 3
+        });
+        nameObject.geometry.center();
       });
-      geometry.center();
-      const material = new THREE.MeshToonMaterial({
-        color: colors[2],
-        flatShading: true,
+      nameObject.material.color.set(colors[2]);
+    } else {
+      fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
+        const geometry = new THREE.TextGeometry(`${projects[number].name}`, {
+          font: font,
+          size: 1,
+          height: 0.5,
+          curveSegments: 4,
+          bevelEnabled: true,
+          bevelThickness: 0.02,
+          bevelSize: 0.05,
+          bevelSegments: 3
+        });
+        geometry.center();
+        const material = new THREE.MeshToonMaterial({
+          color: colors[2],
+          flatShading: true,
+        });
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.scale.set(100, 100, 100);
+        mesh.position.x = -700;
+        mesh.position.y = 600;
+        mesh.position.z = 0;
+        nameObject = mesh;
+        glScene.add(mesh);
       });
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.scale.set(100, 100, 100);
-      mesh.position.x = -700;
-      mesh.position.y = 600;
-      mesh.position.z = 0;
-      nameObject = mesh;
-      glScene.add(mesh);
-    });
+    }
 
-    if(logoObject) glScene.remove(logoObject);
     const stlLoader = new STLLoader();
-    stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
-      const material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111, shininess: 200 });
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.set(1000, 600, 0);
-      mesh.scale.set(20, 20, 20);
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
-      logoObject = mesh;
-      glScene.add(mesh);
-    });
-  }
-
-  function createColoredMaterial(fromScheme) { 
-    const material = new THREE.MeshBasicMaterial({
-      color: fromScheme,
-      shading: THREE.FlatShading,
-      side: THREE.DoubleSide
-    }); 
-    return material;
+    if(logoObject) { 
+      stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
+        logoObject.material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111, shininess: 200 });
+        logoObject.geometry = geometry;
+      });
+    } else {
+      stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
+        const material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111, shininess: 200 });
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.position.set(1000, 600, 0);
+        mesh.scale.set(20, 20, 20);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        mesh.name = 'logo';
+        logoObject = mesh;
+        glScene.add(mesh);
+      });
+    }
   }
 
   function create3dGeometry() {  
@@ -274,27 +201,12 @@ const Projects = () => {
       root.scale.set(700, 700, 512); 
       root.position.x = -700;
       root.position.y = -200;
+      const mesh = new THREE.MeshPhongMaterial({ color: 'blue' });
+      root.children[0].children[0].children[0].children[0].children[0].material = mesh;
+      root.name = 'picture';
       frameObject = root;
       glScene.add(root);
     }); 
-    
-    
-    // BACKGROUND
-    // const textureLoader = new THREE.TextureLoader();
-    // const materials = [
-    //   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`), side: THREE.DoubleSide }),
-    //   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`), side: THREE.DoubleSide  }),
-    //   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[1].slice(1)}`), side: THREE.DoubleSide  }),
-    //   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[1].slice(1)}`), side: THREE.DoubleSide  }),
-    //   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`), side: THREE.DoubleSide  }),
-    //   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`), side: THREE.DoubleSide  })
-    // ];
-    // const geometry = new THREE.BoxGeometry(10000, 5000, 10000);
-    // const boxMesh = new THREE.Mesh(geometry, materials);
-    // boxMesh.position.x = 0;
-    // boxMesh.position.y = 0;
-    // boxMesh.position.z = 0;
-    // glScene.add(boxMesh);
   }
 
   function onClick(event) {
@@ -324,11 +236,10 @@ const Projects = () => {
     fetchScheme(projects[count].logoColor.slice(1), 'analogic')
       .then(scheme => {
         schemeCopy = scheme;
-        cssScene.remove(projectObject);
         create3dPage(
           1200, 700,
           new THREE.Vector3(-700, -200, 0),
-          projectObject.rotation,
+          cssObject.rotation,
           count,
           schemeCopy
         );
@@ -340,56 +251,68 @@ const Projects = () => {
   // UPDATE
   function update() {  
     if(logoObject) logoObject.rotation.y += .03;
+
     if(nextRotate) {
-      cssScene.position.x -= 100;
-      glScene.position.x -= 100;
-      if(glScene.position.x < -5000 && changeProject === false) {
-        cssScene.position.x = 5000;
-        glScene.position.x = 5000;
-        newProject();
-        changeProject = true;
-      }
-      if(glScene.position.x < 0 & changeProject === true) {
+      cssObject.position.x -= 100;
+      if(cssObject.position.x < -7000) cssObject.position.x = cssObject.position.x + 14000;
+      glScene.children.forEach(child => {
+        if(child.type === 'DirectionalLight' || child.type === 'AmbientLight') return;
+        child.position.x -= 100;
+        if(child.position.x < -5000) child.visible = false;
+        if(child.position.x < 5000 && child.position.x > -5000) child.visible = true;
+        if(child.position.x < -7000) { 
+          child.position.x = child.position.x + 14000;
+          if(changeProject === false) {
+            newProject();
+            changeProject = true;
+          }
+        }
+
+      });
+      if(glScene.children[3].position.x < -1400 & changeProject === true) {
         nextRotate = false;
         lastRotate = false;
         changeProject = false;
-        cssScene.position.x = 0;
-        glScene.position.x = 0;
+        cssObject.position.x = defaultPositions.cssObject.x;
+        planeObject.position.x = defaultPositions.planeObject.x;
+        frameObject.position.x = defaultPositions.frameObject.x;
+        nameObject.position.x = defaultPositions.nameObject.x;
+        logoObject.position.x = defaultPositions.logoObject.x;
+        leftArrowObject.position.x = defaultPositions.leftArrowObject.x;
+        rightArrowObject.position.x = defaultPositions.rightArrowObject.x;
       }
     }
 
-    // if(nextRotate) {
-    //   if(cssScene.children[0].quaternion._y >= 0) {
-    //     if(cssScene.children[0].quaternion._y >= .99 && changeProject === false) {
-    //       newProject();
-    //       changeProject = true;
-    //     }
-    //     if(frameObject) frameObject.rotation.y += 0.06;
-    //     planeObject.rotation.y += 0.06;
-    //     cssScene.children[0].rotation.y += 0.06;
-    //   } else {
-    //     nextRotate = false;
-    //     lastRotate = false;
-    //     changeProject = false;
-    //     cssScene.children[0].rotation.set(0, 0, 0);
-    //   }
-    // }
     if(lastRotate) {
-      if(cssScene.children[0].quaternion._y <= 0) {
-        if(cssScene.children[0].quaternion._y <= -.99 && changeProject === false) {
-          newProject();
-          changeProject = true;
+      cssObject.position.x += 100;
+      if(cssObject.position.x > 7000) cssObject.position.x = cssObject.position.x - 14000;
+      glScene.children.forEach(child => {
+        if(child.type === 'DirectionalLight' || child.type === 'AmbientLight') return;
+        child.position.x += 100;
+        if(child.position.x > 5000) child.visible = false;
+        if(child.position.x > -5000 && child.position.x < 5000) child.visible = true;
+        if(child.position.x > 7000) { 
+          child.position.x = child.position.x - 14000;
+          if(changeProject === false) {
+            newProject();
+            changeProject = true;
+          }
         }
-        if(frameObject) frameObject.rotation.y -= 0.06;
-        planeObject.rotation.y -= 0.06;
-        cssScene.children[0].rotation.y -= 0.06;
-      } else {
-        lastRotate = false;
+      });
+      if(glScene.children[6].position.x > 1000 & changeProject === true) {
         nextRotate = false;
+        lastRotate = false;
         changeProject = false;
-        cssScene.children[0].rotation.set(0, 0, 0);
+        cssObject.position.x = defaultPositions.cssObject.x;
+        planeObject.position.x = defaultPositions.planeObject.x;
+        frameObject.position.x = defaultPositions.frameObject.x;
+        nameObject.position.x = defaultPositions.nameObject.x;
+        logoObject.position.x = defaultPositions.logoObject.x;
+        leftArrowObject.position.x = defaultPositions.leftArrowObject.x;
+        rightArrowObject.position.x = defaultPositions.rightArrowObject.x;
       }
     }
+
     glRenderer.render(glScene, camera);  
     cssRenderer.render(cssScene, camera);
     requestAnimationFrame(update);

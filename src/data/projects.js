@@ -8,7 +8,9 @@ export const projects = [
     site: 'https://secretmenu.netlify.app',
     logoModel: 'secretmenu_logo.stl',
     logoColor: '#FD7553',
-    secondaryColor: '#9BDAFD'
+    secondaryColor: '#9BDAFD',
+    image1: 'images/project_images/secretmenu_1.png',
+    image2: 'images/project_images/secretmenu_2.png'
   },
   {
     color: 'chocolate',
@@ -19,7 +21,9 @@ export const projects = [
     site: 'https://the-nintendo-api.herokuapp.com',
     logoModel: 'nintendoapi_logo.stl',
     logoColor: '#ED1C24',
-    secondaryColor: '#09469E'
+    secondaryColor: '#09469E',
+    image1: 'images/project_images/nintendoapi_1.png',
+    image2: 'images/project_images/nintendoapi_2.png'
   },
   {
     color: 'chocolate',
@@ -30,7 +34,9 @@ export const projects = [
     site: 'https://fresh-track.netlify.com',
     logoModel: 'freshtrack_logo.stl',
     logoColor: '#205757',
-    secondaryColor: '#F0F0F0'
+    secondaryColor: '#F0F0F0',
+    image1: 'images/project_images/freshtrack_1.png',
+    image2: 'images/project_images/freshtrack_2.png'
   },
   {
     color: 'chocolate',
@@ -41,7 +47,9 @@ export const projects = [
     site: 'https://the-mosaic.herokuapp.com',
     logoModel: 'mosaic_logo.stl',
     logoColor: '#C144F3',
-    secondaryColor: '#D7BAE4'
+    secondaryColor: '#D7BAE4',
+    image1: 'images/project_images/mosaic_1.png',
+    image2: 'images/project_images/mosaic_2.png'
   },
   {
     color: 'chocolate',
@@ -52,7 +60,9 @@ export const projects = [
     site: 'https://chrysalsynth.github.io/chrysalSynth',
     logoModel: 'chrystalsynth_logo.stl',
     logoColor: '#737373',
-    secondaryColor: '#E80415'
+    secondaryColor: '#E80415',
+    image1: 'images/project_images/chrystalsynth_1.png',
+    image2: 'images/project_images/chrystalsynth_2.png'
   }
   ,
   {
@@ -64,6 +74,8 @@ export const projects = [
     site: 'none',
     logoModel: 'unimic_logo.stl',
     logoColor: '#FFFF4C',
-    secondaryColor: '#342AFF'
+    secondaryColor: '#342AFF',
+    image1: 'images/project_images/unimic_1.png',
+    image2: 'images/project_images/unimic_2.png'
   }
 ];
