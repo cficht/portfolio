@@ -1,0 +1,15 @@
+.three_box {
+  display: flex;
+  justify-content: center;
+}
+
+.project {
+  padding: 10px;
+  margin-left: 10px;
+  font-size: 45px;
+
+  img {
+    width: 100%;
+  }
+}
+

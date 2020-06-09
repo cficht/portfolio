@@ -1,6 +1,13 @@
 import React from 'react';
+import Projects from '../Projects/Projects';
+import styles from './App.css';
 
 export default function App() {
-  return <h1>Hello World</h1>;
+  return (
+    <>
+      {/* <div className={styles.three_box}> */}
+        <Projects />
+      {/* </div> */}
+    </>
+  );
 }
-  

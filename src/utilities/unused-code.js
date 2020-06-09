@@ -1,0 +1,69 @@
+
+// BACKGROUND CUBE
+// const bgLoader = new THREE.CubeTextureLoader();
+// const texture = bgLoader.load([
+//   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`,
+//   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`,
+//   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[1].slice(1)}`,
+//   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[1].slice(1)}`,
+//   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`,
+//   `http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`,
+// ]);
+// glScene.background = texture;
+
+// CAMERA CONTROL
+// controls.minDistance = 700;
+// controls.maxDistance = 2000;
+// controls.enableKeys = false;
+// controls.enableZoom = false;
+
+// MORE BACKGROUND CODE
+// const textureLoader = new THREE.TextureLoader();
+// const materials = [
+//   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`), side: THREE.DoubleSide }),
+//   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`), side: THREE.DoubleSide  }),
+//   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[1].slice(1)}`), side: THREE.DoubleSide  }),
+//   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[1].slice(1)}`), side: THREE.DoubleSide  }),
+//   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`), side: THREE.DoubleSide  }),
+//   new THREE.MeshBasicMaterial({ map: textureLoader.load(`http://www.thecolorapi.com/id?format=svg&named=false&hex=${firstScheme[3].slice(1)}`), side: THREE.DoubleSide  })
+// ];
+// const geometry = new THREE.BoxGeometry(10000, 5000, 10000);
+// const boxMesh = new THREE.Mesh(geometry, materials);
+// boxMesh.position.x = 0;
+// boxMesh.position.y = 0;
+// boxMesh.position.z = 0;
+// glScene.add(boxMesh);
+
+// OLD ROTATE
+// if(nextRotate) {
+//   if(cssScene.children[0].quaternion._y >= 0) {
+//     if(cssScene.children[0].quaternion._y >= .99 && changeProject === false) {
+//       newProject();
+//       changeProject = true;
+//     }
+//     if(frameObject) frameObject.rotation.y += 0.06;
+//     planeObject.rotation.y += 0.06;
+//     cssScene.children[0].rotation.y += 0.06;
+//   } else {
+//     nextRotate = false;
+//     lastRotate = false;
+//     changeProject = false;
+//     cssScene.children[0].rotation.set(0, 0, 0);
+//   }
+// }
+
+// if(lastRotate) {
+//   if(cssScene.children[0].quaternion._y <= 0) {
+//     if(cssScene.children[0].quaternion._y <= -.99 && changeProject === false) {
+//       newProject();
+//       changeProject = true;
+//     }
+//     if(frameObject) frameObject.rotation.y -= 0.06;
+//     planeObject.rotation.y -= 0.06;
+//     cssScene.children[0].rotation.y -= 0.06;
+//   } else {
+//     lastRotate = false;
+//     nextRotate = false;
+//     changeProject = false;
+//     cssScene.children[0].rotation.set(0, 0, 0);
+//   }
