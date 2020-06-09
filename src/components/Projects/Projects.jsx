@@ -272,24 +272,23 @@ const Projects = () => {
 
   function onDown(event) {
     const raycaster = new THREE.Raycaster();
-    // const mouse = new THREE.Vector2();
-    // mouse.x = (event.clientX / setWidth) * 2 - 1;
-    // mouse.y = - (event.clientY / setHeight) * 2 + 1;
-    const clientTouch = new THREE.Vector2();
-    clientTouch.x = (event.touches[0].clientX / setWidth) * 2 - 1;
-    clientTouch.y = - (event.touches[0] / setHeight) * 2 + 1;
-    raycaster.setFromCamera(clientTouch, camera);
+    const mouse = new THREE.Vector2();
+    mouse.x = (event.clientX / setWidth) * 2 - 1;
+    mouse.y = - (event.clientY / setHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(glScene.children, true); //array
     if(intersects.length > 0) {
       selectedObject = intersects[0];
       if(selectedObject.object.userData === 'IMAGEBOX') {
+        cssObject.element.textContent = 'TOUCH START';
         upPicture = true; 
       }
     }
   }
 
   function onUp() {
-    upPicture = false;
+    cssObject.element.textContent = 'TOUCH END';
+    if(upPicture) upPicture = false;
   }
 
   function newProject() {
@@ -310,6 +309,7 @@ const Projects = () => {
 
   // UPDATE
   function update() { 
+    // console.log(cssObject.element.textContent);
     if(upPicture) imageObject.rotation.x += .03;
     glScene.children.forEach(child => {
       if(child.name === 'logo') {
