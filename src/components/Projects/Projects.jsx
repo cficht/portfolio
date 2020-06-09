@@ -30,8 +30,8 @@ const Projects = () => {
     frameObject: new THREE.Vector3(0, 300, 0),
     nameObject: new THREE.Vector3(0, 925, 0),
     imageObject: new THREE.Vector3(0, -600, 0),
-    leftArrowObject: new THREE.Vector3(-750, 300, 0), 
-    rightArrowObject: new THREE.Vector3(750, 300, 0),
+    leftArrowObject: new THREE.Vector3(-100, -1175, 0), 
+    rightArrowObject: new THREE.Vector3(100, -1175, 0),
     logoGrid: new THREE.Vector3(-4500, -4500, -1000)
   };
 
@@ -80,8 +80,6 @@ const Projects = () => {
     controls.minAzimuthAngle = -1.5;
 
     cssRenderer.domElement.addEventListener('click', onClick, true);
-    // cssRenderer.domElement.addEventListener('mousedown' || 'touchstart', onDown);
-    // cssRenderer.domElement.addEventListener('mouseup' || 'touchend', onUp, true);
   }, [firstScheme]);
 
   function create3dPage(w, h, position, rotation, number, colors) {  
@@ -274,28 +272,6 @@ const Projects = () => {
       }
     }
   }
-
-  // function onDown(event) {
-  //   cssObject.element.textContent = 'TOUCH SHOULD START';
-  //   const raycaster = new THREE.Raycaster();
-  //   const mouse = new THREE.Vector2();
-  //   mouse.x = (event.clientX / setWidth) * 2 - 1;
-  //   mouse.y = - (event.clientY / setHeight) * 2 + 1;
-  //   raycaster.setFromCamera(mouse, camera);
-  //   const intersects = raycaster.intersectObjects(glScene.children, true); //array
-  //   if(intersects.length > 0) {
-  //     selectedObject = intersects[0];
-  //     if(selectedObject.object.userData === 'IMAGEBOX') {
-  //       cssObject.element.textContent = 'TOUCH START';
-  //       picRotate = true; 
-  //     }
-  //   }
-  // }
-
-  // function onUp() {
-  //   cssObject.element.textContent = 'TOUCH END';
-  //   if(picRotate) picRotate = false;
-  // }
 
   function newProject() {
     fetchScheme(projects[count].logoColor.slice(1), 'analogic')
