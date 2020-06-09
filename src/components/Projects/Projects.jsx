@@ -10,13 +10,13 @@ import styles from './Projects.css';
 
 const Projects = () => {
   const [firstScheme, setFirstScheme] = useState([]);
-  let camera, glScene, cssScene, glRenderer, cssRenderer, controls, cssObject, selectedObject, planeObject, frameObject, nameObject, imageObject, leftArrowObject, rightArrowObject, schemeCopy;
+  let camera, glScene, cssScene, glRenderer, cssRenderer, controls, cssObject, selectedObject, planeObject, frameObject, nameObject, imageObject, leftArrowObject, rightArrowObject, schemeCopy, picRotX;
   let count = 0;
   const logoGrid = [10, 10];
   let gridInit = false;
   let nextRotate = false;
   let lastRotate = false;
-  let upPicture = false;
+  let picRotate = false;
   let changeProject = false;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
@@ -80,8 +80,8 @@ const Projects = () => {
     controls.minAzimuthAngle = -1.5;
 
     cssRenderer.domElement.addEventListener('click', onClick, true);
-    cssRenderer.domElement.addEventListener('mousedown' || 'touchstart', onDown, true);
-    cssRenderer.domElement.addEventListener('mouseup' || 'touchend', onUp, true);
+    // cssRenderer.domElement.addEventListener('mousedown' || 'touchstart', onDown);
+    // cssRenderer.domElement.addEventListener('mouseup' || 'touchend', onUp, true);
   }, [firstScheme]);
 
   function create3dPage(w, h, position, rotation, number, colors) {  
@@ -196,6 +196,7 @@ const Projects = () => {
       wireframe.renderOrder = 2;
       boxMesh.add(wireframe);
       imageObject = boxMesh;
+      picRotX = imageObject.quaternion._x;
       glScene.add(boxMesh);
     }
   }
@@ -267,29 +268,34 @@ const Projects = () => {
         lastRotate = true;
         count = count - 1;
       }
-    }
-  }
-
-  function onDown(event) {
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-    mouse.x = (event.clientX / setWidth) * 2 - 1;
-    mouse.y = - (event.clientY / setHeight) * 2 + 1;
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(glScene.children, true); //array
-    if(intersects.length > 0) {
-      selectedObject = intersects[0];
-      if(selectedObject.object.userData === 'IMAGEBOX') {
-        cssObject.element.textContent = 'TOUCH START';
-        upPicture = true; 
+      if(selectedObject.object.userData === 'IMAGEBOX' && !picRotate) {
+        picRotate = true; 
+        picRotX = picRotX * -1;
       }
     }
   }
 
-  function onUp() {
-    cssObject.element.textContent = 'TOUCH END';
-    if(upPicture) upPicture = false;
-  }
+  // function onDown(event) {
+  //   cssObject.element.textContent = 'TOUCH SHOULD START';
+  //   const raycaster = new THREE.Raycaster();
+  //   const mouse = new THREE.Vector2();
+  //   mouse.x = (event.clientX / setWidth) * 2 - 1;
+  //   mouse.y = - (event.clientY / setHeight) * 2 + 1;
+  //   raycaster.setFromCamera(mouse, camera);
+  //   const intersects = raycaster.intersectObjects(glScene.children, true); //array
+  //   if(intersects.length > 0) {
+  //     selectedObject = intersects[0];
+  //     if(selectedObject.object.userData === 'IMAGEBOX') {
+  //       cssObject.element.textContent = 'TOUCH START';
+  //       picRotate = true; 
+  //     }
+  //   }
+  // }
+
+  // function onUp() {
+  //   cssObject.element.textContent = 'TOUCH END';
+  //   if(picRotate) picRotate = false;
+  // }
 
   function newProject() {
     fetchScheme(projects[count].logoColor.slice(1), 'analogic')
@@ -309,8 +315,13 @@ const Projects = () => {
 
   // UPDATE
   function update() { 
-    // console.log(cssObject.element.textContent);
-    if(upPicture) imageObject.rotation.x += .03;
+    if(picRotate && (imageObject.quaternion._x < picRotX && picRotX > 0)) imageObject.rotation.x -= .03;
+    else if(picRotate && (imageObject.quaternion._x > picRotX && picRotX < 0)) imageObject.rotation.x += .03;
+    else { 
+      picRotate = false;
+      imageObject.quaternion._x = picRotX;
+    }
+
     glScene.children.forEach(child => {
       if(child.name === 'logo') {
         child.rotation.x += .02;
