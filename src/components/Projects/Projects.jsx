@@ -12,6 +12,8 @@ const Projects = () => {
   const [firstScheme, setFirstScheme] = useState([]);
   let camera, glScene, cssScene, glRenderer, cssRenderer, controls, cssObject, selectedObject, planeObject, frameObject, nameObject, logoObject, imageObject, leftArrowObject, rightArrowObject, upArrowObject, downArrowObject, schemeCopy;
   let count = 0;
+  const logoGrid = [10, 10];
+  let gridInit = false;
   let nextRotate = false;
   let lastRotate = false;
   let upPicture = false;
@@ -28,12 +30,12 @@ const Projects = () => {
     planeObject: new THREE.Vector3(0, 300, 0),
     frameObject: new THREE.Vector3(0, 300, 0),
     nameObject: new THREE.Vector3(0, 925, 0),
-    logoObject: new THREE.Vector3(0, 6000, 0),
     imageObject: new THREE.Vector3(0, -600, 0),
     leftArrowObject: new THREE.Vector3(-750, 300, 0), 
     rightArrowObject: new THREE.Vector3(750, 300, 0),
     upArrowObject: new THREE.Vector3(800, -400, 0),
-    downArrowObject: new THREE.Vector3(800, -800, 0)
+    downArrowObject: new THREE.Vector3(800, -800, 0),
+    logoGrid: new THREE.Vector3(-4500, -4500, -1000)
   };
 
   useEffect(() => {
@@ -49,7 +51,7 @@ const Projects = () => {
       setWidth / setHeight,
       1,
       10000);
-    camera.position.set(0, 100, 2650);
+    camera.position.set(0, 0, 3150);
   
     glRenderer = createGlRenderer(setWidth, setHeight, styles.three_box);
     cssRenderer = createCssRenderer(setWidth, setHeight, styles.three_box); 
@@ -145,22 +147,30 @@ const Projects = () => {
     }
 
     const stlLoader = new STLLoader();
-    if(logoObject) { 
-      stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
-        logoObject.material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111, shininess: 200 });
-        logoObject.geometry = geometry;
-      });
+    if(!gridInit) {
+      for(let i = 0; i < logoGrid[0]; i++) {
+        for(let j = 0; j < logoGrid[1]; j++) {
+          stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
+            const material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111, shininess: 200 });
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(defaultPositions.logoGrid.x  + (j * 1500), defaultPositions.logoGrid.y + (i * 1500), defaultPositions.logoGrid.z);
+            mesh.scale.set(40, 40, 40);
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            mesh.name = 'logo';
+            glScene.add(mesh);
+          });
+        }
+      }
+      gridInit = true;
     } else {
-      stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
-        const material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111, shininess: 200 });
-        const mesh = new THREE.Mesh(geometry, material);
-        mesh.position.set(defaultPositions.logoObject.x, defaultPositions.logoObject.y, defaultPositions.logoObject.z);
-        mesh.scale.set(20, 20, 20);
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-        mesh.name = 'logo';
-        logoObject = mesh;
-        glScene.add(mesh);
+      glScene.children.forEach(child => {
+        if(child.name === 'logo') {
+          stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
+            child.material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111, shininess: 200 });
+            child.geometry = geometry;
+          });
+        }
       });
     }
 
@@ -333,12 +343,24 @@ const Projects = () => {
   function update() { 
     if(upPicture) imageObject.rotation.x += .03;
     if(downPicture) imageObject.rotation.x -= .03;
+    glScene.children.forEach(child => {
+      if(child.name === 'logo') {
+        child.rotation.x += .02;
+        child.rotation.y += .02;
+        child.position.x += 10;
+        child.position.y += 10;
+        child.position.x > 6000 || child.position.x < -6000 ? child.visible = false : child.visible = true;
+        child.position.y > 6000 || child.position.y < -6000 ? child.visible = false : child.visible = true;
+        if(child.position.x > 7500) child.position.x = child.position.x - 15000;
+        if(child.position.y > 7500) child.position.y = child.position.y - 15000;
+      }
+    });
 
     if(nextRotate) {
       cssObject.position.x -= 100;
       if(cssObject.position.x < -7000) cssObject.position.x = cssObject.position.x + 14000;
       glScene.children.forEach(child => {
-        if(child.type === 'DirectionalLight' || child.type === 'AmbientLight') return;
+        if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'logo') return;
         child.position.x -= 100;
         if(child.position.x < -5000) child.visible = false;
         if(child.position.x < 5000 && child.position.x > -5000) child.visible = true;
@@ -358,7 +380,6 @@ const Projects = () => {
         planeObject.position.x = defaultPositions.planeObject.x;
         frameObject.position.x = defaultPositions.frameObject.x;
         nameObject.position.x = defaultPositions.nameObject.x;
-        logoObject.position.x = defaultPositions.logoObject.x;
         imageObject.position.x = defaultPositions.imageObject.x;
         leftArrowObject.position.x = defaultPositions.leftArrowObject.x;
         rightArrowObject.position.x = defaultPositions.rightArrowObject.x;
@@ -371,7 +392,7 @@ const Projects = () => {
       cssObject.position.x += 100;
       if(cssObject.position.x > 7000) cssObject.position.x = cssObject.position.x - 14000;
       glScene.children.forEach(child => {
-        if(child.type === 'DirectionalLight' || child.type === 'AmbientLight') return;
+        if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'logo') return;
         child.position.x += 100;
         if(child.position.x > 5000) child.visible = false;
         if(child.position.x > -5000 && child.position.x < 5000) child.visible = true;
@@ -391,7 +412,6 @@ const Projects = () => {
         planeObject.position.x = defaultPositions.planeObject.x;
         frameObject.position.x = defaultPositions.frameObject.x;
         nameObject.position.x = defaultPositions.nameObject.x;
-        logoObject.position.x = defaultPositions.logoObject.x;
         imageObject.position.x = defaultPositions.imageObject.x;
         leftArrowObject.position.x = defaultPositions.leftArrowObject.x;
         rightArrowObject.position.x = defaultPositions.rightArrowObject.x;

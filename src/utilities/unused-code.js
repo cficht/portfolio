@@ -67,3 +67,23 @@
 //     changeProject = false;
 //     cssScene.children[0].rotation.set(0, 0, 0);
 //   }
+
+// OLD LOGO
+// if(logoObject) { 
+//   stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
+//     logoObject.material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111, shininess: 200 });
+//     logoObject.geometry = geometry;
+//   });
+// } else {
+//   stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
+//     const material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111, shininess: 200 });
+//     const mesh = new THREE.Mesh(geometry, material);
+//     mesh.position.set(defaultPositions.logoObject.x, defaultPositions.logoObject.y, defaultPositions.logoObject.z);
+//     mesh.scale.set(20, 20, 20);
+//     mesh.castShadow = true;
+//     mesh.receiveShadow = true;
+//     mesh.name = 'logo';
+//     logoObject = mesh;
+//     glScene.add(mesh);
+//   });
+// }
