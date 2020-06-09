@@ -51,7 +51,7 @@ const Projects = () => {
       setWidth / setHeight,
       1,
       10000);
-    camera.position.set(0, 0, 3150);
+    camera.position.set(0, 0, 3300);
   
     glRenderer = createGlRenderer(setWidth, setHeight, styles.three_box);
     cssRenderer = createCssRenderer(setWidth, setHeight, styles.three_box); 

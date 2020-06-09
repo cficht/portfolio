@@ -5,9 +5,7 @@ import './App.css';
 export default function App() {
   return (
     <>
-      {/* <div className={styles.three_box}> */}
       <Projects />
-      {/* </div> */}
     </>
   );
 }
