@@ -10,14 +10,13 @@ import styles from './Projects.css';
 
 const Projects = () => {
   const [firstScheme, setFirstScheme] = useState([]);
-  let camera, glScene, cssScene, glRenderer, cssRenderer, controls, cssObject, selectedObject, planeObject, frameObject, nameObject, logoObject, imageObject, leftArrowObject, rightArrowObject, upArrowObject, downArrowObject, schemeCopy;
+  let camera, glScene, cssScene, glRenderer, cssRenderer, controls, cssObject, selectedObject, planeObject, frameObject, nameObject, imageObject, leftArrowObject, rightArrowObject, schemeCopy;
   let count = 0;
   const logoGrid = [10, 10];
   let gridInit = false;
   let nextRotate = false;
   let lastRotate = false;
   let upPicture = false;
-  let downPicture = false;
   let changeProject = false;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
@@ -33,8 +32,6 @@ const Projects = () => {
     imageObject: new THREE.Vector3(0, -600, 0),
     leftArrowObject: new THREE.Vector3(-750, 300, 0), 
     rightArrowObject: new THREE.Vector3(750, 300, 0),
-    upArrowObject: new THREE.Vector3(800, -400, 0),
-    downArrowObject: new THREE.Vector3(800, -800, 0),
     logoGrid: new THREE.Vector3(-4500, -4500, -1000)
   };
 
@@ -192,6 +189,7 @@ const Projects = () => {
       boxMesh.position.x = defaultPositions.imageObject.x;
       boxMesh.position.y = defaultPositions.imageObject.y;
       boxMesh.position.z = defaultPositions.imageObject.z;
+      boxMesh.userData = 'IMAGEBOX';
       const wireGeo = new THREE.EdgesGeometry(boxMesh.geometry);
       const wireMat = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 1 });
       const wireframe = new THREE.LineSegments(wireGeo, wireMat);
@@ -209,11 +207,6 @@ const Projects = () => {
       .lineTo(0, 100)
       .lineTo(-120, 0);
 
-    const triangleShape2 = new THREE.Shape()
-      .moveTo(0, -100)
-      .lineTo(0, 100)
-      .lineTo(120, 0);
-
     const extrudeSettings = { depth: 20, bevelEnabled: true, bevelSegments: 2, steps: 2, bevelSize: 1, bevelThickness: 1 };
 
     const mesh2 = new THREE.Mesh(
@@ -227,36 +220,15 @@ const Projects = () => {
     glScene.add(mesh2);   
 
     const mesh3 = new THREE.Mesh(
-      new THREE.ExtrudeBufferGeometry(triangleShape2, extrudeSettings),
+      new THREE.ExtrudeBufferGeometry(triangleShape, extrudeSettings),
       createColoredMaterial(firstScheme[5]));  
+    mesh3.rotation.copy(new THREE.Euler(0, 0, - 180 * THREE.MathUtils.DEG2RAD));
     mesh3.position.x = defaultPositions.rightArrowObject.x;
     mesh3.position.y = defaultPositions.rightArrowObject.y;
     mesh3.position.z = defaultPositions.rightArrowObject.z;
     mesh3.userData = 'NEXT'; 
     rightArrowObject = mesh3; 
     glScene.add(mesh3);
-
-    const mesh4 = new THREE.Mesh(
-      new THREE.ExtrudeBufferGeometry(triangleShape2, extrudeSettings),
-      createColoredMaterial(firstScheme[3]));  
-    mesh4.rotation.copy(new THREE.Euler(0, 0, - 270 * THREE.MathUtils.DEG2RAD));
-    mesh4.position.x = defaultPositions.upArrowObject.x;
-    mesh4.position.y = defaultPositions.upArrowObject.y;
-    mesh4.position.z = defaultPositions.upArrowObject.z;
-    mesh4.userData = 'UP'; 
-    upArrowObject = mesh4; 
-    glScene.add(mesh4);
-
-    const mesh5 = new THREE.Mesh(
-      new THREE.ExtrudeBufferGeometry(triangleShape2, extrudeSettings),
-      createColoredMaterial(firstScheme[3]));  
-    mesh5.rotation.copy(new THREE.Euler(0, 0, - 90 * THREE.MathUtils.DEG2RAD));
-    mesh5.position.x = defaultPositions.downArrowObject.x;
-    mesh5.position.y = defaultPositions.downArrowObject.y;
-    mesh5.position.z = defaultPositions.downArrowObject.z;
-    mesh5.userData = 'DOWN'; 
-    downArrowObject = mesh5; 
-    glScene.add(mesh5);
  
     const gltfLoader = new GLTFLoader();
     const url = 'models/pictureframe_1/scene.gltf';
@@ -300,27 +272,24 @@ const Projects = () => {
 
   function onDown(event) {
     const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-    mouse.x = (event.clientX / setWidth) * 2 - 1;
-    mouse.y = - (event.clientY / setHeight) * 2 + 1;
-    raycaster.setFromCamera(mouse, camera);
+    // const mouse = new THREE.Vector2();
+    // mouse.x = (event.clientX / setWidth) * 2 - 1;
+    // mouse.y = - (event.clientY / setHeight) * 2 + 1;
+    const clientTouch = new THREE.Vector2();
+    clientTouch.x = (event.touches[0].clientX / setWidth) * 2 - 1;
+    clientTouch.y = - (event.touches[0] / setHeight) * 2 + 1;
+    raycaster.setFromCamera(clientTouch, camera);
     const intersects = raycaster.intersectObjects(glScene.children, true); //array
     if(intersects.length > 0) {
       selectedObject = intersects[0];
-      if(selectedObject.object.userData === 'UP') {
-        downPicture = false;
+      if(selectedObject.object.userData === 'IMAGEBOX') {
         upPicture = true; 
-      }
-      if(selectedObject.object.userData === 'DOWN') {
-        upPicture = false;
-        downPicture = true; 
       }
     }
   }
 
   function onUp() {
     upPicture = false;
-    downPicture = false;
   }
 
   function newProject() {
@@ -342,7 +311,6 @@ const Projects = () => {
   // UPDATE
   function update() { 
     if(upPicture) imageObject.rotation.x += .03;
-    if(downPicture) imageObject.rotation.x -= .03;
     glScene.children.forEach(child => {
       if(child.name === 'logo') {
         child.rotation.x += .02;
@@ -383,8 +351,6 @@ const Projects = () => {
         imageObject.position.x = defaultPositions.imageObject.x;
         leftArrowObject.position.x = defaultPositions.leftArrowObject.x;
         rightArrowObject.position.x = defaultPositions.rightArrowObject.x;
-        upArrowObject.position.x = defaultPositions.upArrowObject.x;
-        downArrowObject.position.x = defaultPositions.downArrowObject.x;
       }
     }
 
@@ -415,8 +381,6 @@ const Projects = () => {
         imageObject.position.x = defaultPositions.imageObject.x;
         leftArrowObject.position.x = defaultPositions.leftArrowObject.x;
         rightArrowObject.position.x = defaultPositions.rightArrowObject.x;
-        upArrowObject.position.x = defaultPositions.upArrowObject.x;
-        downArrowObject.position.x = defaultPositions.downArrowObject.x;
       }
     }
 
