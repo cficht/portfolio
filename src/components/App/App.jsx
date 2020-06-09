@@ -6,7 +6,6 @@ export default function App() {
   return (
     <>
       {/* <div className={styles.three_box}> */}
-      YO
       <Projects />
       {/* </div> */}
     </>
