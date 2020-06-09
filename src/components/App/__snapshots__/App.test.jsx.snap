@@ -2,6 +2,7 @@
 
 exports[`App component renders App 1`] = `
 <Fragment>
+  YO
   <Projects />
 </Fragment>
 `;
