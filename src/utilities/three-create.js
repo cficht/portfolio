@@ -3,7 +3,7 @@ import { CSS3DRenderer, CSS3DObject } from '../renderers/CSS3DRenderer';
 
 export function createGlRenderer(width, height, style) {
   const glRenderer = new THREE.WebGLRenderer({ alpha:true });  
-  glRenderer.setClearColor(0xECF8FF);
+  glRenderer.setClearColor();
   glRenderer.setPixelRatio(window.devicePixelRatio);
   glRenderer.setSize(width, height);  
   glRenderer.domElement.style.position = 'absolute';
@@ -70,10 +70,9 @@ export function createProjectCssObject(w, h, position, rotation, number, project
   site.href = projects[number].site;
   element.appendChild(site);
 
-  const img1 = document.createElement('img');
-  img1.src = projects[number].image1;
-  element.appendChild(img1);
-
+  // const img1 = document.createElement('img');
+  // img1.src = projects[number].image1;
+  // element.appendChild(img1);
 
   const cssObject = new CSS3DObject(element);
 
