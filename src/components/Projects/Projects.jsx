@@ -81,8 +81,8 @@ const Projects = () => {
     controls.minAzimuthAngle = -1.5;
 
     cssRenderer.domElement.addEventListener('click', onClick, true);
-    cssRenderer.domElement.addEventListener('mousedown', onDown, true);
-    cssRenderer.domElement.addEventListener('mouseup', onUp, true);
+    cssRenderer.domElement.addEventListener('mousedown' || 'touchstart', onDown, true);
+    cssRenderer.domElement.addEventListener('mouseup' || 'touchend', onUp, true);
   }, [firstScheme]);
 
   function create3dPage(w, h, position, rotation, number, colors) {  
