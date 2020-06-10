@@ -10,12 +10,10 @@ import styles from './Projects.css';
 
 const Projects = () => {
   const [firstScheme, setFirstScheme] = useState([]);
-  let camera, glScene, cssScene, glRenderer, cssRenderer, controls, cssObject, selectedObject, planeObject, frameObject, nameObject, leftArrowObject, rightArrowObject, gitHubObject, siteObject, schemeCopy;
+  let camera, glScene, cssScene, glRenderer, cssRenderer, controls, cssObject, selectedObject, planeObject, frameObject, nameObject, logoObject, leftArrowObject, rightArrowObject, gitHubObject, siteObject, schemeCopy;
   let count = 0;
   let slideCount = 0;
   const slideMax = 2;
-  const logoGrid = [10, 10];
-  let gridInit = false;
   let nextRotate = false;
   let lastRotate = false;
   let changeProject = false;
@@ -30,11 +28,11 @@ const Projects = () => {
     planeObject: new THREE.Vector3(0, 100, 0),
     frameObject: new THREE.Vector3(0, 100, 0),
     nameObject: new THREE.Vector3(0, 700, 0),
+    logoObject: new THREE.Vector3(0, 900, 0),
     leftArrowObject: new THREE.Vector3(-100, -550, 0), 
     rightArrowObject: new THREE.Vector3(100, -550, 0),
     gitHubObject: new THREE.Vector3(-450, -550, 0),
-    siteObject: new THREE.Vector3(450, -550, 0),
-    logoGrid: new THREE.Vector3(-4500, -4500, -1000)
+    siteObject: new THREE.Vector3(450, -550, 0)
   };
 
   useEffect(() => {
@@ -50,7 +48,7 @@ const Projects = () => {
       setWidth / setHeight,
       1,
       15000);
-    camera.position.set(0, 0, 2750);
+    camera.position.set(0, 0, 3000);
   
     glRenderer = createGlRenderer(setWidth, setHeight, styles.three_box);
     cssRenderer = createCssRenderer(setWidth, setHeight, styles.three_box); 
@@ -80,6 +78,12 @@ const Projects = () => {
     controls = new OrbitControls(camera, glRenderer.domElement);
     controls.maxAzimuthAngle = 1.5;
     controls.minAzimuthAngle = -1.5;
+    controls.maxPolarAngle = 2;
+    controls.minPolarAngle = 1;
+    controls.minDistance = 700;
+    controls.maxDistance = 5000;
+    controls.enableKeys = false;
+    // controls.enableZoom = false;
 
     const floor_url = './images/common_images/floor_tile.jpg';
     const wall_url = './images/common_images/new_wall.png';
@@ -165,40 +169,33 @@ const Projects = () => {
     }
 
     const stlLoader = new STLLoader();
-    // LOGO GRID 
-    // if(!gridInit) {
-    //   for(let i = 0; i < logoGrid[0]; i++) {
-    //     for(let j = 0; j < logoGrid[1]; j++) {
-    //       stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
-    //         const material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111, shininess: 200 });
-    //         const mesh = new THREE.Mesh(geometry, material);
-    //         geometry.center();
-    //         mesh.position.set(defPos.logoGrid.x  + (j * 1500), defPos.logoGrid.y + (i * 1500), defPos.logoGrid.z);
-    //         mesh.scale.set(40, 40, 40);
-    //         mesh.castShadow = true;
-    //         mesh.receiveShadow = true;
-    //         mesh.name = 'logo';
-    //         glScene.add(mesh);
-    //       });
-    //     }
-    //   }
-    //   gridInit = true;
+
+    //LOGO
+    // if(logoObject) { 
+    //   stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
+    //     logoObject.material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111 });
+    //     logoObject.geometry = geometry;
+    //   });
     // } else {
-    //   glScene.children.forEach(child => {
-    //     if(child.name === 'logo') {
-    //       stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
-    //         child.material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111, shininess: 200 });
-    //         geometry.center();
-    //         child.geometry = geometry;
-    //       });
-    //     }
+    //   stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
+    //     const material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111 });
+    //     const mesh = new THREE.Mesh(geometry, material);
+    //     mesh.geometry.center();
+    //     mesh.position.set(defPos.logoObject.x, defPos.logoObject.y, defPos.logoObject.z);
+    //     mesh.scale.set(20, 20, 20);
+    //     mesh.castShadow = true;
+    //     mesh.receiveShadow = true;
+    //     mesh.name = 'logo';
+    //     logoObject = mesh;
+    //     glScene.add(mesh);
     //   });
     // }
 
     // GITHUB
     if(!gitHubObject) {
       stlLoader.load('./models/common_models/github_icon.stl', function(geometry) {
-        const material = new THREE.MeshPhongMaterial({ color: '#DEDEDE', specular: 0x111111 });
+        // const material = new THREE.MeshPhongMaterial({ color: '#DEDEDE', specular: 0x111111 });
+        const material = new THREE.MeshToonMaterial({ color: '#DEDEDE', flatShading: true });
         const mesh = new THREE.Mesh(geometry, material);
         geometry.center();
         mesh.position.set(defPos.gitHubObject.x, defPos.gitHubObject.y, defPos.gitHubObject.z);
@@ -214,7 +211,8 @@ const Projects = () => {
     // SITE
     if(!siteObject) {
       stlLoader.load('./models/common_models/internet_icon.stl', function(geometry) {
-        const material = new THREE.MeshPhongMaterial({ color: '#DEDEDE', specular: 0x111111 });
+        // const material = new THREE.MeshPhongMaterial({ color: '#DEDEDE', specular: 0x111111 });
+        const material = new THREE.MeshToonMaterial({ color: '#DEDEDE', flatShading: true });
         const mesh = new THREE.Mesh(geometry, material);
         geometry.center();
         mesh.position.set(defPos.siteObject.x, defPos.siteObject.y, defPos.siteObject.z);
@@ -265,7 +263,8 @@ const Projects = () => {
       root.scale.set(700, 700, 512); 
       root.position.x = defPos.frameObject.x;
       root.position.y = defPos.frameObject.y;
-      const mesh = new THREE.MeshPhongMaterial({ color: '#b5651d' });
+      // const mesh = new THREE.MeshPhongMaterial({ color: '#b5651d' });
+      const mesh = new THREE.MeshToonMaterial({ color: '#b5651d', flatShading: true, });
       root.children[0].children[0].children[0].children[0].children[0].material = mesh;
       root.name = 'picture';
       frameObject = root;
@@ -329,24 +328,13 @@ const Projects = () => {
 
   // UPDATE
   function update() { 
-    glScene.children.forEach(child => {
-      if(child.name === 'logo') {
-        child.rotation.x += .02;
-        child.rotation.y += .02;
-        child.position.x += 10;
-        child.position.y += 10;
-        child.position.x > 6000 || child.position.x < -6000 ? child.visible = false : child.visible = true;
-        child.position.y > 6000 || child.position.y < -6000 ? child.visible = false : child.visible = true;
-        if(child.position.x > 7500) child.position.x = child.position.x - 15000;
-        if(child.position.y > 7500) child.position.y = child.position.y - 15000;
-      }
-    });
+    if(logoObject) logoObject.rotation.y += .03;
 
     if(nextRotate) {
       cssObject.position.x -= 100;
       if(cssObject.position.x < -7000) cssObject.position.x = cssObject.position.x + 14000;
       glScene.children.forEach(child => {
-        if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'logo' || child.name === 'background') return;
+        if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'background') return;
         child.position.x -= 100;
         if(child.position.x < -5000) child.visible = false;
         if(child.position.x < 5000 && child.position.x > -5000) child.visible = true;
@@ -366,6 +354,7 @@ const Projects = () => {
         planeObject.position.x = defPos.planeObject.x;
         frameObject.position.x = defPos.frameObject.x;
         nameObject.position.x = defPos.nameObject.x;
+        // logoObject.position.x = defPos.logoObject.x;
         leftArrowObject.position.x = defPos.leftArrowObject.x;
         rightArrowObject.position.x = defPos.rightArrowObject.x;
         gitHubObject.position.x = defPos.gitHubObject.x;
@@ -377,7 +366,7 @@ const Projects = () => {
       cssObject.position.x += 100;
       if(cssObject.position.x > 7000) cssObject.position.x = cssObject.position.x - 14000;
       glScene.children.forEach(child => {
-        if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'logo' || child.name === 'background') return;
+        if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'background') return;
         child.position.x += 100;
         if(child.position.x > 5000) child.visible = false;
         if(child.position.x > -5000 && child.position.x < 5000) child.visible = true;
@@ -397,6 +386,7 @@ const Projects = () => {
         planeObject.position.x = defPos.planeObject.x;
         frameObject.position.x = defPos.frameObject.x;
         nameObject.position.x = defPos.nameObject.x;
+        // logoObject.position.x = defPos.logoObject.x;
         leftArrowObject.position.x = defPos.leftArrowObject.x;
         rightArrowObject.position.x = defPos.rightArrowObject.x;
         gitHubObject.position.x = defPos.gitHubObject.x;

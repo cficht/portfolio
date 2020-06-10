@@ -154,3 +154,51 @@
 //     siteObject.material.color.set('#000000');
 //   }
 // }
+
+
+// LOGO GRID
+// LOGO GRID 
+// if(!gridInit) {
+//   for(let i = 0; i < logoGrid[0]; i++) {
+//     for(let j = 0; j < logoGrid[1]; j++) {
+//       stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
+//         const material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111, shininess: 200 });
+//         const mesh = new THREE.Mesh(geometry, material);
+//         geometry.center();
+//         mesh.position.set(defPos.logoGrid.x  + (j * 1500), defPos.logoGrid.y + (i * 1500), defPos.logoGrid.z);
+//         mesh.scale.set(40, 40, 40);
+//         mesh.castShadow = true;
+//         mesh.receiveShadow = true;
+//         mesh.name = 'logo';
+//         glScene.add(mesh);
+//       });
+//     }
+//   }
+//   gridInit = true;
+// } else {
+//   glScene.children.forEach(child => {
+//     if(child.name === 'logo') {
+//       stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
+//         child.material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111, shininess: 200 });
+//         geometry.center();
+//         child.geometry = geometry;
+//       });
+//     }
+//   });
+// }
+
+// const logoGrid = [10, 10];
+// let gridInit = false;
+
+// glScene.children.forEach(child => {
+//   if(child.name === 'logo') {
+//     child.rotation.x += .02;
+//     child.rotation.y += .02;
+//     child.position.x += 10;
+//     child.position.y += 10;
+//     child.position.x > 6000 || child.position.x < -6000 ? child.visible = false : child.visible = true;
+//     child.position.y > 6000 || child.position.y < -6000 ? child.visible = false : child.visible = true;
+//     if(child.position.x > 7500) child.position.x = child.position.x - 15000;
+//     if(child.position.y > 7500) child.position.y = child.position.y - 15000;
+//   }
+// });
