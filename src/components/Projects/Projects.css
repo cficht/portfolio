@@ -12,5 +12,10 @@
   padding: 10px;
   font-size: 45px;
   font-family: Georgia, 'Times New Roman', Times, serif;
+
+  img {
+    border: 5px solid grey;
+    width: 95%;
+  }
 }
 

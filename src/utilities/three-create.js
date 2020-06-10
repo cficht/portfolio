@@ -31,6 +31,7 @@ export function createPlane(w, h, position, rotation) {
   });  
   const geometry = new THREE.PlaneGeometry(w, h);  
   const mesh = new THREE.Mesh(geometry, material);  
+  mesh.userData = 'SLIDE';
   mesh.position.x = position.x;
   mesh.position.y = position.y;
   mesh.position.z = position.z;  
@@ -40,20 +41,32 @@ export function createPlane(w, h, position, rotation) {
   return mesh;
 }
 
-export function createProjectCssObject(w, h, position, rotation, number, projects, style) {  
+export function createProjectCssObject(w, h, position, rotation, number, projects, style, slideCount) {  
   const element = document.createElement('div');
   element.style.width = (w - 100) + 'px';
   element.style.height = h + 'px';
   element.style.opacity = 1;
   element.className = style;
 
-  const stack = document.createElement('h3');
-  stack.textContent = projects[number].stack;
-  element.appendChild(stack);
-
-  const desc = document.createElement('p');
-  desc.textContent = projects[number].description;
-  element.appendChild(desc);
+  if(slideCount === 0) {
+    const stack = document.createElement('h3');
+    stack.textContent = projects[number].stack;
+    element.appendChild(stack);
+  
+    const desc = document.createElement('p');
+    desc.textContent = projects[number].description;
+    element.appendChild(desc);
+  }
+  if(slideCount === 1) {
+    const img1 = document.createElement('img');
+    img1.src = projects[number].image1;
+    element.appendChild(img1);
+  }
+  if(slideCount === 2) {
+    const img2 = document.createElement('img');
+    img2.src = projects[number].image2;
+    element.appendChild(img2);
+  }
 
   const cssObject = new CSS3DObject(element);
 

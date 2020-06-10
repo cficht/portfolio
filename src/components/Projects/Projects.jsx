@@ -10,13 +10,14 @@ import styles from './Projects.css';
 
 const Projects = () => {
   const [firstScheme, setFirstScheme] = useState([]);
-  let camera, glScene, cssScene, glRenderer, cssRenderer, controls, cssObject, selectedObject, planeObject, frameObject, nameObject, imageObject, leftArrowObject, rightArrowObject, gitHubObject, siteObject, schemeCopy, picRotX;
+  let camera, glScene, cssScene, glRenderer, cssRenderer, controls, cssObject, selectedObject, planeObject, frameObject, nameObject, leftArrowObject, rightArrowObject, gitHubObject, siteObject, schemeCopy;
   let count = 0;
+  let slideCount = 0;
+  const slideMax = 2;
   const logoGrid = [10, 10];
   let gridInit = false;
   let nextRotate = false;
   let lastRotate = false;
-  let picRotate = false;
   let changeProject = false;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
@@ -25,15 +26,14 @@ const Projects = () => {
   const OrbitControls = ThreeOrbitControls(THREE);
 
   const defPos = {
-    cssObject: new THREE.Vector3(0, 400, 0),
-    planeObject: new THREE.Vector3(0, 400, 0),
-    frameObject: new THREE.Vector3(0, 400, 0),
-    nameObject: new THREE.Vector3(0, 1025, 0),
-    imageObject: new THREE.Vector3(0, -825, -25),
-    leftArrowObject: new THREE.Vector3(-100, -275, 0), 
-    rightArrowObject: new THREE.Vector3(100, -275, 0),
-    gitHubObject: new THREE.Vector3(-450, -275, 0),
-    siteObject: new THREE.Vector3(450, -275, 0),
+    cssObject: new THREE.Vector3(0, 100, 0),
+    planeObject: new THREE.Vector3(0, 100, 0),
+    frameObject: new THREE.Vector3(0, 100, 0),
+    nameObject: new THREE.Vector3(0, 700, 0),
+    leftArrowObject: new THREE.Vector3(-100, -550, 0), 
+    rightArrowObject: new THREE.Vector3(100, -550, 0),
+    gitHubObject: new THREE.Vector3(-450, -550, 0),
+    siteObject: new THREE.Vector3(450, -550, 0),
     logoGrid: new THREE.Vector3(-4500, -4500, -1000)
   };
 
@@ -50,7 +50,7 @@ const Projects = () => {
       setWidth / setHeight,
       1,
       15000);
-    camera.position.set(0, 0, 3300);
+    camera.position.set(0, 0, 2500);
   
     glRenderer = createGlRenderer(setWidth, setHeight, styles.three_box);
     cssRenderer = createCssRenderer(setWidth, setHeight, styles.three_box); 
@@ -81,7 +81,6 @@ const Projects = () => {
     controls.maxAzimuthAngle = 1.5;
     controls.minAzimuthAngle = -1.5;
 
-
     const floor_url = './images/common_images/floor_tile.jpg';
     const wall_url = './images/common_images/wall.png';
     const textureLoader = new THREE.TextureLoader();
@@ -98,10 +97,11 @@ const Projects = () => {
     boxMesh.position.x = 0;
     boxMesh.position.y = 0;
     boxMesh.position.z = 0;
+    boxMesh.name = 'background';
     glScene.add(boxMesh);
 
     cssRenderer.domElement.addEventListener('click', onClick, true);
-    // cssRenderer.domElement.addEventListener('mousemove', onHover, true);
+
   }, [firstScheme]);
 
   function create3dPage(w, h, position, rotation, number, colors) {  
@@ -111,12 +111,12 @@ const Projects = () => {
     }
     
     if(!cssObject) {
-      cssObject = createProjectCssObject(w, h, position, rotation, number, projects, styles.project);  
+      cssObject = createProjectCssObject(w, h, position, rotation, number, projects, styles.project, slideCount);  
       cssScene.add(cssObject);
     } else {
       const newPos = cssObject.position;
       cssScene.remove(cssObject);
-      cssObject = createProjectCssObject(w, h, newPos, rotation, number, projects, styles.project);  
+      cssObject = createProjectCssObject(w, h, newPos, rotation, number, projects, styles.project, slideCount);  
       cssScene.add(cssObject);
     }
     
@@ -197,7 +197,7 @@ const Projects = () => {
     // GITHUB
     if(!gitHubObject) {
       stlLoader.load('./models/common_models/github_icon.stl', function(geometry) {
-        const material = new THREE.MeshPhongMaterial({ color: '#000000', specular: 0x111111 });
+        const material = new THREE.MeshPhongMaterial({ color: '#DEDEDE', specular: 0x111111 });
         const mesh = new THREE.Mesh(geometry, material);
         geometry.center();
         mesh.position.set(defPos.gitHubObject.x, defPos.gitHubObject.y, defPos.gitHubObject.z);
@@ -213,7 +213,7 @@ const Projects = () => {
     // SITE
     if(!siteObject) {
       stlLoader.load('./models/common_models/internet_icon.stl', function(geometry) {
-        const material = new THREE.MeshPhongMaterial({ color: '#000000', specular: 0x111111 });
+        const material = new THREE.MeshPhongMaterial({ color: '#DEDEDE', specular: 0x111111 });
         const mesh = new THREE.Mesh(geometry, material);
         geometry.center();
         mesh.position.set(defPos.siteObject.x, defPos.siteObject.y, defPos.siteObject.z);
@@ -225,37 +225,7 @@ const Projects = () => {
         glScene.add(mesh);
       });
     }
-
-    const textureLoader = new THREE.TextureLoader();
-    const materials = [
-      new THREE.MeshBasicMaterial({ color: projects[number].logoColor, side: THREE.DoubleSide }),
-      new THREE.MeshBasicMaterial({ color: projects[number].logoColor, side: THREE.DoubleSide }),
-      new THREE.MeshBasicMaterial({ map: textureLoader.load(projects[number].image1), side: THREE.DoubleSide  }),
-      new THREE.MeshBasicMaterial({ map: textureLoader.load(projects[number].image2), side: THREE.DoubleSide  }),
-      new THREE.MeshBasicMaterial({ color: projects[number].secondaryColor, side: THREE.DoubleSide }),
-      new THREE.MeshBasicMaterial({ color: projects[number].secondaryColor, side: THREE.DoubleSide })
-    ];
-    if(imageObject) {
-      imageObject.material = materials;
-    } else {
-      const geometry = new THREE.BoxGeometry(1920 * .6, 964 * .6, 964 * .6);
-      const boxMesh = new THREE.Mesh(geometry, materials);
-      boxMesh.rotation.copy(new THREE.Euler(- 270 * THREE.MathUtils.DEG2RAD, 0, 0));
-      boxMesh.position.x = defPos.imageObject.x;
-      boxMesh.position.y = defPos.imageObject.y;
-      boxMesh.position.z = defPos.imageObject.z;
-      boxMesh.userData = 'IMAGEBOX';
-      const wireGeo = new THREE.EdgesGeometry(boxMesh.geometry);
-      const wireMat = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 1 });
-      const wireframe = new THREE.LineSegments(wireGeo, wireMat);
-      wireframe.renderOrder = 2;
-      boxMesh.add(wireframe);
-      imageObject = boxMesh;
-      picRotX = imageObject.quaternion._x;
-      glScene.add(boxMesh);
-    }
   }
-
 
   function create3dGeometry() {  
     const triangleShape = new THREE.Shape()
@@ -323,34 +293,24 @@ const Projects = () => {
         lastRotate = true;
         count = count - 1;
       }
-      if(selectedObject.object.userData === 'IMAGEBOX' && !picRotate) {
-        picRotate = true; 
-        picRotX = picRotX * -1;
+
+      if(selectedObject.object.userData === 'SLIDE') {
+        slideCount < slideMax ? slideCount++ : slideCount = 0;
+        create3dPage(
+          1200, 700,
+          defPos.cssObject,
+          cssObject.rotation,
+          count,
+          schemeCopy ? schemeCopy : firstScheme
+        );
       }
       if(selectedObject.object.userData === 'GITHUB') window.open(projects[count].github, '_blank');
       if(selectedObject.object.userData === 'SITE') window.open(projects[count].site, '_blank');
     }
   }
 
-  // function onHover(event) {
-  //   const raycaster = new THREE.Raycaster();
-  //   const mouse = new THREE.Vector2();
-  //   mouse.x = (event.clientX / setWidth) * 2 - 1;
-  //   mouse.y = - (event.clientY / setHeight) * 2 + 1;
-  //   raycaster.setFromCamera(mouse, camera);
-  //   const intersects = raycaster.intersectObjects(glScene.children, true); //array
-  //   if(intersects.length > 0) {
-  //     selectedObject = intersects[0];
-  //     if(selectedObject.object.userData === 'GITHUB') gitHubObject.material.color.set('#FFFFFF');
-  //     if(selectedObject.object.userData === 'SITE') siteObject.material.color.set('#FFFFFF');
-  //   }
-  //   else {
-  //     gitHubObject.material.color.set('black');
-  //     siteObject.material.color.set('#000000');
-  //   }
-  // }
-
   function newProject() {
+    slideCount = 0;
     fetchScheme(projects[count].logoColor.slice(1), 'analogic')
       .then(scheme => {
         schemeCopy = scheme;
@@ -368,13 +328,6 @@ const Projects = () => {
 
   // UPDATE
   function update() { 
-    if(picRotate && (imageObject.quaternion._x < picRotX && picRotX > 0)) imageObject.rotation.x -= .03;
-    else if(picRotate && (imageObject.quaternion._x > picRotX && picRotX < 0)) imageObject.rotation.x += .03;
-    else { 
-      picRotate = false;
-      imageObject.quaternion._x = picRotX;
-    }
-
     glScene.children.forEach(child => {
       if(child.name === 'logo') {
         child.rotation.x += .02;
@@ -392,7 +345,7 @@ const Projects = () => {
       cssObject.position.x -= 100;
       if(cssObject.position.x < -7000) cssObject.position.x = cssObject.position.x + 14000;
       glScene.children.forEach(child => {
-        if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'logo') return;
+        if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'logo' || child.name === 'background') return;
         child.position.x -= 100;
         if(child.position.x < -5000) child.visible = false;
         if(child.position.x < 5000 && child.position.x > -5000) child.visible = true;
@@ -412,7 +365,6 @@ const Projects = () => {
         planeObject.position.x = defPos.planeObject.x;
         frameObject.position.x = defPos.frameObject.x;
         nameObject.position.x = defPos.nameObject.x;
-        imageObject.position.x = defPos.imageObject.x;
         leftArrowObject.position.x = defPos.leftArrowObject.x;
         rightArrowObject.position.x = defPos.rightArrowObject.x;
         gitHubObject.position.x = defPos.gitHubObject.x;
@@ -424,7 +376,7 @@ const Projects = () => {
       cssObject.position.x += 100;
       if(cssObject.position.x > 7000) cssObject.position.x = cssObject.position.x - 14000;
       glScene.children.forEach(child => {
-        if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'logo') return;
+        if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'logo' || child.name === 'background') return;
         child.position.x += 100;
         if(child.position.x > 5000) child.visible = false;
         if(child.position.x > -5000 && child.position.x < 5000) child.visible = true;
@@ -444,7 +396,6 @@ const Projects = () => {
         planeObject.position.x = defPos.planeObject.x;
         frameObject.position.x = defPos.frameObject.x;
         nameObject.position.x = defPos.nameObject.x;
-        imageObject.position.x = defPos.imageObject.x;
         leftArrowObject.position.x = defPos.leftArrowObject.x;
         rightArrowObject.position.x = defPos.rightArrowObject.x;
         gitHubObject.position.x = defPos.gitHubObject.x;
