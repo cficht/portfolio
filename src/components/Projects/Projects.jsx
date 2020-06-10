@@ -26,7 +26,7 @@ const Projects = () => {
   const OrbitControls = ThreeOrbitControls(THREE);
 
   const defPos = {
-    cssObject: new THREE.Vector3(0, 100, 0),
+    cssObject: new THREE.Vector3(0, 100, 1),
     planeObject: new THREE.Vector3(0, 100, 0),
     frameObject: new THREE.Vector3(0, 100, 0),
     nameObject: new THREE.Vector3(0, 700, 0),
@@ -50,7 +50,7 @@ const Projects = () => {
       setWidth / setHeight,
       1,
       15000);
-    camera.position.set(0, 0, 2500);
+    camera.position.set(0, 0, 2750);
   
     glRenderer = createGlRenderer(setWidth, setHeight, styles.three_box);
     cssRenderer = createCssRenderer(setWidth, setHeight, styles.three_box); 
@@ -82,12 +82,13 @@ const Projects = () => {
     controls.minAzimuthAngle = -1.5;
 
     const floor_url = './images/common_images/floor_tile.jpg';
-    const wall_url = './images/common_images/wall.png';
+    const wall_url = './images/common_images/new_wall.png';
+    const ceiling_url = './images/common_images/ceiling.png';
     const textureLoader = new THREE.TextureLoader();
     const materials = [
       new THREE.MeshBasicMaterial({ map: textureLoader.load(wall_url), side: THREE.DoubleSide }),
       new THREE.MeshBasicMaterial({ map: textureLoader.load(wall_url), side: THREE.DoubleSide  }),
-      new THREE.MeshBasicMaterial({ map: textureLoader.load('http://www.thecolorapi.com/id?format=svg&named=false&hex=69D5EE'), side: THREE.DoubleSide  }),
+      new THREE.MeshBasicMaterial({ map: textureLoader.load(ceiling_url), side: THREE.DoubleSide  }),
       new THREE.MeshBasicMaterial({ map: textureLoader.load(floor_url), side: THREE.DoubleSide  }),
       new THREE.MeshBasicMaterial({ map: textureLoader.load(wall_url), side: THREE.DoubleSide  }),
       new THREE.MeshBasicMaterial({ map: textureLoader.load(wall_url), side: THREE.DoubleSide  })

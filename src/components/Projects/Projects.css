@@ -1,6 +1,12 @@
+
+
 .three_box {
   display: flex;
   justify-content: center;
+
+  div {
+    background-color: black;
+  }
 }
 
 .project {
@@ -10,11 +16,12 @@
   align-items: center;
   text-align: center;
   padding: 10px;
+  background-color: black;
+  color: white;
   font-size: 45px;
   font-family: Georgia, 'Times New Roman', Times, serif;
 
   img {
-    border: 5px solid grey;
     width: 95%;
   }
 }
