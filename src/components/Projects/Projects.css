@@ -4,12 +4,13 @@
 }
 
 .project {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   padding: 10px;
-  margin-left: 10px;
   font-size: 45px;
-
-  img {
-    width: 100%;
-  }
+  font-family: Georgia, 'Times New Roman', Times, serif;
 }
 

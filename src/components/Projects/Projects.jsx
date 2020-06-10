@@ -10,7 +10,7 @@ import styles from './Projects.css';
 
 const Projects = () => {
   const [firstScheme, setFirstScheme] = useState([]);
-  let camera, glScene, cssScene, glRenderer, cssRenderer, controls, cssObject, selectedObject, planeObject, frameObject, nameObject, imageObject, leftArrowObject, rightArrowObject, schemeCopy, picRotX;
+  let camera, glScene, cssScene, glRenderer, cssRenderer, controls, cssObject, selectedObject, planeObject, frameObject, nameObject, imageObject, leftArrowObject, rightArrowObject, gitHubObject, siteObject, schemeCopy, picRotX;
   let count = 0;
   const logoGrid = [10, 10];
   let gridInit = false;
@@ -24,14 +24,16 @@ const Projects = () => {
   cssScene = new THREE.Scene();
   const OrbitControls = ThreeOrbitControls(THREE);
 
-  const defaultPositions = {
-    cssObject: new THREE.Vector3(0, 300, 0),
-    planeObject: new THREE.Vector3(0, 300, 0),
-    frameObject: new THREE.Vector3(0, 300, 0),
-    nameObject: new THREE.Vector3(0, 925, 0),
-    imageObject: new THREE.Vector3(0, -600, 0),
-    leftArrowObject: new THREE.Vector3(-100, -1175, 0), 
-    rightArrowObject: new THREE.Vector3(100, -1175, 0),
+  const defPos = {
+    cssObject: new THREE.Vector3(0, 400, 0),
+    planeObject: new THREE.Vector3(0, 400, 0),
+    frameObject: new THREE.Vector3(0, 400, 0),
+    nameObject: new THREE.Vector3(0, 1025, 0),
+    imageObject: new THREE.Vector3(0, -825, -25),
+    leftArrowObject: new THREE.Vector3(-100, -275, 0), 
+    rightArrowObject: new THREE.Vector3(100, -275, 0),
+    gitHubObject: new THREE.Vector3(-450, -275, 0),
+    siteObject: new THREE.Vector3(450, -275, 0),
     logoGrid: new THREE.Vector3(-4500, -4500, -1000)
   };
 
@@ -47,7 +49,7 @@ const Projects = () => {
       45,
       setWidth / setHeight,
       1,
-      10000);
+      15000);
     camera.position.set(0, 0, 3300);
   
     glRenderer = createGlRenderer(setWidth, setHeight, styles.three_box);
@@ -67,7 +69,7 @@ const Projects = () => {
   
     create3dPage(
       1200, 700,
-      defaultPositions.cssObject,
+      defPos.cssObject,
       new THREE.Vector3(0, 0, 0),
       0,
       firstScheme
@@ -79,7 +81,27 @@ const Projects = () => {
     controls.maxAzimuthAngle = 1.5;
     controls.minAzimuthAngle = -1.5;
 
+
+    const floor_url = './images/common_images/floor_tile.jpg';
+    const wall_url = './images/common_images/wall.png';
+    const textureLoader = new THREE.TextureLoader();
+    const materials = [
+      new THREE.MeshBasicMaterial({ map: textureLoader.load(wall_url), side: THREE.DoubleSide }),
+      new THREE.MeshBasicMaterial({ map: textureLoader.load(wall_url), side: THREE.DoubleSide  }),
+      new THREE.MeshBasicMaterial({ map: textureLoader.load('http://www.thecolorapi.com/id?format=svg&named=false&hex=69D5EE'), side: THREE.DoubleSide  }),
+      new THREE.MeshBasicMaterial({ map: textureLoader.load(floor_url), side: THREE.DoubleSide  }),
+      new THREE.MeshBasicMaterial({ map: textureLoader.load(wall_url), side: THREE.DoubleSide  }),
+      new THREE.MeshBasicMaterial({ map: textureLoader.load(wall_url), side: THREE.DoubleSide  })
+    ];
+    const geometry = new THREE.BoxGeometry(10000, 5000, 10000);
+    const boxMesh = new THREE.Mesh(geometry, materials);
+    boxMesh.position.x = 0;
+    boxMesh.position.y = 0;
+    boxMesh.position.z = 0;
+    glScene.add(boxMesh);
+
     cssRenderer.domElement.addEventListener('click', onClick, true);
+    // cssRenderer.domElement.addEventListener('mousemove', onHover, true);
   }, [firstScheme]);
 
   function create3dPage(w, h, position, rotation, number, colors) {  
@@ -133,39 +155,74 @@ const Projects = () => {
         });
         const mesh = new THREE.Mesh(geometry, material);
         mesh.scale.set(100, 100, 100);
-        mesh.position.x = defaultPositions.nameObject.x;
-        mesh.position.y = defaultPositions.nameObject.y;
-        mesh.position.z = defaultPositions.nameObject.z;
+        mesh.position.x = defPos.nameObject.x;
+        mesh.position.y = defPos.nameObject.y;
+        mesh.position.z = defPos.nameObject.z;
         nameObject = mesh;
         glScene.add(mesh);
       });
     }
 
     const stlLoader = new STLLoader();
-    if(!gridInit) {
-      for(let i = 0; i < logoGrid[0]; i++) {
-        for(let j = 0; j < logoGrid[1]; j++) {
-          stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
-            const material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111, shininess: 200 });
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.set(defaultPositions.logoGrid.x  + (j * 1500), defaultPositions.logoGrid.y + (i * 1500), defaultPositions.logoGrid.z);
-            mesh.scale.set(40, 40, 40);
-            mesh.castShadow = true;
-            mesh.receiveShadow = true;
-            mesh.name = 'logo';
-            glScene.add(mesh);
-          });
-        }
-      }
-      gridInit = true;
-    } else {
-      glScene.children.forEach(child => {
-        if(child.name === 'logo') {
-          stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
-            child.material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111, shininess: 200 });
-            child.geometry = geometry;
-          });
-        }
+    // LOGO GRID 
+    // if(!gridInit) {
+    //   for(let i = 0; i < logoGrid[0]; i++) {
+    //     for(let j = 0; j < logoGrid[1]; j++) {
+    //       stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
+    //         const material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111, shininess: 200 });
+    //         const mesh = new THREE.Mesh(geometry, material);
+    //         geometry.center();
+    //         mesh.position.set(defPos.logoGrid.x  + (j * 1500), defPos.logoGrid.y + (i * 1500), defPos.logoGrid.z);
+    //         mesh.scale.set(40, 40, 40);
+    //         mesh.castShadow = true;
+    //         mesh.receiveShadow = true;
+    //         mesh.name = 'logo';
+    //         glScene.add(mesh);
+    //       });
+    //     }
+    //   }
+    //   gridInit = true;
+    // } else {
+    //   glScene.children.forEach(child => {
+    //     if(child.name === 'logo') {
+    //       stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
+    //         child.material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111, shininess: 200 });
+    //         geometry.center();
+    //         child.geometry = geometry;
+    //       });
+    //     }
+    //   });
+    // }
+
+    // GITHUB
+    if(!gitHubObject) {
+      stlLoader.load('./models/common_models/github_icon.stl', function(geometry) {
+        const material = new THREE.MeshPhongMaterial({ color: '#000000', specular: 0x111111 });
+        const mesh = new THREE.Mesh(geometry, material);
+        geometry.center();
+        mesh.position.set(defPos.gitHubObject.x, defPos.gitHubObject.y, defPos.gitHubObject.z);
+        mesh.scale.set(15, 15, 15);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        mesh.userData = 'GITHUB';
+        gitHubObject = mesh;
+        glScene.add(mesh);
+      });
+    }
+
+    // SITE
+    if(!siteObject) {
+      stlLoader.load('./models/common_models/internet_icon.stl', function(geometry) {
+        const material = new THREE.MeshPhongMaterial({ color: '#000000', specular: 0x111111 });
+        const mesh = new THREE.Mesh(geometry, material);
+        geometry.center();
+        mesh.position.set(defPos.siteObject.x, defPos.siteObject.y, defPos.siteObject.z);
+        mesh.scale.set(15, 15, 15);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        mesh.userData = 'SITE';
+        siteObject = mesh;
+        glScene.add(mesh);
       });
     }
 
@@ -184,9 +241,9 @@ const Projects = () => {
       const geometry = new THREE.BoxGeometry(1920 * .6, 964 * .6, 964 * .6);
       const boxMesh = new THREE.Mesh(geometry, materials);
       boxMesh.rotation.copy(new THREE.Euler(- 270 * THREE.MathUtils.DEG2RAD, 0, 0));
-      boxMesh.position.x = defaultPositions.imageObject.x;
-      boxMesh.position.y = defaultPositions.imageObject.y;
-      boxMesh.position.z = defaultPositions.imageObject.z;
+      boxMesh.position.x = defPos.imageObject.x;
+      boxMesh.position.y = defPos.imageObject.y;
+      boxMesh.position.z = defPos.imageObject.z;
       boxMesh.userData = 'IMAGEBOX';
       const wireGeo = new THREE.EdgesGeometry(boxMesh.geometry);
       const wireMat = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 1 });
@@ -211,9 +268,9 @@ const Projects = () => {
     const mesh2 = new THREE.Mesh(
       new THREE.ExtrudeBufferGeometry(triangleShape, extrudeSettings),
       createColoredMaterial(firstScheme[5])); 
-    mesh2.position.x = defaultPositions.leftArrowObject.x;
-    mesh2.position.y = defaultPositions.leftArrowObject.y;
-    mesh2.position.z = defaultPositions.leftArrowObject.z;
+    mesh2.position.x = defPos.leftArrowObject.x;
+    mesh2.position.y = defPos.leftArrowObject.y;
+    mesh2.position.z = defPos.leftArrowObject.z;
     mesh2.userData = 'LAST';
     leftArrowObject = mesh2;
     glScene.add(mesh2);   
@@ -222,9 +279,9 @@ const Projects = () => {
       new THREE.ExtrudeBufferGeometry(triangleShape, extrudeSettings),
       createColoredMaterial(firstScheme[5]));  
     mesh3.rotation.copy(new THREE.Euler(0, 0, - 180 * THREE.MathUtils.DEG2RAD));
-    mesh3.position.x = defaultPositions.rightArrowObject.x;
-    mesh3.position.y = defaultPositions.rightArrowObject.y;
-    mesh3.position.z = defaultPositions.rightArrowObject.z;
+    mesh3.position.x = defPos.rightArrowObject.x;
+    mesh3.position.y = defPos.rightArrowObject.y;
+    mesh3.position.z = defPos.rightArrowObject.z;
     mesh3.userData = 'NEXT'; 
     rightArrowObject = mesh3; 
     glScene.add(mesh3);
@@ -235,8 +292,8 @@ const Projects = () => {
       const root = gltf.scene;
       root.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0));
       root.scale.set(700, 700, 512); 
-      root.position.x = defaultPositions.frameObject.x;
-      root.position.y = defaultPositions.frameObject.y;
+      root.position.x = defPos.frameObject.x;
+      root.position.y = defPos.frameObject.y;
       const mesh = new THREE.MeshPhongMaterial({ color: '#b5651d' });
       root.children[0].children[0].children[0].children[0].children[0].material = mesh;
       root.name = 'picture';
@@ -270,8 +327,28 @@ const Projects = () => {
         picRotate = true; 
         picRotX = picRotX * -1;
       }
+      if(selectedObject.object.userData === 'GITHUB') window.open(projects[count].github, '_blank');
+      if(selectedObject.object.userData === 'SITE') window.open(projects[count].site, '_blank');
     }
   }
+
+  // function onHover(event) {
+  //   const raycaster = new THREE.Raycaster();
+  //   const mouse = new THREE.Vector2();
+  //   mouse.x = (event.clientX / setWidth) * 2 - 1;
+  //   mouse.y = - (event.clientY / setHeight) * 2 + 1;
+  //   raycaster.setFromCamera(mouse, camera);
+  //   const intersects = raycaster.intersectObjects(glScene.children, true); //array
+  //   if(intersects.length > 0) {
+  //     selectedObject = intersects[0];
+  //     if(selectedObject.object.userData === 'GITHUB') gitHubObject.material.color.set('#FFFFFF');
+  //     if(selectedObject.object.userData === 'SITE') siteObject.material.color.set('#FFFFFF');
+  //   }
+  //   else {
+  //     gitHubObject.material.color.set('black');
+  //     siteObject.material.color.set('#000000');
+  //   }
+  // }
 
   function newProject() {
     fetchScheme(projects[count].logoColor.slice(1), 'analogic')
@@ -279,7 +356,7 @@ const Projects = () => {
         schemeCopy = scheme;
         create3dPage(
           1200, 700,
-          defaultPositions.cssObject,
+          defPos.cssObject,
           cssObject.rotation,
           count,
           schemeCopy
@@ -321,23 +398,25 @@ const Projects = () => {
         if(child.position.x < 5000 && child.position.x > -5000) child.visible = true;
         if(child.position.x < -7000) { 
           child.position.x = child.position.x + 14000;
-          if(changeProject === false) {
+          if(changeProject === false && child.userData === 'LAST') {
             newProject();
             changeProject = true;
           }
         }
       });
-      if(leftArrowObject.position.x < defaultPositions.leftArrowObject.x & changeProject === true) {
+      if(leftArrowObject.position.x < defPos.leftArrowObject.x & changeProject === true) {
         nextRotate = false;
         lastRotate = false;
         changeProject = false;
-        cssObject.position.x = defaultPositions.cssObject.x;
-        planeObject.position.x = defaultPositions.planeObject.x;
-        frameObject.position.x = defaultPositions.frameObject.x;
-        nameObject.position.x = defaultPositions.nameObject.x;
-        imageObject.position.x = defaultPositions.imageObject.x;
-        leftArrowObject.position.x = defaultPositions.leftArrowObject.x;
-        rightArrowObject.position.x = defaultPositions.rightArrowObject.x;
+        cssObject.position.x = defPos.cssObject.x;
+        planeObject.position.x = defPos.planeObject.x;
+        frameObject.position.x = defPos.frameObject.x;
+        nameObject.position.x = defPos.nameObject.x;
+        imageObject.position.x = defPos.imageObject.x;
+        leftArrowObject.position.x = defPos.leftArrowObject.x;
+        rightArrowObject.position.x = defPos.rightArrowObject.x;
+        gitHubObject.position.x = defPos.gitHubObject.x;
+        siteObject.position.x = defPos.siteObject.x;
       }
     }
 
@@ -351,23 +430,25 @@ const Projects = () => {
         if(child.position.x > -5000 && child.position.x < 5000) child.visible = true;
         if(child.position.x > 7000) { 
           child.position.x = child.position.x - 14000;
-          if(changeProject === false) {
+          if(changeProject === false && child.userData === 'NEXT') {
             newProject();
             changeProject = true;
           }
         }
       });
-      if(rightArrowObject.position.x > defaultPositions.rightArrowObject.x & changeProject === true) {
+      if(rightArrowObject.position.x > defPos.rightArrowObject.x & changeProject === true) {
         nextRotate = false;
         lastRotate = false;
         changeProject = false;
-        cssObject.position.x = defaultPositions.cssObject.x;
-        planeObject.position.x = defaultPositions.planeObject.x;
-        frameObject.position.x = defaultPositions.frameObject.x;
-        nameObject.position.x = defaultPositions.nameObject.x;
-        imageObject.position.x = defaultPositions.imageObject.x;
-        leftArrowObject.position.x = defaultPositions.leftArrowObject.x;
-        rightArrowObject.position.x = defaultPositions.rightArrowObject.x;
+        cssObject.position.x = defPos.cssObject.x;
+        planeObject.position.x = defPos.planeObject.x;
+        frameObject.position.x = defPos.frameObject.x;
+        nameObject.position.x = defPos.nameObject.x;
+        imageObject.position.x = defPos.imageObject.x;
+        leftArrowObject.position.x = defPos.leftArrowObject.x;
+        rightArrowObject.position.x = defPos.rightArrowObject.x;
+        gitHubObject.position.x = defPos.gitHubObject.x;
+        siteObject.position.x = defPos.siteObject.x;
       }
     }
 

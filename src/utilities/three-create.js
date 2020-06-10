@@ -55,21 +55,6 @@ export function createProjectCssObject(w, h, position, rotation, number, project
   desc.textContent = projects[number].description;
   element.appendChild(desc);
 
-  // const github = document.createElement('a');
-  // github.title = 'Github link';
-  // github.textContent = 'Github';
-  // github.href = projects[number].github;
-  // element.appendChild(github);
-
-  // const lBreak = document.createElement('br');
-  // element.appendChild(lBreak);
-
-  // const site = document.createElement('a');
-  // site.title = 'site link';
-  // site.textContent = 'Site';
-  // site.href = projects[number].site;
-  // element.appendChild(site);
-
   const cssObject = new CSS3DObject(element);
 
   cssObject.position.x = position.x;
