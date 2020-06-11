@@ -17,6 +17,7 @@ const Projects = () => {
   let nextRotate = false;
   let lastRotate = false;
   let changeProject = false;
+  let cameraDepth = 2750;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   glScene = new THREE.Scene();
@@ -43,12 +44,22 @@ const Projects = () => {
 
   useEffect(() => {
     if(firstScheme.length === 0) return;
+
+    if(navigator.userAgent.match(/Android/i) 
+    || navigator.userAgent.match(/webOS/i)
+    || navigator.userAgent.match(/webOS/i)
+    || navigator.userAgent.match(/iPhone/i)
+    || navigator.userAgent.match(/iPad/i)
+    || navigator.userAgent.match(/iPod/i)
+    || navigator.userAgent.match(/BlackBerry/i)
+    || navigator.userAgent.match(/Windows Phone/i)) cameraDepth = 4000;
+ 
     camera = new THREE.PerspectiveCamera(
       45,
       setWidth / setHeight,
       1,
       15000);
-    camera.position.set(0, 0, 3250);
+    camera.position.set(0, 0, cameraDepth);
   
     glRenderer = createGlRenderer(setWidth, setHeight, styles.three_box);
     cssRenderer = createCssRenderer(setWidth, setHeight, styles.three_box); 
