@@ -69,7 +69,7 @@ export const projects = [
     color: 'chocolate',
     name: 'UniMic',
     stack: 'C#, Max/MSP, Unity',
-    description: 'A software prototype for integrating object-based audio in Unity. The primary goal of this research was to introduce an alternative method for reproducing spatial audio using loudspeakers. Through the use of virtual microphone arrays, I was able to develop a suitable object-based system for scalable loudspeaker reproduction and by using distance-based amplitude panning, I was able to utilize a variety of speaker configurations and forego any requirements for listener position.',
+    description: 'A software prototype for integrating object-based audio in Unity. The goal of this research was to introduce an alternative method for reproducing spatial audio using loudspeakers. Through the use of virtual microphone arrays, I was able to develop a suitable system for scalable loudspeaker reproduction and by using distance-based amplitude panning, I was able to utilize a variety of speaker configurations and forego any requirements for listener position.',
     github: 'none',
     site: 'none',
     logoModel: 'unimic_logo.stl',

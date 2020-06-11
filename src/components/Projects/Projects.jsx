@@ -27,12 +27,12 @@ const Projects = () => {
     cssObject: new THREE.Vector3(0, 100, 1),
     planeObject: new THREE.Vector3(0, 100, 0),
     frameObject: new THREE.Vector3(0, 100, 0),
-    nameObject: new THREE.Vector3(0, 700, 0),
+    nameObject: new THREE.Vector3(0, 800, 0),
     logoObject: new THREE.Vector3(0, 900, 0),
-    leftArrowObject: new THREE.Vector3(-100, -550, 0), 
-    rightArrowObject: new THREE.Vector3(100, -550, 0),
-    gitHubObject: new THREE.Vector3(-450, -550, 0),
-    siteObject: new THREE.Vector3(450, -550, 0)
+    leftArrowObject: new THREE.Vector3(-100, -650, 0), 
+    rightArrowObject: new THREE.Vector3(100, -650, 0),
+    gitHubObject: new THREE.Vector3(-450, -650, 0),
+    siteObject: new THREE.Vector3(450, -650, 0)
   };
 
   useEffect(() => {
@@ -48,7 +48,7 @@ const Projects = () => {
       setWidth / setHeight,
       1,
       15000);
-    camera.position.set(0, 0, 3000);
+    camera.position.set(0, 0, 3250);
   
     glRenderer = createGlRenderer(setWidth, setHeight, styles.three_box);
     cssRenderer = createCssRenderer(setWidth, setHeight, styles.three_box); 
@@ -66,7 +66,7 @@ const Projects = () => {
     glScene.add(directionalLight);
   
     create3dPage(
-      1200, 700,
+      1200, 800,
       defPos.cssObject,
       new THREE.Vector3(0, 0, 0),
       0,
@@ -85,7 +85,7 @@ const Projects = () => {
     controls.enableKeys = false;
     // controls.enableZoom = false;
 
-    const floor_url = './images/common_images/floor_tile.jpg';
+    const floor_url = './images/common_images/floor.png';
     const wall_url = './images/common_images/new_wall.png';
     const ceiling_url = './images/common_images/ceiling.png';
     const textureLoader = new THREE.TextureLoader();
@@ -130,7 +130,7 @@ const Projects = () => {
       fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
         nameObject.geometry = new THREE.TextGeometry(`${projects[number].name}`, {
           font: font,
-          size: 1,
+          size: 1.5,
           height: 0.5,
           curveSegments: 4,
           bevelEnabled: true,
@@ -145,7 +145,7 @@ const Projects = () => {
       fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
         const geometry = new THREE.TextGeometry(`${projects[number].name}`, {
           font: font,
-          size: 1,
+          size: 1.5,
           height: 0.5,
           curveSegments: 4,
           bevelEnabled: true,
@@ -195,7 +195,7 @@ const Projects = () => {
     if(!gitHubObject) {
       stlLoader.load('./models/common_models/github_icon.stl', function(geometry) {
         // const material = new THREE.MeshPhongMaterial({ color: '#DEDEDE', specular: 0x111111 });
-        const material = new THREE.MeshToonMaterial({ color: '#DEDEDE', flatShading: true });
+        const material = new THREE.MeshToonMaterial({ color: '#000000', flatShading: true });
         const mesh = new THREE.Mesh(geometry, material);
         geometry.center();
         mesh.position.set(defPos.gitHubObject.x, defPos.gitHubObject.y, defPos.gitHubObject.z);
@@ -212,7 +212,7 @@ const Projects = () => {
     if(!siteObject) {
       stlLoader.load('./models/common_models/internet_icon.stl', function(geometry) {
         // const material = new THREE.MeshPhongMaterial({ color: '#DEDEDE', specular: 0x111111 });
-        const material = new THREE.MeshToonMaterial({ color: '#DEDEDE', flatShading: true });
+        const material = new THREE.MeshToonMaterial({ color: '#000000', flatShading: true });
         const mesh = new THREE.Mesh(geometry, material);
         geometry.center();
         mesh.position.set(defPos.siteObject.x, defPos.siteObject.y, defPos.siteObject.z);
@@ -315,7 +315,7 @@ const Projects = () => {
       .then(scheme => {
         schemeCopy = scheme;
         create3dPage(
-          1200, 700,
+          1200, 800,
           defPos.cssObject,
           cssObject.rotation,
           count,
@@ -329,6 +329,8 @@ const Projects = () => {
   // UPDATE
   function update() { 
     if(logoObject) logoObject.rotation.y += .03;
+    if(gitHubObject) gitHubObject.rotation.y += .03;
+    if(siteObject) siteObject.rotation.y += .03;
 
     if(nextRotate) {
       cssObject.position.x -= 100;
