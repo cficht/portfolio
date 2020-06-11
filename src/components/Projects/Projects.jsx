@@ -192,31 +192,31 @@ const Projects = () => {
     
     const fontLoader = new THREE.FontLoader();
     if(nameObject) {
-      fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
+      fontLoader.load('./fonts/helvetiker_regular.typeface.json', function(font) {
         nameObject.geometry = new THREE.TextGeometry(`${projects[number].name}`, {
           font: font,
           size: 1.5,
-          height: 0.5,
-          curveSegments: 4,
+          height: 0.3,
+          curveSegments: 12,
           bevelEnabled: true,
           bevelThickness: 0.02,
-          bevelSize: 0.05,
-          bevelSegments: 3
+          bevelSize: 0.04,
+          bevelSegments: 1
         });
         nameObject.geometry.center();
       });
       nameObject.material.color.set(colors[2]);
     } else {
-      fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
+      fontLoader.load('./fonts/helvetiker_regular.typeface.json', function(font) {
         const geometry = new THREE.TextGeometry(`${projects[number].name}`, {
           font: font,
           size: 1.5,
-          height: 0.5,
-          curveSegments: 4,
+          height: 0.3,
+          curveSegments: 12,
           bevelEnabled: true,
           bevelThickness: 0.02,
-          bevelSize: 0.05,
-          bevelSegments: 3
+          bevelSize: 0.04,
+          bevelSegments: 1
         });
         geometry.center();
         const material = new THREE.MeshToonMaterial({
