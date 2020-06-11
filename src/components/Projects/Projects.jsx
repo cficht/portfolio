@@ -105,6 +105,16 @@ const Projects = () => {
     boxMesh.name = 'background';
     glScene.add(boxMesh);
 
+    const cloud1Texture = new THREE.TextureLoader().load('./images/common_images/cloud1.png');
+    const cloud1Material = new THREE.MeshPhongMaterial({ map: cloud1Texture, alphaTest: 0.9, side: THREE.DoubleSide });
+    var cloud1Geometry = new THREE.PlaneBufferGeometry(20, 20, 20);
+    var cloud1 = new THREE.Mesh(cloud1Geometry, cloud1Material);
+    cloud1.position.x = 700;
+    cloud1.position.y = 900;
+    cloud1.position.z = -900;
+    cloud1.scale.set(326 * .1, 152 * .1, 1);
+    glScene.add(cloud1);
+
     cssRenderer.domElement.addEventListener('click', onClick, true);
 
   }, [firstScheme]);
