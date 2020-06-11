@@ -34,7 +34,7 @@ export function createPlane(w, h, position, rotation) {
   mesh.userData = 'SLIDE';
   mesh.position.x = position.x;
   mesh.position.y = position.y;
-  mesh.position.z = position.z;  
+  mesh.position.z = 0;  
   mesh.rotation.x = rotation.x;
   mesh.rotation.y = rotation.y;
   mesh.rotation.z = rotation.z;  
@@ -43,7 +43,7 @@ export function createPlane(w, h, position, rotation) {
 
 export function createProjectCssObject(w, h, position, rotation, number, projects, style, slideCount) {  
   const element = document.createElement('div');
-  element.style.width = (w - 100) + 'px';
+  element.style.width = w + 'px';
   element.style.height = h + 'px';
   element.style.opacity = 1;
   element.className = style;

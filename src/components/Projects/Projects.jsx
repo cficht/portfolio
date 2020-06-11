@@ -10,10 +10,12 @@ import styles from './Projects.css';
 
 const Projects = () => {
   const [firstScheme, setFirstScheme] = useState([]);
-  let camera, glScene, cssScene, glRenderer, cssRenderer, controls, cssObject, selectedObject, planeObject, frameObject, nameObject, logoObject, leftArrowObject, rightArrowObject, gitHubObject, siteObject, schemeCopy;
+  let camera, glScene, cssScene, glRenderer, cssRenderer, controls, cssObject, selectedObject, planeObject, frameObject, nameObject, leftArrowObject, rightArrowObject, gitHubObject, siteObject, schemeCopy;
   let count = 0;
   let slideCount = 0;
   const slideMax = 2;
+  let nextSlide = false;
+  let changeSlide = false;
   let nextRotate = false;
   let lastRotate = false;
   let changeProject = false;
@@ -98,8 +100,6 @@ const Projects = () => {
 
     const floor_url = './images/common_images/floor.png';
     const ceiling_url = './images/common_images/ceiling.png';
-    // const wall_url = './images/common_images/new_wall.png';
-    // const skywall_url = './images/common_images/wall_no_glass_clouds.png';
     const cloudwall_url = './images/common_images/wall_no_clouds.png';
     const textureLoader = new THREE.TextureLoader();
     const materials = [
@@ -118,11 +118,10 @@ const Projects = () => {
     boxMesh.name = 'background';
     glScene.add(boxMesh);
 
-
     const clouds = [
       {
         url: './images/common_images/cloud1.png',
-        position: new THREE.Vector3(3000, 750, -3000),
+        position: new THREE.Vector3(3000, 750, -2500),
         scale: new THREE.Vector3(326, 152, 1)
       },
       {
@@ -132,7 +131,7 @@ const Projects = () => {
       },
       {
         url: './images/common_images/cloud3.png',
-        position: new THREE.Vector3(-3750, 1250, -3250),
+        position: new THREE.Vector3(-3750, 1250, -3000),
         scale: new THREE.Vector3(403, 166, 1)
       },
       {
@@ -157,10 +156,9 @@ const Projects = () => {
       }
     ];
 
-
     clouds.forEach(cloud => {
       const cloudTexture = new THREE.TextureLoader().load(cloud.url);
-      const cloudMaterial = new THREE.MeshPhongMaterial({ map: cloudTexture, alphaTest: 0.9, side: THREE.DoubleSide });
+      const cloudMaterial = new THREE.MeshToonMaterial({ map: cloudTexture, alphaTest: 0.4, transparent: true, side: THREE.DoubleSide, });
       const cloudGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
       const cloudMesh = new THREE.Mesh(cloudGeometry, cloudMaterial);
       cloudMesh.position.set(cloud.position.x, cloud.position.y, cloud.position.z);
@@ -305,14 +303,13 @@ const Projects = () => {
       root.scale.set(700, 700, 512); 
       root.position.x = defPos.frameObject.x;
       root.position.y = defPos.frameObject.y;
-      const mesh = new THREE.MeshToonMaterial({ color: '#b5651d', flatShading: true, });
+      const mesh = new THREE.MeshToonMaterial({ color: '#b5651d', flatShading: true });
       root.children[0].children[0].children[0].children[0].children[0].material = mesh;
       root.name = 'picture';
       frameObject = root;
       glScene.add(root);
     }); 
   }
-
 
   function onClick(event) {
     if(nextRotate || lastRotate) return;
@@ -336,14 +333,7 @@ const Projects = () => {
       }
 
       if(selectedObject.object.userData === 'SLIDE') {
-        slideCount < slideMax ? slideCount++ : slideCount = 0;
-        create3dPage(
-          1200, 700,
-          defPos.cssObject,
-          cssObject.rotation,
-          count,
-          schemeCopy ? schemeCopy : firstScheme
-        );
+        nextSlide = true;
       }
       if(selectedObject.object.userData === 'GITHUB') window.open(projects[count].github, '_blank');
       if(selectedObject.object.userData === 'SITE') window.open(projects[count].site, '_blank');
@@ -367,11 +357,38 @@ const Projects = () => {
       });
   }
 
+  function newSlide() {
+    slideCount < slideMax ? slideCount++ : slideCount = 0;
+    create3dPage(
+      1200, 700,
+      defPos.cssObject,
+      cssObject.rotation,
+      count,
+      schemeCopy ? schemeCopy : firstScheme
+    );
+  }
+
+
   // UPDATE
   function update() { 
-    // if(logoObject) logoObject.rotation.y += .03;
-    // if(gitHubObject) gitHubObject.rotation.y += .01;
-    // if(siteObject) siteObject.rotation.y += .01;
+    if(nextSlide) {
+      if(cssObject.quaternion._y >= 0) {
+        if(cssObject.quaternion._y >= .99 && changeSlide === false) {
+          newSlide();
+          changeSlide = true;
+        }
+        frameObject.rotation.y += 0.06;
+        cssObject.rotation.y += 0.06;
+        planeObject.rotation.y += 0.06;
+        
+      } else {
+        nextSlide = false;
+        changeSlide = false;
+        frameObject.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0));
+        planeObject.rotation.set(0, 0, 0);
+        cssObject.rotation.set(0, 0, 0);
+      }
+    }
 
     glScene.children.forEach(child => {    
       if(child.userData === 'CLOUD') child.position.x += 5;
