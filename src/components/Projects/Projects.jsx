@@ -86,16 +86,18 @@ const Projects = () => {
     // controls.enableZoom = false;
 
     const floor_url = './images/common_images/floor.png';
-    const wall_url = './images/common_images/new_wall.png';
     const ceiling_url = './images/common_images/ceiling.png';
+    // const wall_url = './images/common_images/new_wall.png';
+    // const skywall_url = './images/common_images/wall_no_glass_clouds.png';
+    const cloudwall_url = './images/common_images/wall_no_clouds.png';
     const textureLoader = new THREE.TextureLoader();
     const materials = [
-      new THREE.MeshBasicMaterial({ map: textureLoader.load(wall_url), side: THREE.DoubleSide }),
-      new THREE.MeshBasicMaterial({ map: textureLoader.load(wall_url), side: THREE.DoubleSide  }),
+      new THREE.MeshBasicMaterial({ map: textureLoader.load(cloudwall_url), side: THREE.DoubleSide }),
+      new THREE.MeshBasicMaterial({ map: textureLoader.load(cloudwall_url), side: THREE.DoubleSide  }),
       new THREE.MeshBasicMaterial({ map: textureLoader.load(ceiling_url), side: THREE.DoubleSide  }),
       new THREE.MeshBasicMaterial({ map: textureLoader.load(floor_url), side: THREE.DoubleSide  }),
-      new THREE.MeshBasicMaterial({ map: textureLoader.load(wall_url), side: THREE.DoubleSide  }),
-      new THREE.MeshBasicMaterial({ map: textureLoader.load(wall_url), side: THREE.DoubleSide  })
+      new THREE.MeshBasicMaterial({ map: textureLoader.load(cloudwall_url), side: THREE.DoubleSide  }),
+      new THREE.MeshBasicMaterial({ map: textureLoader.load(cloudwall_url), side: THREE.DoubleSide  })
     ];
     const geometry = new THREE.BoxGeometry(10000, 5000, 10000);
     const boxMesh = new THREE.Mesh(geometry, materials);
@@ -105,15 +107,57 @@ const Projects = () => {
     boxMesh.name = 'background';
     glScene.add(boxMesh);
 
-    const cloud1Texture = new THREE.TextureLoader().load('./images/common_images/cloud1.png');
-    const cloud1Material = new THREE.MeshPhongMaterial({ map: cloud1Texture, alphaTest: 0.9, side: THREE.DoubleSide });
-    var cloud1Geometry = new THREE.PlaneBufferGeometry(20, 20, 20);
-    var cloud1 = new THREE.Mesh(cloud1Geometry, cloud1Material);
-    cloud1.position.x = 700;
-    cloud1.position.y = 900;
-    cloud1.position.z = -900;
-    cloud1.scale.set(326 * .1, 152 * .1, 1);
-    glScene.add(cloud1);
+
+    const clouds = [
+      {
+        url: './images/common_images/cloud1.png',
+        position: new THREE.Vector3(3000, 750, -3000),
+        scale: new THREE.Vector3(326, 152, 1)
+      },
+      {
+        url: './images/common_images/cloud2.png',
+        position: new THREE.Vector3(250, 250, -4250),
+        scale: new THREE.Vector3(168, 80, 1)
+      },
+      {
+        url: './images/common_images/cloud3.png',
+        position: new THREE.Vector3(-3750, 1250, -3250),
+        scale: new THREE.Vector3(403, 166, 1)
+      },
+      {
+        url: './images/common_images/cloud4.png',
+        position: new THREE.Vector3(5000, -200, -3250),
+        scale: new THREE.Vector3(163, 47, 1)
+      },
+      {
+        url: './images/common_images/cloud5.png',
+        position: new THREE.Vector3(1500, -400, -4750),
+        scale: new THREE.Vector3(47, 21, 1)
+      },
+      {
+        url: './images/common_images/cloud6.png',
+        position: new THREE.Vector3(-2000, -200, -4000),
+        scale: new THREE.Vector3(121, 52, 1)
+      },
+      {
+        url: './images/common_images/cloud7.png',
+        position: new THREE.Vector3(-5000, 100, -4750),
+        scale: new THREE.Vector3(55, 22, 1)
+      }
+    ];
+
+
+    clouds.forEach(cloud => {
+      const cloudTexture = new THREE.TextureLoader().load(cloud.url);
+      const cloudMaterial = new THREE.MeshPhongMaterial({ map: cloudTexture, alphaTest: 0.9, side: THREE.DoubleSide });
+      const cloudGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
+      const cloudMesh = new THREE.Mesh(cloudGeometry, cloudMaterial);
+      cloudMesh.position.set(cloud.position.x, cloud.position.y, cloud.position.z);
+      cloudMesh.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0));
+      cloudMesh.scale.set(cloud.scale.x * .25, cloud.scale.y * .25, 1);
+      cloudMesh.userData = 'CLOUD';
+      glScene.add(cloudMesh);
+    });
 
     cssRenderer.domElement.addEventListener('click', onClick, true);
 
@@ -180,31 +224,9 @@ const Projects = () => {
 
     const stlLoader = new STLLoader();
 
-    //LOGO
-    // if(logoObject) { 
-    //   stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
-    //     logoObject.material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111 });
-    //     logoObject.geometry = geometry;
-    //   });
-    // } else {
-    //   stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
-    //     const material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111 });
-    //     const mesh = new THREE.Mesh(geometry, material);
-    //     mesh.geometry.center();
-    //     mesh.position.set(defPos.logoObject.x, defPos.logoObject.y, defPos.logoObject.z);
-    //     mesh.scale.set(20, 20, 20);
-    //     mesh.castShadow = true;
-    //     mesh.receiveShadow = true;
-    //     mesh.name = 'logo';
-    //     logoObject = mesh;
-    //     glScene.add(mesh);
-    //   });
-    // }
-
     // GITHUB
     if(!gitHubObject) {
       stlLoader.load('./models/common_models/github_icon.stl', function(geometry) {
-        // const material = new THREE.MeshPhongMaterial({ color: '#DEDEDE', specular: 0x111111 });
         const material = new THREE.MeshToonMaterial({ color: '#000000', flatShading: true });
         const mesh = new THREE.Mesh(geometry, material);
         geometry.center();
@@ -221,7 +243,6 @@ const Projects = () => {
     // SITE
     if(!siteObject) {
       stlLoader.load('./models/common_models/internet_icon.stl', function(geometry) {
-        // const material = new THREE.MeshPhongMaterial({ color: '#DEDEDE', specular: 0x111111 });
         const material = new THREE.MeshToonMaterial({ color: '#000000', flatShading: true });
         const mesh = new THREE.Mesh(geometry, material);
         geometry.center();
@@ -273,7 +294,6 @@ const Projects = () => {
       root.scale.set(700, 700, 512); 
       root.position.x = defPos.frameObject.x;
       root.position.y = defPos.frameObject.y;
-      // const mesh = new THREE.MeshPhongMaterial({ color: '#b5651d' });
       const mesh = new THREE.MeshToonMaterial({ color: '#b5651d', flatShading: true, });
       root.children[0].children[0].children[0].children[0].children[0].material = mesh;
       root.name = 'picture';
@@ -338,15 +358,20 @@ const Projects = () => {
 
   // UPDATE
   function update() { 
-    if(logoObject) logoObject.rotation.y += .03;
-    if(gitHubObject) gitHubObject.rotation.y += .03;
-    if(siteObject) siteObject.rotation.y += .03;
+    // if(logoObject) logoObject.rotation.y += .03;
+    // if(gitHubObject) gitHubObject.rotation.y += .01;
+    // if(siteObject) siteObject.rotation.y += .01;
+
+    glScene.children.forEach(child => {    
+      if(child.userData === 'CLOUD') child.position.x += 5;
+      if(child.userData === 'CLOUD' && child.position.x > 6000) child.position.x = -6000;
+    });
 
     if(nextRotate) {
       cssObject.position.x -= 100;
       if(cssObject.position.x < -7000) cssObject.position.x = cssObject.position.x + 14000;
       glScene.children.forEach(child => {
-        if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'background') return;
+        if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'background' || child.userData === 'CLOUD') return;
         child.position.x -= 100;
         if(child.position.x < -5000) child.visible = false;
         if(child.position.x < 5000 && child.position.x > -5000) child.visible = true;
@@ -378,7 +403,7 @@ const Projects = () => {
       cssObject.position.x += 100;
       if(cssObject.position.x > 7000) cssObject.position.x = cssObject.position.x - 14000;
       glScene.children.forEach(child => {
-        if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'background') return;
+        if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'background' || child.userData === 'CLOUD') return;
         child.position.x += 100;
         if(child.position.x > 5000) child.visible = false;
         if(child.position.x > -5000 && child.position.x < 5000) child.visible = true;

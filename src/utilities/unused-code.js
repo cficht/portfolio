@@ -155,6 +155,28 @@
 //   }
 // }
 
+// SINGLE LOGO
+//LOGO
+// if(logoObject) { 
+//   stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
+//     logoObject.material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111 });
+//     logoObject.geometry = geometry;
+//   });
+// } else {
+//   stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
+//     const material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111 });
+//     const mesh = new THREE.Mesh(geometry, material);
+//     mesh.geometry.center();
+//     mesh.position.set(defPos.logoObject.x, defPos.logoObject.y, defPos.logoObject.z);
+//     mesh.scale.set(20, 20, 20);
+//     mesh.castShadow = true;
+//     mesh.receiveShadow = true;
+//     mesh.name = 'logo';
+//     logoObject = mesh;
+//     glScene.add(mesh);
+//   });
+// }
+
 
 // LOGO GRID
 // LOGO GRID 
@@ -202,3 +224,17 @@
 //     if(child.position.y > 7500) child.position.y = child.position.y - 15000;
 //   }
 // });
+
+// GRASS
+// const grassHillTexture = new THREE.TextureLoader().load('./images/common_images/grass_and_hills.png');
+// const grassHillMaterial = new THREE.MeshPhongMaterial({ map: grassHillTexture, alphaTest: 0.5, side: THREE.DoubleSide });
+// var grassHillGeometry = new THREE.PlaneBufferGeometry(10, 10, 10);
+// var grassHill = new THREE.Mesh(grassHillGeometry, grassHillMaterial);
+// grassHill.position.x = 0;
+// grassHill.position.y = -2000;
+// grassHill.position.z = -3500;
+// grassHill.scale.set(1662 * .6, 140 * .6, 1);
+// glScene.add(grassHill);
+
+// GIT AND SITE MATERIAL
+// const material = new THREE.MeshPhongMaterial({ color: '#DEDEDE', specular: 0x111111 });
