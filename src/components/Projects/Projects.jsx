@@ -368,6 +368,10 @@ const Projects = () => {
     );
   }
 
+  function resetCamera() {
+    controls.reset();
+  }
+
 
   // UPDATE
   function update() { 
@@ -465,7 +469,17 @@ const Projects = () => {
   }
 
   return (
-    <div ref={ref => (ref)} />
+    <>
+      <div className={styles.hud_box}> 
+        <div className={styles.hud_contents}>
+          <a href="/">Home</a>
+          <h3>About</h3>
+          <h3>Contact</h3>
+          <button onClick={() => resetCamera()}>Center</button>
+        </div>       
+      </div>
+      <div ref={ref => (ref)} />
+    </>
   );
 };
 
