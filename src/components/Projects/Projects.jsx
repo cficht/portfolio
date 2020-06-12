@@ -169,7 +169,7 @@ const Projects = () => {
     });
 
     cssRenderer.domElement.addEventListener('click', onClick, true);
-
+    window.addEventListener('resize', () => location.reload());
   }, [firstScheme]);
 
   function create3dPage(w, h, position, rotation, number, colors) {  
@@ -368,15 +368,9 @@ const Projects = () => {
     );
   }
 
-  function resetCamera() {
-    // event.preventDefault();
-    controls.reset();
-  }
-
-
   // UPDATE
   function update() { 
-    console.log(window.innerWidth)
+    // console.log(window.innerWidth)
     if(nextSlide) {
       if(cssObject.quaternion._y >= 0) {
         if(cssObject.quaternion._y >= .99 && changeSlide === false) {
@@ -477,11 +471,7 @@ const Projects = () => {
           <a href="/">Home</a>
           <a href="/">About</a>
           <a href="/">Contact</a>
-          <input type="image" src="./images/common_images/camera.png" alt="center camera" onClick={() => resetCamera()}/>
-          {/* <button onClick={() => resetCamera()}>Center</button> */}
-          {/* <button type="submit" onSubmit={() => resetCamera()}>
-            <img src="./images/common_images/camera.png" width="90" height="50" alt="submit" />
-          </button> */}
+          <input type="image" src="./images/common_images/camera.png" alt="center camera" onClick={() => controls.reset()}/>
         </div>       
       </div>
       <div ref={ref => (ref)} />
