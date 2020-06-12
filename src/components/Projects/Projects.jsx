@@ -369,6 +369,7 @@ const Projects = () => {
   }
 
   function resetCamera() {
+    // event.preventDefault();
     controls.reset();
   }
 
@@ -473,9 +474,13 @@ const Projects = () => {
       <div className={styles.hud_box}> 
         <div className={styles.hud_contents}>
           <a href="/">Home</a>
-          <h3>About</h3>
-          <h3>Contact</h3>
-          <button onClick={() => resetCamera()}>Center</button>
+          <a href="/">About</a>
+          <a href="/">Contact</a>
+          <input type="image" src="./images/common_images/camera.png" alt="center camera" onClick={() => resetCamera()}/>
+          {/* <button onClick={() => resetCamera()}>Center</button> */}
+          {/* <button type="submit" onSubmit={() => resetCamera()}>
+            <img src="./images/common_images/camera.png" width="90" height="50" alt="submit" />
+          </button> */}
         </div>       
       </div>
       <div ref={ref => (ref)} />
