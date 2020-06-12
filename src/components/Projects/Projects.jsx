@@ -376,6 +376,7 @@ const Projects = () => {
 
   // UPDATE
   function update() { 
+    console.log(window.innerWidth)
     if(nextSlide) {
       if(cssObject.quaternion._y >= 0) {
         if(cssObject.quaternion._y >= .99 && changeSlide === false) {
