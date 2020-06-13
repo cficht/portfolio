@@ -67,12 +67,3 @@ export function createProjectCssObject(width, height, position, rotation, number
 
   return cssObject;
 }
-
-export function createColoredMaterial(fromScheme) { 
-  const material = new THREE.MeshBasicMaterial({
-    color: fromScheme,
-    shading: THREE.FlatShading,
-    side: THREE.DoubleSide
-  }); 
-  return material;
-}
