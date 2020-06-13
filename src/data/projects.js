@@ -34,7 +34,7 @@ export const projects = [
     site: 'https://fresh-track.netlify.com',
     logoModel: 'freshtrack_logo.stl',
     logoColor: '#205757',
-    secondaryColor: '#F0F0F0',
+    secondaryColor: '#31215F',
     image1: 'images/project_images/freshtrack_1.png',
     image2: 'images/project_images/freshtrack_2.png'
   },
@@ -47,7 +47,7 @@ export const projects = [
     site: 'https://the-mosaic.herokuapp.com',
     logoModel: 'mosaic_logo.stl',
     logoColor: '#C144F3',
-    secondaryColor: '#D7BAE4',
+    secondaryColor: '#F44C52',
     image1: 'images/project_images/mosaic_1.png',
     image2: 'images/project_images/mosaic_2.png'
   },

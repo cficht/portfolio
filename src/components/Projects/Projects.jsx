@@ -1,31 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer, createPlane, createProjectCssObject } from '../../utilities/initialize-page';
-import { createColoredMaterial } from '../../utilities/create-other';
-import { createBackground, createClouds, create3DText } from '../../utilities/create-objects';
-import { GLTFLoader } from '../../loaders/GLTFLoader';
-import { STLLoader } from '../../loaders/STLLoader.js';
+import { createBackground, createClouds, create3DText, createIcon, createArrow, createPictureFrame } from '../../utilities/create-objects';
 import { projects } from '../../data/projects';
-import { clouds, field } from '../../data/objects';
-import { fetchScheme } from '../../services/color-api';
+import { clouds, field, github, site } from '../../data/objects';
 import styles from './Projects.css';
 
 const Projects = () => {
-  const [firstScheme, setFirstScheme] = useState([]);
-  let camera, glRenderer, cssRenderer, controls, backgroundObject, cloudObjects, cssObject, selectedObject, planeObject, frameObject, nameObject, leftArrowObject, rightArrowObject, gitHubObject, siteObject, schemeCopy;
-  let nextSlide = false, changeSlide = false, nextRotate = false, lastRotate = false, changeProject = false;
-  let count = 0;
+  let camera, controls, glRenderer, cssRenderer, backgroundObject, cloudObjects, cssObject, planeObject, frameObject, nameObject, leftArrowObject, rightArrowObject, gitHubObject, siteObject, selectedObject;
+  let nextSlide = false, changeSlide = false, nextProject = false, lastProject = false, changeProject = false;
+  let cameraDepth = 2750;
+  let projectCount = 0;
   let slideCount = 0;
   const slideMax = 2;
-  let cameraDepth = 2750;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   const glScene = new THREE.Scene();
   const cssScene = new THREE.Scene();
   const OrbitControls = ThreeOrbitControls(THREE);
 
-  const defPos = {
+  const initialPos = {
     cssObject: new THREE.Vector3(0, 100, 0),
     planeObject: new THREE.Vector3(0, 100, 0),
     frameObject: new THREE.Vector3(0, 100, 0),
@@ -37,16 +32,10 @@ const Projects = () => {
     siteObject: new THREE.Vector3(450, -650, 0)
   };
 
+  // INITIALIZE PAGE
   useEffect(() => {
-    //analogic, complement, analogic-complement
-    fetchScheme(projects[count].logoColor.slice(1), 'analogic')
-      .then(scheme => setFirstScheme(scheme));
-  }, []);
 
-  useEffect(() => {
-    if(firstScheme.length === 0) return;
-
-    // INITIALIZE CAMERA
+    // CAMERA
     if(navigator.userAgent.match(/Android/i) 
     || navigator.userAgent.match(/webOS/i)
     || navigator.userAgent.match(/webOS/i)
@@ -58,7 +47,7 @@ const Projects = () => {
     camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 15000);
     camera.position.set(0, 0, cameraDepth);
   
-    // INITIALIZE RENDERERS
+    // RENDERERS
     glRenderer = createGlRenderer(setWidth, setHeight, styles.three_box);
     cssRenderer = createCssRenderer(setWidth, setHeight, styles.three_box); 
     const holder = document.createElement('div');
@@ -67,23 +56,23 @@ const Projects = () => {
     holder.appendChild(cssRenderer.domElement);
     cssRenderer.domElement.appendChild(glRenderer.domElement);
   
-    // INITIALIZE LIGHTING
+    // LIGHTING
     const ambientLight = new THREE.AmbientLight(0x555555);
     glScene.add(ambientLight);
     const directionalLight = new THREE.DirectionalLight(0xffffff);
     directionalLight.position.set(0, 0, 300).normalize();
     glScene.add(directionalLight);
   
-    // INITIALIZE PAGE AND SCENE
-    backgroundObject = createBackground(field.wall, field.ceiling, field.floor, 10000, 5000, 10000);
+    // SCENE
+    backgroundObject = createBackground(field);
     glScene.add(backgroundObject);
     cloudObjects = createClouds(clouds);
     cloudObjects.map(cloudObject => glScene.add(cloudObject));
-    create3dPage(1200, 800, defPos.cssObject, new THREE.Vector3(0, 0, 0), 0, firstScheme);
-    create3dGeometry();  
+    createProjectPage(1200, 800, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
+    createProject3DGeometry();  
     update();
 
-    // INITIALIZE CONTROLS
+    // CONTROLS
     controls = new OrbitControls(camera, glRenderer.domElement);
     controls.maxAzimuthAngle = 1.5;
     controls.minAzimuthAngle = -1.5;
@@ -96,10 +85,10 @@ const Projects = () => {
     // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('click', onClick, true);
     window.addEventListener('resize', () => location.reload());
-  }, [firstScheme]);
+  }, []);
 
-
-  function create3dPage(width, height, position, rotation, number, colors) {  
+  // SETUP OBJECTS THAT WILL CHANGE
+  function createProjectPage(width, height, position, rotation, number) {  
     if(!planeObject) { 
       planeObject = createPlane(width, height, position, rotation);  
       glScene.add(planeObject);  
@@ -115,136 +104,83 @@ const Projects = () => {
       cssScene.add(cssObject);
     }
 
-    create3DText(nameObject, glScene, colors[2], defPos.nameObject, 100, 100, 100, projects[number].name)
+    create3DText(nameObject, glScene, projects[number].logoColor, initialPos.nameObject, 100, 100, 100, projects[number].name)
       .then(name => nameObject = name);
-    
-    const stlLoader = new STLLoader();
-    // CREATE GITHUB OBJECT
-    if(!gitHubObject) {
-      stlLoader.load('./models/common_models/github_icon.stl', function(geometry) {
-        const material = new THREE.MeshToonMaterial({ color: '#000000', flatShading: true });
-        const mesh = new THREE.Mesh(geometry, material);
-        geometry.center();
-        mesh.scale.set(15, 15, 15);
-        mesh.position.set(defPos.gitHubObject.x, defPos.gitHubObject.y, defPos.gitHubObject.z);
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-        mesh.userData = 'GITHUB';
-        gitHubObject = mesh;
-        glScene.add(mesh);
-      });
-    }
-
-    // CREATE SITE OBJECT
-    if(!siteObject) {
-      stlLoader.load('./models/common_models/internet_icon.stl', function(geometry) {
-        const material = new THREE.MeshToonMaterial({ color: '#000000', flatShading: true });
-        const mesh = new THREE.Mesh(geometry, material);
-        geometry.center();
-        mesh.scale.set(15, 15, 15);
-        mesh.position.set(defPos.siteObject.x, defPos.siteObject.y, defPos.siteObject.z);
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-        mesh.userData = 'SITE';
-        siteObject = mesh;
-        glScene.add(mesh);
-      });
-    }
+    if(!gitHubObject) createIcon(glScene, initialPos.gitHubObject, github)
+      .then(gitHub => gitHubObject = gitHub);
+    if(!siteObject) createIcon(glScene, initialPos.siteObject, site)
+      .then(site => siteObject = site);
   }
 
-  function create3dGeometry() {  
-
-    // CREATE TRIANGLE
-    const triangleShape = new THREE.Shape()
-      .moveTo(0, -100)
-      .lineTo(0, 100)
-      .lineTo(-120, 0);
-
-    const extrudeSettings = { depth: 20, bevelEnabled: true, bevelSegments: 2, steps: 2, bevelSize: 1, bevelThickness: 1 };
-
-    const mesh = new THREE.Mesh(
-      new THREE.ExtrudeBufferGeometry(triangleShape, extrudeSettings),
-      createColoredMaterial(firstScheme[5])
-    ); 
-    mesh.position.set(defPos.leftArrowObject.x, defPos.leftArrowObject.y, defPos.leftArrowObject.z);
-    mesh.userData = 'LAST';
-    leftArrowObject = mesh;
-    glScene.add(mesh);   
-
-    const mesh2 = new THREE.Mesh(
-      new THREE.ExtrudeBufferGeometry(triangleShape, extrudeSettings),
-      createColoredMaterial(firstScheme[5]));  
-    mesh2.position.set(defPos.rightArrowObject.x, defPos.rightArrowObject.y, defPos.rightArrowObject.z);
-    mesh2.rotation.copy(new THREE.Euler(0, 0, - 180 * THREE.MathUtils.DEG2RAD));
-    mesh2.userData = 'NEXT'; 
-    rightArrowObject = mesh2; 
-    glScene.add(mesh2);
- 
-    // CREATE PICTURE FRAME
-    const gltfLoader = new GLTFLoader();
-    const url = 'models/pictureframe_1/scene.gltf';
-    gltfLoader.load(url, (gltf) => {
-      const root = gltf.scene;
-      root.scale.set(700, 700, 512);
-      root.position.set(defPos.frameObject.x, defPos.frameObject.y, defPos.frameObject.z);
-      root.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0));
-
-      const mesh = new THREE.MeshToonMaterial({ color: '#b5651d', flatShading: true });
-      root.children[0].children[0].children[0].children[0].children[0].material = mesh;
-      root.name = 'picture';
-      frameObject = root;
-      glScene.add(root);
-    }); 
+  // SETUP OBJECTS THAT WILL NOT CHANGE
+  function createProject3DGeometry() {  
+    leftArrowObject = createArrow(glScene, projects[projectCount].secondaryColor, initialPos.leftArrowObject, new THREE.Euler(0, 0, 0), 'LAST');
+    rightArrowObject = createArrow(glScene, projects[projectCount].secondaryColor, initialPos.rightArrowObject, new THREE.Euler(0, 0, - 180 * THREE.MathUtils.DEG2RAD), 'NEXT');
+    createPictureFrame(glScene, initialPos.frameObject, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0))
+      .then(frame => frameObject = frame);
   }
 
+  // INTERACTION
   function onClick(event) {
-    if(nextRotate || lastRotate) return;
+    if(nextProject || lastProject) return;
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     mouse.x = (event.clientX / setWidth) * 2 - 1;
     mouse.y = - (event.clientY / setHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(glScene.children, true); //array
+    const intersects = raycaster.intersectObjects(glScene.children, true);
     if(intersects.length > 0) {
       selectedObject = intersects[0];
-      if(selectedObject.object.userData === 'NEXT' && count < projects.length - 1) {
-        lastRotate = false;
-        nextRotate = true; 
-        count = count + 1;
+      if(selectedObject.object.userData === 'NEXT' && projectCount < projects.length - 1) {
+        lastProject = false;
+        nextProject = true; 
+        projectCount = projectCount + 1;
       }
-      if(selectedObject.object.userData === 'LAST' && count > 0) { 
-        nextRotate = false; 
-        lastRotate = true;
-        count = count - 1;
+      if(selectedObject.object.userData === 'LAST' && projectCount > 0) { 
+        nextProject = false; 
+        lastProject = true;
+        projectCount = projectCount - 1;
       }
       if(selectedObject.object.userData === 'SLIDE') nextSlide = true;
-      if(selectedObject.object.userData === 'GITHUB') window.open(projects[count].github, '_blank');
-      if(selectedObject.object.userData === 'SITE') window.open(projects[count].site, '_blank');
+      if(selectedObject.object.userData === 'GITHUB') window.open(projects[projectCount].github, '_blank');
+      if(selectedObject.object.userData === 'SITE') window.open(projects[projectCount].site, '_blank');
     }
   }
 
-  function newProject() {
-    slideCount = 0;
-    fetchScheme(projects[count].logoColor.slice(1), 'analogic')
-      .then(scheme => {
-        schemeCopy = scheme;
-        create3dPage(1200, 800, defPos.cssObject, cssObject.rotation, count, schemeCopy);
-        leftArrowObject.material.color.set(schemeCopy[5]);
-        rightArrowObject.material.color.set(schemeCopy[5]);
-      });
+  // CHANGE PROJECT OR SLIDE
+  function newProject(type) {
+    if(type === 'Project') {
+      slideCount = 0;
+      leftArrowObject.material.color.set(projects[projectCount].secondaryColor);
+      rightArrowObject.material.color.set(projects[projectCount].secondaryColor);
+    } else {
+      slideCount < slideMax ? slideCount++ : slideCount = 0;
+    }
+    createProjectPage(1200, type === 'Project' ? 800 : 700, initialPos.cssObject, cssObject.rotation, projectCount);
   }
 
-  function newSlide() {
-    slideCount < slideMax ? slideCount++ : slideCount = 0;
-    create3dPage(1200, 700, defPos.cssObject, cssObject.rotation, count, schemeCopy ? schemeCopy : firstScheme);
+  function resetPositions() {
+    nextProject = false;
+    lastProject = false;
+    changeProject = false;
+    cssObject.position.x = initialPos.cssObject.x;
+    planeObject.position.x = initialPos.planeObject.x;
+    frameObject.position.x = initialPos.frameObject.x;
+    nameObject.position.x = initialPos.nameObject.x;
+    leftArrowObject.position.x = initialPos.leftArrowObject.x;
+    rightArrowObject.position.x = initialPos.rightArrowObject.x;
+    gitHubObject.position.x = initialPos.gitHubObject.x;
+    siteObject.position.x = initialPos.siteObject.x;
   }
 
-  // UPDATE
+  // CONSTANT UPDATE
   function update() { 
+    cloudObjects.map(cloud => cloud.position.x >= 6000 ? cloud.position.x = -6000 : cloud.position.x += 5);
+
     if(nextSlide) {
       if(cssObject.quaternion._y >= 0) {
         if(cssObject.quaternion._y >= .99 && changeSlide === false) {
-          newSlide();
+          newProject('Slide');
           changeSlide = true;
         }
         frameObject.rotation.y += 0.06;
@@ -258,15 +194,10 @@ const Projects = () => {
         cssObject.rotation.set(0, 0, 0);
       }
     }
-
-    glScene.children.map(child => {    
-      if(child.userData === 'CLOUD') child.position.x += 5;
-      if(child.userData === 'CLOUD' && child.position.x > 6000) child.position.x = -6000;
-    });
-
-    if(nextRotate) {
+    
+    if(nextProject) {
       cssObject.position.x -= 100;
-      if(cssObject.position.x < -7000) cssObject.position.x = cssObject.position.x + 14000;
+      if(cssObject.position.x <= -7000) cssObject.position.x = cssObject.position.x + 14000;
       glScene.children.map(child => {
         if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'background' || child.userData === 'CLOUD') return;
         child.position.x -= 100;
@@ -275,29 +206,17 @@ const Projects = () => {
         if(child.position.x < -7000) { 
           child.position.x = child.position.x + 14000;
           if(changeProject === false && child.userData === 'LAST') {
-            newProject();
+            newProject('Project');
             changeProject = true;
           }
         }
       });
-      if(leftArrowObject.position.x < defPos.leftArrowObject.x & changeProject === true) {
-        nextRotate = false;
-        lastRotate = false;
-        changeProject = false;
-        cssObject.position.x = defPos.cssObject.x;
-        planeObject.position.x = defPos.planeObject.x;
-        frameObject.position.x = defPos.frameObject.x;
-        nameObject.position.x = defPos.nameObject.x;
-        leftArrowObject.position.x = defPos.leftArrowObject.x;
-        rightArrowObject.position.x = defPos.rightArrowObject.x;
-        gitHubObject.position.x = defPos.gitHubObject.x;
-        siteObject.position.x = defPos.siteObject.x;
-      }
+      if(leftArrowObject.position.x < initialPos.leftArrowObject.x & changeProject === true) resetPositions();
     }
 
-    if(lastRotate) {
+    if(lastProject) {
       cssObject.position.x += 100;
-      if(cssObject.position.x > 7000) cssObject.position.x = cssObject.position.x - 14000;
+      if(cssObject.position.x >= 7000) cssObject.position.x = cssObject.position.x - 14000;
       glScene.children.map(child => {
         if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'background' || child.userData === 'CLOUD') return;
         child.position.x += 100;
@@ -306,24 +225,12 @@ const Projects = () => {
         if(child.position.x > 7000) { 
           child.position.x = child.position.x - 14000;
           if(changeProject === false && child.userData === 'NEXT') {
-            newProject();
+            newProject('Project');
             changeProject = true;
           }
         }
       });
-      if(rightArrowObject.position.x > defPos.rightArrowObject.x & changeProject === true) {
-        nextRotate = false;
-        lastRotate = false;
-        changeProject = false;
-        cssObject.position.x = defPos.cssObject.x;
-        planeObject.position.x = defPos.planeObject.x;
-        frameObject.position.x = defPos.frameObject.x;
-        nameObject.position.x = defPos.nameObject.x;
-        leftArrowObject.position.x = defPos.leftArrowObject.x;
-        rightArrowObject.position.x = defPos.rightArrowObject.x;
-        gitHubObject.position.x = defPos.gitHubObject.x;
-        siteObject.position.x = defPos.siteObject.x;
-      }
+      if(rightArrowObject.position.x > initialPos.rightArrowObject.x & changeProject === true) resetPositions();
     }
     glRenderer.render(glScene, camera);  
     cssRenderer.render(cssScene, camera);

@@ -41,5 +41,26 @@ export const clouds = [
 export const field = {
   floor: './images/common_images/floor.png',
   ceiling: './images/common_images/ceiling.png',
-  wall: './images/common_images/wall_no_clouds.png'
+  wall: './images/common_images/wall_no_clouds.png',
+  width: 10000,
+  height: 5000,
+  depth: 10000
+};
+
+export const github = {
+  model: './models/common_models/github_icon.stl',
+  color: '#000000',
+  width: '15',
+  height: '15',
+  depth: '15',
+  data: 'GITHUB'
+};
+
+export const site = {
+  model: './models/common_models/internet_icon.stl',
+  color: '#000000',
+  width: '15',
+  height: '15',
+  depth: '15',
+  data: 'SITE'
 };

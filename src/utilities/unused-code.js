@@ -238,3 +238,10 @@
 
 // GIT AND SITE MATERIAL
 // const material = new THREE.MeshPhongMaterial({ color: '#DEDEDE', specular: 0x111111 });
+
+// RANDOM COLOR
+// useEffect(() => {
+//   //analogic, complement, analogic-complement
+//   fetchScheme(projects[projectCount].logoColor.slice(1), 'analogic')
+//     .then(scheme => setFirstScheme(scheme));
+// }, []);

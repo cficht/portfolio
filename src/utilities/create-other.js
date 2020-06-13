@@ -3,7 +3,7 @@ import * as THREE from 'three';
 export function createColoredMaterial(fromScheme) { 
   const material = new THREE.MeshBasicMaterial({
     color: fromScheme,
-    shading: THREE.FlatShading,
+    flatShading: THREE.FlatShading,
     side: THREE.DoubleSide
   }); 
   return material;
