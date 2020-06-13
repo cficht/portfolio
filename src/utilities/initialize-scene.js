@@ -23,28 +23,20 @@ export function createCssRenderer(width, height, style) {
   return cssRenderer;
 }
 
-export function createPlane(w, h, position, rotation) {  
-  const material = new THREE.MeshBasicMaterial({
-    color: 0x000000,
-    opacity: 0.0,
-    side: THREE.DoubleSide
-  });  
-  const geometry = new THREE.PlaneGeometry(w, h);  
+export function createPlane(width, height, position, rotation) {  
+  const material = new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 0.0, side: THREE.DoubleSide });  
+  const geometry = new THREE.PlaneGeometry(width, height);  
   const mesh = new THREE.Mesh(geometry, material);  
   mesh.userData = 'SLIDE';
-  mesh.position.x = position.x;
-  mesh.position.y = position.y;
-  mesh.position.z = 0;  
-  mesh.rotation.x = rotation.x;
-  mesh.rotation.y = rotation.y;
-  mesh.rotation.z = rotation.z;  
+  mesh.position.set(position.x, position.y, position.z);
+  mesh.rotation.set(rotation.x, rotation.y, rotation.z);
   return mesh;
 }
 
-export function createProjectCssObject(w, h, position, rotation, number, projects, style, slideCount) {  
+export function createProjectCssObject(width, height, position, rotation, number, projects, style, slideCount) {  
   const element = document.createElement('div');
-  element.style.width = w + 'px';
-  element.style.height = h + 'px';
+  element.style.width = width + 'px';
+  element.style.height = height + 'px';
   element.style.opacity = 1;
   element.className = style;
 
@@ -70,13 +62,8 @@ export function createProjectCssObject(w, h, position, rotation, number, project
 
   const cssObject = new CSS3DObject(element);
 
-  cssObject.position.x = position.x;
-  cssObject.position.y = position.y;
-  cssObject.position.z = position.z;
-
-  cssObject.rotation.x = rotation.x;
-  cssObject.rotation.y = rotation.y;
-  cssObject.rotation.z = rotation.z;
+  cssObject.position.set(position.x, position.y, position.z);
+  cssObject.rotation.set(rotation.x, rotation.y, rotation.z);
 
   return cssObject;
 }
