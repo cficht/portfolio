@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer, createPlane, createProjectCssObject } from '../../utilities/initialize-page';
 import { createBackground, createClouds, create3DText, createIcon, createArrow, createPictureFrame } from '../../utilities/create-objects';
+import { projectChange } from '../../utilities/create-other';
 import { projects } from '../../data/projects';
 import { clouds, field, github, site } from '../../data/objects';
 import styles from './Projects.css';
@@ -196,41 +197,13 @@ const Projects = () => {
     }
     
     if(nextProject) {
-      cssObject.position.x -= 100;
-      if(cssObject.position.x <= -7000) cssObject.position.x = cssObject.position.x + 14000;
-      glScene.children.map(child => {
-        if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'background' || child.userData === 'CLOUD') return;
-        child.position.x -= 100;
-        if(child.position.x < -5000) child.visible = false;
-        if(child.position.x < 5000 && child.position.x > -5000) child.visible = true;
-        if(child.position.x < -7000) { 
-          child.position.x = child.position.x + 14000;
-          if(changeProject === false && child.userData === 'LAST') {
-            newProject('Project');
-            changeProject = true;
-          }
-        }
-      });
+      changeProject = projectChange(-1, 'LAST', cssObject, glScene, changeProject, newProject);
       if(leftArrowObject.position.x < initialPos.leftArrowObject.x & changeProject === true) resetPositions();
     }
 
     if(lastProject) {
-      cssObject.position.x += 100;
-      if(cssObject.position.x >= 7000) cssObject.position.x = cssObject.position.x - 14000;
-      glScene.children.map(child => {
-        if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'background' || child.userData === 'CLOUD') return;
-        child.position.x += 100;
-        if(child.position.x > 5000) child.visible = false;
-        if(child.position.x > -5000 && child.position.x < 5000) child.visible = true;
-        if(child.position.x > 7000) { 
-          child.position.x = child.position.x - 14000;
-          if(changeProject === false && child.userData === 'NEXT') {
-            newProject('Project');
-            changeProject = true;
-          }
-        }
-      });
-      if(rightArrowObject.position.x > initialPos.rightArrowObject.x & changeProject === true) resetPositions();
+      changeProject = projectChange(1, 'NEXT', cssObject, glScene, changeProject, newProject);
+      if(rightArrowObject.position.x > initialPos.rightArrowObject.x & changeProject === true) resetPositions();    
     }
     glRenderer.render(glScene, camera);  
     cssRenderer.render(cssScene, camera);
