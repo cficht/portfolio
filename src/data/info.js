@@ -79,3 +79,7 @@ export const projects = [
     image2: 'images/project_images/unimic_2.png'
   }
 ];
+
+export const about = {
+  bio: 'A software developer who thrives in collaborative work environments and enjoys challenging experiences that provide opportunities for growth. Chris enjoys applying creative and practical problem-solving techniques learned in the music industry to diverse teams.'
+};

@@ -36,10 +36,22 @@ export function createClouds(clouds) {
   });
 }
 
-export function create3DText(object, scene, color, position, width, height, depth, textContent) {
+export function createSun(width, height, position) {
+  const sun_url = './images/common_images/sun.png';
+  const sunMaterial = new THREE.MeshToonMaterial({ map: textureLoader.load(sun_url), alphaTest: 0.4, transparent: true, side: THREE.DoubleSide, });
+  const sunGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
+  const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
+  sunMesh.scale.set(width * .1, height * .1, 1);
+  sunMesh.position.set(position.x, position.y, position.z);
+  sunMesh.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0));
+  sunMesh.userData = 'SUN';
+  return sunMesh;
+}
+
+export function create3DText(object, scene, color, position, width, height, depth, textContent, fontName) {
   return new Promise((resolve) => {
     if(object) {
-      fontLoader.load('./fonts/helvetiker_regular.typeface.json', function(font) {
+      fontLoader.load(`./fonts/${fontName}.typeface.json`, function(font) {
         object.geometry = new THREE.TextGeometry(`${textContent}`, {
           font: font,
           size: 1.5,
@@ -54,7 +66,7 @@ export function create3DText(object, scene, color, position, width, height, dept
       });
       object.material.color.set(color);
     } else {
-      fontLoader.load('./fonts/helvetiker_regular.typeface.json', function(font) {
+      fontLoader.load(`./fonts/${fontName}.typeface.json`, function(font) {
         const geometry = new THREE.TextGeometry(`${textContent}`, {
           font: font,
           size: 1.5,
@@ -108,11 +120,11 @@ export function createArrow(scene, color, position, rotation, data) {
   return mesh;  
 }
 
-export function createPictureFrame(scene, position, rotation) {
+export function createPictureFrame(scene, size, position, rotation) {
   const url = 'models/pictureframe_1/scene.gltf';
   return new Promise((resolve) => {gltfLoader.load(url, (gltf) => {
     const frame = gltf.scene;
-    frame.scale.set(700, 700, 512);
+    frame.scale.set(size.x, size.y, size.z);
     frame.position.set(position.x, position.y, position.z);
     frame.rotation.copy(rotation);
     const mesh = new THREE.MeshToonMaterial({ color: '#b5651d', flatShading: true });

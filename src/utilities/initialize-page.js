@@ -67,3 +67,22 @@ export function createProjectCssObject(width, height, position, rotation, number
 
   return cssObject;
 }
+
+export function createAboutCSSObject(width, height, position, rotation, number, about, style) {  
+  const element = document.createElement('div');
+  element.style.width = width + 'px';
+  element.style.height = height + 'px';
+  element.style.opacity = 1;
+  element.className = style;
+  
+  const bio = document.createElement('p');
+  bio.textContent = about.bio;
+  element.appendChild(bio);
+  
+  const cssObject = new CSS3DObject(element);
+
+  cssObject.position.set(position.x, position.y, position.z);
+  cssObject.rotation.set(rotation.x, rotation.y, rotation.z);
+
+  return cssObject;
+}

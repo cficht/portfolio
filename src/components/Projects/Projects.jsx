@@ -4,7 +4,7 @@ import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer, createPlane, createProjectCssObject } from '../../utilities/initialize-page';
 import { createBackground, createClouds, create3DText, createIcon, createArrow, createPictureFrame } from '../../utilities/create-objects';
 import { projectChange } from '../../utilities/create-other';
-import { projects } from '../../data/projects';
+import { projects } from '../../data/info';
 import { clouds, field, github, site } from '../../data/objects';
 import styles from './Projects.css';
 
@@ -25,7 +25,7 @@ const Projects = () => {
     cssObject: new THREE.Vector3(0, 100, 0),
     planeObject: new THREE.Vector3(0, 100, 0),
     frameObject: new THREE.Vector3(0, 100, 0),
-    nameObject: new THREE.Vector3(0, 800, 0),
+    nameObject: new THREE.Vector3(-10, 800, 0),
     logoObject: new THREE.Vector3(0, 900, 0),
     leftArrowObject: new THREE.Vector3(-100, -650, 0), 
     rightArrowObject: new THREE.Vector3(100, -650, 0),
@@ -105,7 +105,7 @@ const Projects = () => {
       cssScene.add(cssObject);
     }
 
-    create3DText(nameObject, glScene, projects[number].logoColor, initialPos.nameObject, 100, 100, 100, projects[number].name)
+    create3DText(nameObject, glScene, projects[number].logoColor, initialPos.nameObject, 100, 100, 100, projects[number].name, 'muli_regular')
       .then(name => nameObject = name);
     if(!gitHubObject) createIcon(glScene, initialPos.gitHubObject, github)
       .then(gitHub => gitHubObject = gitHub);
@@ -117,7 +117,12 @@ const Projects = () => {
   function createProject3DGeometry() {  
     leftArrowObject = createArrow(glScene, projects[projectCount].secondaryColor, initialPos.leftArrowObject, new THREE.Euler(0, 0, 0), 'LAST');
     rightArrowObject = createArrow(glScene, projects[projectCount].secondaryColor, initialPos.rightArrowObject, new THREE.Euler(0, 0, - 180 * THREE.MathUtils.DEG2RAD), 'NEXT');
-    createPictureFrame(glScene, initialPos.frameObject, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0))
+    const frameSize = {
+      x: 700,
+      y: 700,
+      z: 512
+    };
+    createPictureFrame(glScene, frameSize, initialPos.frameObject, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0))
       .then(frame => frameObject = frame);
   }
 
