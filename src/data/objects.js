@@ -64,3 +64,161 @@ export const site = {
   depth: '15',
   data: 'SITE'
 };
+
+export const projectLogos = [
+  {
+    model: './models/project_logo_models/secretmenu_logo.stl',
+    color: '#FD7553',
+    width: '15',
+    height: '15',
+    depth: '15',
+    data: '/projects'
+  },
+  {
+    model: './models/project_logo_models/nintendoapi_logo.stl',
+    color: '#ED1C24',
+    width: '15',
+    height: '15',
+    depth: '15',
+    data: '/projects'
+  },
+  {
+    model: './models/project_logo_models/freshtrack_logo.stl',
+    color: '#205757',
+    width: '15',
+    height: '15',
+    depth: '15',
+    data: '/projects'
+  },
+  {
+    model: './models/project_logo_models/mosaic_logo.stl',
+    color: '#C144F3',
+    width: '15',
+    height: '15',
+    depth: '15',
+    data: '/projects'
+  },
+  {
+    model: './models/project_logo_models/chrystalsynth_logo.stl',
+    color: '#E80415',
+    width: '15',
+    height: '15',
+    depth: '15',
+    data: '/projects'
+  },
+  {
+    model: './models/project_logo_models/unimic_logo.stl',
+    color: '#FFFF4C',
+    width: '15',
+    height: '15',
+    depth: '15',
+    data: '/projects'
+  }
+];
+
+export const techLogos = [
+  {
+    model: './models/tech_logo_models/cheerio_logo.stl',
+    color: '#000000',
+    width: '15',
+    height: '15',
+    depth: '15',
+    data: '/projects'
+  },
+  {
+    model: './models/tech_logo_models/csharp.stl',
+    color: '#000000',
+    width: '15',
+    height: '15',
+    depth: '15',
+    data: '/projects'
+  },
+  {
+    model: './models/tech_logo_models/css_logo.stl',
+    color: '#000000',
+    width: '15',
+    height: '15',
+    depth: '15',
+    data: '/projects'
+  },
+  {
+    model: './models/tech_logo_models/express_logo.stl',
+    color: '#000000',
+    width: '15',
+    height: '15',
+    depth: '15',
+    data: '/projects'
+  },
+  {
+    model: './models/tech_logo_models/html5_logo.stl',
+    color: '#000000',
+    width: '15',
+    height: '15',
+    depth: '15',
+    data: '/projects'
+  },
+  {
+    model: './models/tech_logo_models/javascript_logo.stl',
+    color: '#000000',
+    width: '15',
+    height: '15',
+    depth: '15',
+    data: '/projects'
+  },
+  {
+    model: './models/tech_logo_models/max7_logo.stl',
+    color: '#000000',
+    width: '15',
+    height: '15',
+    depth: '15',
+    data: '/projects'
+  },
+  {
+    model: './models/tech_logo_models/mongodb_logo.stl',
+    color: '#000000',
+    width: '15',
+    height: '15',
+    depth: '15',
+    data: '/projects'
+  },
+  {
+    model: './models/tech_logo_models/node_logo.stl',
+    color: '#000000',
+    width: '15',
+    height: '15',
+    depth: '15',
+    data: '/projects'
+  },
+  {
+    model: './models/tech_logo_models/postgresql_logo.stl',
+    color: '#000000',
+    width: '15',
+    height: '15',
+    depth: '15',
+    data: '/projects'
+  },
+  {
+    model: './models/tech_logo_models/react_logo.stl',
+    color: '#000000',
+    width: '15',
+    height: '15',
+    depth: '15',
+    data: '/projects'
+  },
+  {
+    model: './models/tech_logo_models/redux_logo.stl',
+    color: '#000000',
+    width: '15',
+    height: '15',
+    depth: '15',
+    data: '/projects'
+  },
+  {
+    model: './models/tech_logo_models/unity_logo.stl',
+    color: '#000000',
+    width: '15',
+    height: '15',
+    depth: '15',
+    data: '/projects'
+  }
+];

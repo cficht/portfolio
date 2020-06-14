@@ -2,13 +2,14 @@ import React, { useEffect } from 'react';
 import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer, createPlane, createAboutCSSObject } from '../../utilities/initialize-page';
-import { createBackground, createSun, createClouds, create3DText, createPictureFrame } from '../../utilities/create-objects';
+import { createBackground, createSun, createClouds, create3DText, createPictureFrame, createIcon } from '../../utilities/create-objects';
+import { randomLogo } from '../../utilities/create-other';
 import { about } from '../../data/info';
-import { clouds, field } from '../../data/objects';
+import { clouds, field, projectLogos, techLogos } from '../../data/objects';
 import styles from './Home.css';
 
 const Home = () => {
-  let camera, controls, glRenderer, cssRenderer, backgroundObject, cloudObjects, cssObject, planeObject, frameObject, sunObject, nameObject, titleObject, projectObject, techObject, contactObject, selectedObject, targetObject;
+  let camera, controls, glRenderer, cssRenderer, backgroundObject, cloudObjects, cssObject, planeObject, frameObject, sunObject, nameObject, titleObject, projectObject, projLogoObject, techObject, techLogoObject, contactObject, selectedObject, targetObject;
   let cameraDepth = 2750;
   let cameraStart = false;
   let navigateOn = false;
@@ -28,7 +29,9 @@ const Home = () => {
     cameraMainPos: new THREE.Vector3(0, 0, cameraDepth),
     cameraStartPos: new THREE.Vector3(0, 2250, cameraDepth),
     projectObject: new THREE.Vector3(0, -1900, -2500),
+    projectLogo: new THREE.Vector3(0, -1600, -2500),
     techObject: new THREE.Vector3(3100, 1000, -2500),
+    techLogo: new THREE.Vector3(3100, 1300, -2500),
     contactObject: new THREE.Vector3(-3100, 1000, -2500)
   };
 
@@ -126,6 +129,14 @@ const Home = () => {
       .then(tech => techObject = tech);
     create3DText(contactObject, glScene, '#ff8c00', initialPos.contactObject, 60, 60, 60, 'Contact', 'muli_regular', '/contact')
       .then(contact => contactObject = contact);
+
+    const randomProjectLogo = randomLogo(projectLogos);
+    if(!projLogoObject) createIcon(glScene, initialPos.projectLogo, randomProjectLogo)
+      .then(projectLogo => projLogoObject = projectLogo);
+
+    const randomTechLogo = randomLogo(techLogos);
+    if(!techLogoObject) createIcon(glScene, initialPos.techLogo, randomTechLogo)
+      .then(techLogo => techLogoObject = techLogo);
   }
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
@@ -151,7 +162,7 @@ const Home = () => {
     const intersects = raycaster.intersectObjects(glScene.children, true);
     if(intersects.length > 0) {
       selectedObject = intersects[0];
-      if(selectedObject.object.id === projectObject.id) {
+      if(selectedObject.object.id === projectObject.id || selectedObject.object.id === projLogoObject.id) {
         targetObject = projectObject;
         navigateOn = true;
       }
@@ -182,26 +193,25 @@ const Home = () => {
 
     if(navigateOn) {
       controls.enabled = false;
-
       if(controls.target.z > targetObject.position.z) controls.target.z -= 25;
       if(controls.target.y > targetObject.position.y) controls.target.y -= 25;
       if(controls.target.y < targetObject.position.y) controls.target.y += 25;
       if(controls.target.x > targetObject.position.x) controls.target.x -= 25;
       if(controls.target.x < targetObject.position.x) controls.target.x += 25;
-      controls.update();
-      
+      controls.update();    
       if(camera.position.z > targetObject.position.z) camera.position.z -= 25;
       if(camera.position.y > targetObject.position.y) camera.position.y -= 25;
       if(camera.position.y < targetObject.position.y) camera.position.y += 25;
       if(camera.position.x > targetObject.position.x) camera.position.x -= 25;
       if(camera.position.x < targetObject.position.x) camera.position.x += 25;
-
       if(camera.position.z < 0) {
         navigateOn = false;
         window.location = targetObject.userData;
       }
     }
 
+    if(projLogoObject) projLogoObject.rotation.y += .05;
+    if(techLogoObject) techLogoObject.rotation.y += .05;
     cloudObjects.map(cloud => cloud.position.x >= 6000 ? cloud.position.x = -6000 : cloud.position.x += 5);
     
     glRenderer.render(glScene, camera);  

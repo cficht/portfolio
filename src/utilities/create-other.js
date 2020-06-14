@@ -27,3 +27,8 @@ export function projectChange(nextLast, data, cssObject, glScene, changeProject,
   });
   return changeProject;
 }
+
+export function randomLogo(arr) {
+  const randomIndex = Math.floor(Math.random() * arr.length);
+  return arr[randomIndex];
+}
