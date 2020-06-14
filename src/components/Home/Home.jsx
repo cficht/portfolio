@@ -8,8 +8,10 @@ import { clouds, field } from '../../data/objects';
 import styles from './Home.css';
 
 const Home = () => {
-  let camera, controls, glRenderer, cssRenderer, backgroundObject, cloudObjects, cssObject, planeObject, frameObject, sunObject, nameObject, titleObject, selectedObject;
+  let camera, controls, glRenderer, cssRenderer, backgroundObject, cloudObjects, cssObject, planeObject, frameObject, sunObject, nameObject, titleObject, projectObject, techObject, contactObject, selectedObject, targetObject;
   let cameraDepth = 2750;
+  let cameraStart = false;
+  let navigateOn = false;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   const glScene = new THREE.Scene();
@@ -22,7 +24,12 @@ const Home = () => {
     frameObject: new THREE.Vector3(0, 0, 0),
     sunObject: new THREE.Vector3(4000, 1500, -4000),
     nameObject: new THREE.Vector3(-10, 800, 0),
-    titleObject: new THREE.Vector3(0, 600, 0)
+    titleObject: new THREE.Vector3(0, 600, 0),
+    cameraMainPos: new THREE.Vector3(0, 0, cameraDepth),
+    cameraStartPos: new THREE.Vector3(0, 2250, cameraDepth),
+    projectObject: new THREE.Vector3(0, -1900, -2500),
+    techObject: new THREE.Vector3(3100, 1000, -2500),
+    contactObject: new THREE.Vector3(-3100, 1000, -2500)
   };
 
   // INITIALIZE PAGE
@@ -69,6 +76,8 @@ const Home = () => {
 
     // CONTROLS
     controls = new OrbitControls(camera, glRenderer.domElement);
+    camera.position.set(initialPos.cameraStartPos.x, initialPos.cameraStartPos.y, cameraDepth);
+    camera.rotation.x = .5;
     controls.maxAzimuthAngle = 1.5;
     controls.minAzimuthAngle = -1.5;
     controls.maxPolarAngle = 2;
@@ -78,9 +87,12 @@ const Home = () => {
     controls.enableKeys = false;
 
     // ON START
+    controls.enabled = false;
+    cameraStart = true;
     // controls.enableZoom = false;
     // controls.enableRotate = false;
     // controls.enablePan = false;
+    // camera.position.set(initialPos.cameraStartPos.x, initialPos.cameraStartPos.y, cameraDepth);
 
     // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('click', onClick, true);
@@ -106,8 +118,14 @@ const Home = () => {
 
     create3DText(nameObject, glScene, '#558E40', initialPos.nameObject, 100, 100, 100, 'Chris Ficht', 'muli_regular')
       .then(name => nameObject = name);
-    create3DText(nameObject, glScene, '#9FC95C', initialPos.titleObject, 60, 60, 60, 'Software Developer', 'muli_regular')
-      .then(name => titleObject = name);
+    create3DText(titleObject, glScene, '#9FC95C', initialPos.titleObject, 60, 60, 60, 'Software Developer', 'muli_regular')
+      .then(title => titleObject = title);
+    create3DText(projectObject, glScene, '#ff8c00', initialPos.projectObject, 60, 60, 60, 'Projects', 'muli_regular', '/projects')
+      .then(project => projectObject = project);
+    create3DText(techObject, glScene, '#ff8c00', initialPos.techObject, 60, 60, 60, 'Tech Stack', 'muli_regular', '/tech')
+      .then(tech => techObject = tech);
+    create3DText(contactObject, glScene, '#ff8c00', initialPos.contactObject, 60, 60, 60, 'Contact', 'muli_regular', '/contact')
+      .then(contact => contactObject = contact);
   }
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
@@ -124,6 +142,7 @@ const Home = () => {
 
   // INTERACTION
   function onClick(event) {
+    if(cameraStart || navigateOn) return;
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     mouse.x = (event.clientX / setWidth) * 2 - 1;
@@ -132,12 +151,57 @@ const Home = () => {
     const intersects = raycaster.intersectObjects(glScene.children, true);
     if(intersects.length > 0) {
       selectedObject = intersects[0];
-      console.log(selectedObject);
+      if(selectedObject.object.id === projectObject.id) {
+        targetObject = projectObject;
+        navigateOn = true;
+      }
+      if(selectedObject.object.id === techObject.id) {
+        targetObject = techObject;
+        navigateOn = true;
+      }
+      if(selectedObject.object.id === contactObject.id) {
+        targetObject = contactObject;
+        navigateOn = true;
+      }
     }
   }
 
   // CONSTANT UPDATE
   function update() { 
+    if(cameraStart) {
+      if(camera.rotation.x > 0) camera.rotation.x -= .00225;
+      else camera.rotation.x = 0;
+      if(camera.position.y > initialPos.cameraMainPos.y) camera.position.y -= 10;
+      else {
+        camera.position.set(initialPos.cameraMainPos.x, initialPos.cameraMainPos.y, cameraDepth);
+        camera.rotation.x = 0;
+        cameraStart = false;
+        controls.enabled = true;
+      }
+    }
+
+    if(navigateOn) {
+      controls.enabled = false;
+
+      if(controls.target.z > targetObject.position.z) controls.target.z -= 25;
+      if(controls.target.y > targetObject.position.y) controls.target.y -= 25;
+      if(controls.target.y < targetObject.position.y) controls.target.y += 25;
+      if(controls.target.x > targetObject.position.x) controls.target.x -= 25;
+      if(controls.target.x < targetObject.position.x) controls.target.x += 25;
+      controls.update();
+      
+      if(camera.position.z > targetObject.position.z) camera.position.z -= 25;
+      if(camera.position.y > targetObject.position.y) camera.position.y -= 25;
+      if(camera.position.y < targetObject.position.y) camera.position.y += 25;
+      if(camera.position.x > targetObject.position.x) camera.position.x -= 25;
+      if(camera.position.x < targetObject.position.x) camera.position.x += 25;
+
+      if(camera.position.z < 0) {
+        navigateOn = false;
+        window.location = targetObject.userData;
+      }
+    }
+
     cloudObjects.map(cloud => cloud.position.x >= 6000 ? cloud.position.x = -6000 : cloud.position.x += 5);
     
     glRenderer.render(glScene, camera);  

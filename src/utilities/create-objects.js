@@ -48,7 +48,7 @@ export function createSun(width, height, position) {
   return sunMesh;
 }
 
-export function create3DText(object, scene, color, position, width, height, depth, textContent, fontName) {
+export function create3DText(object, scene, color, position, width, height, depth, textContent, fontName, data) {
   return new Promise((resolve) => {
     if(object) {
       fontLoader.load(`./fonts/${fontName}.typeface.json`, function(font) {
@@ -82,6 +82,7 @@ export function create3DText(object, scene, color, position, width, height, dept
         const mesh = new THREE.Mesh(geometry, material);
         mesh.scale.set(width, height, depth);
         mesh.position.set(position.x, position.y, position.z);
+        mesh.userData = data ? data : '';
         scene.add(mesh);
         resolve(mesh);
       });
