@@ -5,11 +5,11 @@ import { createGlRenderer, createCssRenderer, createPlane, createAboutCSSObject 
 import { createBackground, createSun, createClouds, create3DText, createPictureFrame, createIcon } from '../../utilities/create-objects';
 import { randomLogo } from '../../utilities/create-other';
 import { about } from '../../data/info';
-import { clouds, field, projectLogos, techLogos } from '../../data/objects';
+import { clouds, field, projectLogos, techLogos, contactIcons } from '../../data/objects';
 import styles from './Home.css';
 
 const Home = () => {
-  let camera, controls, glRenderer, cssRenderer, backgroundObject, cloudObjects, cssObject, planeObject, frameObject, sunObject, nameObject, titleObject, projectObject, projLogoObject, techObject, techLogoObject, contactObject, selectedObject, targetObject;
+  let camera, controls, glRenderer, cssRenderer, backgroundObject, cloudObjects, cssObject, planeObject, frameObject, sunObject, nameObject, titleObject, projectObject, projLogoObject, techObject, techLogoObject, contactObject, contactIconObject, selectedObject, targetObject;
   let cameraDepth = 2750;
   let cameraStart = false;
   let navigateOn = false;
@@ -28,11 +28,12 @@ const Home = () => {
     titleObject: new THREE.Vector3(0, 600, 0),
     cameraMainPos: new THREE.Vector3(0, 0, cameraDepth),
     cameraStartPos: new THREE.Vector3(0, 2250, cameraDepth),
-    projectObject: new THREE.Vector3(0, -1900, -2500),
-    projectLogo: new THREE.Vector3(0, -1600, -2500),
-    techObject: new THREE.Vector3(3100, 1000, -2500),
-    techLogo: new THREE.Vector3(3100, 1300, -2500),
-    contactObject: new THREE.Vector3(-3100, 1000, -2500)
+    projectObject: new THREE.Vector3(0, -1700, -2000),
+    projectLogo: new THREE.Vector3(0, -1400, -2000),
+    techObject: new THREE.Vector3(2900, -1700, -2000),
+    techLogo: new THREE.Vector3(2900, -1400, -2000),
+    contactObject: new THREE.Vector3(-2900, -1700, -2000),
+    contactIcon: new THREE.Vector3(-2900, -1400, -2000)
   };
 
   // INITIALIZE PAGE
@@ -133,10 +134,12 @@ const Home = () => {
     const randomProjectLogo = randomLogo(projectLogos);
     if(!projLogoObject) createIcon(glScene, initialPos.projectLogo, randomProjectLogo)
       .then(projectLogo => projLogoObject = projectLogo);
-
     const randomTechLogo = randomLogo(techLogos);
     if(!techLogoObject) createIcon(glScene, initialPos.techLogo, randomTechLogo)
       .then(techLogo => techLogoObject = techLogo);
+    const randomContactIcon = randomLogo(contactIcons);
+    if(!contactIconObject) createIcon(glScene, initialPos.contactIcon, randomContactIcon)
+      .then(contactIcon => contactIconObject = contactIcon);
   }
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
@@ -163,15 +166,24 @@ const Home = () => {
     if(intersects.length > 0) {
       selectedObject = intersects[0];
       if(selectedObject.object.id === projectObject.id || selectedObject.object.id === projLogoObject.id) {
-        targetObject = projectObject;
+        targetObject = { 
+          position: new THREE.Vector3(0, -1700, -4000),
+          url: '/projects'
+        };
         navigateOn = true;
       }
-      if(selectedObject.object.id === techObject.id) {
-        targetObject = techObject;
+      if(selectedObject.object.id === techObject.id || selectedObject.object.id === techLogoObject.id) {
+        targetObject = { 
+          position: new THREE.Vector3(4000, 1500, -4000),
+          url: '/tech'
+        };
         navigateOn = true;
       }
-      if(selectedObject.object.id === contactObject.id) {
-        targetObject = contactObject;
+      if(selectedObject.object.id === contactObject.id || selectedObject.object.id === contactIconObject.id) {
+        targetObject = { 
+          position: new THREE.Vector3(-4000, 1500, -4000),
+          url: '/contact'
+        };
         navigateOn = true;
       }
     }
@@ -206,12 +218,13 @@ const Home = () => {
       if(camera.position.x < targetObject.position.x) camera.position.x += 25;
       if(camera.position.z < 0) {
         navigateOn = false;
-        window.location = targetObject.userData;
+        window.location = targetObject.url;
       }
     }
 
     if(projLogoObject) projLogoObject.rotation.y += .05;
     if(techLogoObject) techLogoObject.rotation.y += .05;
+    if(contactIconObject) contactIconObject.rotation.y += .05;
     cloudObjects.map(cloud => cloud.position.x >= 6000 ? cloud.position.x = -6000 : cloud.position.x += 5);
     
     glRenderer.render(glScene, camera);  
