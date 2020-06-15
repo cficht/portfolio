@@ -2,14 +2,14 @@ import React, { useEffect } from 'react';
 import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer, createPlane, createAboutCSSObject } from '../../utilities/initialize-page';
-import { createBackground, createSun, createClouds, create3DText, createPictureFrame, createIcon } from '../../utilities/create-objects';
+import { createBackground, createClouds, createSun, createAirplane, createTree, create3DText, createPictureFrame, createIcon } from '../../utilities/create-objects';
 import { randomLogo } from '../../utilities/create-other';
 import { about } from '../../data/info';
 import { clouds, field, projectLogos, techLogos, contactIcons } from '../../data/objects';
 import styles from './Home.css';
 
 const Home = () => {
-  let camera, controls, glRenderer, cssRenderer, backgroundObject, cloudObjects, cssObject, planeObject, frameObject, sunObject, nameObject, titleObject, projectObject, projLogoObject, techObject, techLogoObject, contactObject, contactIconObject, selectedObject, targetObject;
+  let camera, controls, glRenderer, cssRenderer, backgroundObject, cloudObjects, sunObject, airplaneObject, treeObject, cssObject, planeObject, frameObject, nameObject, titleObject, projectObject, projLogoObject, techObject, techLogoObject, contactObject, contactIconObject, selectedObject, targetObject;
   let cameraDepth = 2750;
   let cameraStart = false;
   let navigateOn = false;
@@ -20,10 +20,12 @@ const Home = () => {
   const OrbitControls = ThreeOrbitControls(THREE);
 
   const initialPos = {
+    sunObject: new THREE.Vector3(4000, 1500, -4000),
+    airplaneObject: new THREE.Vector3(-4000, 1100, -4000),
+    treeObject: new THREE.Vector3(2000, -1700, -4000),
     cssObject: new THREE.Vector3(0, 0, 0),
     planeObject: new THREE.Vector3(0, 0, 0),
     frameObject: new THREE.Vector3(0, 0, 0),
-    sunObject: new THREE.Vector3(4000, 1500, -4000),
     nameObject: new THREE.Vector3(-10, 800, 0),
     titleObject: new THREE.Vector3(0, 600, 0),
     cameraMainPos: new THREE.Vector3(0, 0, cameraDepth),
@@ -70,18 +72,25 @@ const Home = () => {
     // SCENE
     backgroundObject = createBackground(field);
     glScene.add(backgroundObject);
+
     cloudObjects = createClouds(clouds);
     cloudObjects.map(cloudObject => glScene.add(cloudObject));
+
     sunObject = createSun(973, 973, initialPos.sunObject);
     glScene.add(sunObject);
+
+    airplaneObject = createAirplane(920, 311, initialPos.airplaneObject);
+    glScene.add(airplaneObject);
+
+    treeObject = createTree(6814, 7571, initialPos.treeObject);
+    glScene.add(treeObject);
+
     createAboutPage(1000, 600, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
     createProject3DGeometry();  
     update();
 
     // CONTROLS
     controls = new OrbitControls(camera, glRenderer.domElement);
-    camera.position.set(initialPos.cameraStartPos.x, initialPos.cameraStartPos.y, cameraDepth);
-    camera.rotation.x = .5;
     controls.maxAzimuthAngle = 1.5;
     controls.minAzimuthAngle = -1.5;
     controls.maxPolarAngle = 2;
@@ -91,12 +100,13 @@ const Home = () => {
     controls.enableKeys = false;
 
     // ON START
-    controls.enabled = false;
-    cameraStart = true;
+    // camera.position.set(initialPos.cameraStartPos.x, initialPos.cameraStartPos.y, cameraDepth);
+    // camera.rotation.x = .5;
+    // controls.enabled = false;
+    // cameraStart = true;
     // controls.enableZoom = false;
     // controls.enableRotate = false;
     // controls.enablePan = false;
-    // camera.position.set(initialPos.cameraStartPos.x, initialPos.cameraStartPos.y, cameraDepth);
 
     // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('click', onClick, true);

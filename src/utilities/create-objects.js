@@ -40,12 +40,39 @@ export function createSun(width, height, position) {
   const sun_url = './images/common_images/sun.png';
   const sunMaterial = new THREE.MeshToonMaterial({ map: textureLoader.load(sun_url), alphaTest: 0.4, transparent: true, side: THREE.DoubleSide, });
   const sunGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
+  sunGeometry.center();
   const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
   sunMesh.scale.set(width * .1, height * .1, 1);
   sunMesh.position.set(position.x, position.y, position.z);
   sunMesh.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0));
   sunMesh.userData = 'SUN';
   return sunMesh;
+}
+
+export function createAirplane(width, height, position) {
+  const plane_url = './images/common_images/airplane.png';
+  const planeMaterial = new THREE.MeshToonMaterial({ map: textureLoader.load(plane_url), alphaTest: 0.4, transparent: true, side: THREE.DoubleSide, });
+  const planeGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
+  planeGeometry.center();
+  const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+  planeMesh.scale.set(width * .05, height * .05, 1);
+  planeMesh.position.set(position.x, position.y, position.z);
+  planeMesh.rotation.copy(new THREE.Euler(0, 0, 0));
+  planeMesh.userData = 'PLANE';
+  return planeMesh;
+}
+
+export function createTree(width, height, position) {
+  const tree_url = './images/common_images/tree.png';
+  const treeMaterial = new THREE.MeshToonMaterial({ map: textureLoader.load(tree_url), alphaTest: 0.4, transparent: true, side: THREE.DoubleSide, });
+  const treeGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
+  treeGeometry.center();
+  const treeMesh = new THREE.Mesh(treeGeometry, treeMaterial);
+  treeMesh.scale.set(width * .01, height * .01, 1);
+  treeMesh.position.set(position.x, position.y, position.z);
+  treeMesh.rotation.copy(new THREE.Euler(0, 0, 0));
+  treeMesh.userData = 'TREE';
+  return treeMesh;
 }
 
 export function create3DText(object, scene, color, position, width, height, depth, textContent, fontName, data) {
