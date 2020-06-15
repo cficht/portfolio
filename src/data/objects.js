@@ -65,6 +65,43 @@ export const site = {
   data: 'SITE'
 };
 
+export const project = {
+  model: './models/common_models/projects_icon.stl',
+  color: '#000000',
+  width: '15',
+  height: '15',
+  depth: '15',
+  data: 'PROJECTS'
+};
+
+export const tech = {
+  model: './models/common_models/tech_icon.stl',
+  color: '#000000',
+  width: '15',
+  height: '15',
+  depth: '15',
+  data: 'TECH'
+};
+
+export const contact = {
+  model: './models/common_models/contact_icon.stl',
+  color: '#000000',
+  width: '15',
+  height: '15',
+  depth: '15',
+  data: 'CONTACT'
+};
+
+export const about = {
+  model: './models/common_models/about_icon.stl',
+  color: '#000000',
+  width: '15',
+  height: '15',
+  depth: '15',
+  data: 'ABOUT'
+};
+
+
 export const projectLogos = [
   {
     model: './models/project_logo_models/secretmenu_logo.stl',

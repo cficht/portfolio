@@ -245,3 +245,35 @@
 //   fetchScheme(projects[projectCount].logoColor.slice(1), 'analogic')
 //     .then(scheme => setFirstScheme(scheme));
 // }, []);
+
+
+
+// MOVE TO ABOUT FROM HOME
+// createAboutPage(1000, 600, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
+
+// const frameSize = {
+//   x: 575,
+//   y: 525,
+//   z: 512
+// };
+// createPictureFrame(glScene, frameSize, initialPos.frameObject, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0))
+//   .then(frame => frameObject = frame)
+//   .then(() => console.log(frameObject));
+
+// function createAboutPage(width, height, position, rotation, number) {  
+// if(!planeObject) { 
+//   planeObject = createPlane(width, height, position, rotation);  
+//   glScene.add(planeObject);  
+// }
+    
+// if(!cssObject) {
+//   cssObject = createAboutCSSObject(width, height, position, rotation, number, about, styles.project);  
+//   cssScene.add(cssObject);
+// } else {
+//   const newPos = cssObject.position;
+//   cssScene.remove(cssObject);
+//   cssObject = createAboutCSSObject(width, height, newPos, rotation, number, about, styles.project);  
+//   cssScene.add(cssObject);
+// }
+// }
+

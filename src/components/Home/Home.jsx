@@ -1,15 +1,13 @@
 import React, { useEffect } from 'react';
 import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
-import { createGlRenderer, createCssRenderer, createPlane, createAboutCSSObject } from '../../utilities/initialize-page';
-import { createBackground, createClouds, createSun, createAirplane, createTree, create3DText, createPictureFrame, createIcon } from '../../utilities/create-objects';
-import { randomLogo } from '../../utilities/create-other';
-import { about } from '../../data/info';
-import { clouds, field, projectLogos, techLogos, contactIcons } from '../../data/objects';
+import { createGlRenderer, createCssRenderer, createPlane, createBlankCSSObject } from '../../utilities/initialize-page';
+import { createBackground, createClouds, createSun, createAirplane, createTree, create3DText, createIcon, createPictureFrame } from '../../utilities/create-objects';
+import { clouds, field, project, tech, contact, about } from '../../data/objects';
 import styles from './Home.css';
 
 const Home = () => {
-  let camera, controls, glRenderer, cssRenderer, backgroundObject, cloudObjects, sunObject, airplaneObject, treeObject, cssObject, planeObject, frameObject, nameObject, titleObject, projectObject, projLogoObject, techObject, techLogoObject, contactObject, contactIconObject, selectedObject, targetObject;
+  let camera, controls, glRenderer, cssRenderer, backgroundObject, cloudObjects, sunObject, airplaneObject, treeObject, nameObject, titleObject, projectObject, projectIconObject, techObject, techIconObject, contactObject, contactIconObject, aboutObject, aboutIconObject, selectedObject, targetObject;
   let cameraDepth = 2750;
   let cameraStart = false;
   let navigateOn = false;
@@ -20,22 +18,25 @@ const Home = () => {
   const OrbitControls = ThreeOrbitControls(THREE);
 
   const initialPos = {
-    sunObject: new THREE.Vector3(4000, 1500, -4000),
-    airplaneObject: new THREE.Vector3(-4000, 1100, -4000),
-    treeObject: new THREE.Vector3(2000, -1700, -4000),
-    cssObject: new THREE.Vector3(0, 0, 0),
-    planeObject: new THREE.Vector3(0, 0, 0),
-    frameObject: new THREE.Vector3(0, 0, 0),
-    nameObject: new THREE.Vector3(-10, 800, 0),
-    titleObject: new THREE.Vector3(0, 600, 0),
+    sunObject: new THREE.Vector3(3000, 1500, -4000),
+    airplaneObject: new THREE.Vector3(-3000, 1300, -4000),
+    treeObject: new THREE.Vector3(-3000, -1800, -4000),
+    grassObject: new THREE.Vector3(3000, -1800, -4000),
+    cssObject: new THREE.Vector3(0, 100, 0),
+    planeObject: new THREE.Vector3(0, 100, 0),
+    frameObject: new THREE.Vector3(0, 100, 0),
+    nameObject: new THREE.Vector3(-10, 200, 0),
+    titleObject: new THREE.Vector3(0, 0, 0),
     cameraMainPos: new THREE.Vector3(0, 0, cameraDepth),
     cameraStartPos: new THREE.Vector3(0, 2250, cameraDepth),
-    projectObject: new THREE.Vector3(0, -1700, -2000),
-    projectLogo: new THREE.Vector3(0, -1400, -2000),
-    techObject: new THREE.Vector3(2900, -1700, -2000),
-    techLogo: new THREE.Vector3(2900, -1400, -2000),
-    contactObject: new THREE.Vector3(-2900, -1700, -2000),
-    contactIcon: new THREE.Vector3(-2900, -1400, -2000)
+    projectObject: new THREE.Vector3(1200, -1700, -2000),
+    projectIcon: new THREE.Vector3(1200, -1400, -2000),
+    techObject: new THREE.Vector3(400, -1700, -2000),
+    techIcon: new THREE.Vector3(400, -1400, -2000),
+    contactObject: new THREE.Vector3(-400, -1700, -2000),
+    contactIcon: new THREE.Vector3(-400, -1400, -2000),
+    aboutObject: new THREE.Vector3(-1200, -1700, -2000),
+    aboutIcon: new THREE.Vector3(-1200, -1400, -2000)
   };
 
   // INITIALIZE PAGE
@@ -85,7 +86,7 @@ const Home = () => {
     treeObject = createTree(6814, 7571, initialPos.treeObject);
     glScene.add(treeObject);
 
-    createAboutPage(1000, 600, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
+    createHomePage(1300, 650, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
     createProject3DGeometry();  
     update();
 
@@ -100,13 +101,10 @@ const Home = () => {
     controls.enableKeys = false;
 
     // ON START
-    // camera.position.set(initialPos.cameraStartPos.x, initialPos.cameraStartPos.y, cameraDepth);
-    // camera.rotation.x = .5;
-    // controls.enabled = false;
-    // cameraStart = true;
-    // controls.enableZoom = false;
-    // controls.enableRotate = false;
-    // controls.enablePan = false;
+    camera.position.set(initialPos.cameraStartPos.x, initialPos.cameraStartPos.y, cameraDepth);
+    camera.rotation.x = .5;
+    cameraStart = true;
+    controls.enabled = false;
 
     // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('click', onClick, true);
@@ -114,54 +112,46 @@ const Home = () => {
   }, []);
 
   // SETUP OBJECTS THAT WILL CHANGE
-  function createAboutPage(width, height, position, rotation, number) {  
-    if(!planeObject) { 
-      planeObject = createPlane(width, height, position, rotation);  
-      glScene.add(planeObject);  
-    }
-    
-    if(!cssObject) {
-      cssObject = createAboutCSSObject(width, height, position, rotation, number, about, styles.project);  
-      cssScene.add(cssObject);
-    } else {
-      const newPos = cssObject.position;
-      cssScene.remove(cssObject);
-      cssObject = createAboutCSSObject(width, height, newPos, rotation, number, about, styles.project);  
-      cssScene.add(cssObject);
-    }
-
-    create3DText(nameObject, glScene, '#558E40', initialPos.nameObject, 100, 100, 100, 'Chris Ficht', 'muli_regular')
-      .then(name => nameObject = name);
-    create3DText(titleObject, glScene, '#9FC95C', initialPos.titleObject, 60, 60, 60, 'Software Developer', 'muli_regular')
-      .then(title => titleObject = title);
-    create3DText(projectObject, glScene, '#ff8c00', initialPos.projectObject, 60, 60, 60, 'Projects', 'muli_regular', '/projects')
-      .then(project => projectObject = project);
-    create3DText(techObject, glScene, '#ff8c00', initialPos.techObject, 60, 60, 60, 'Tech Stack', 'muli_regular', '/tech')
-      .then(tech => techObject = tech);
-    create3DText(contactObject, glScene, '#ff8c00', initialPos.contactObject, 60, 60, 60, 'Contact', 'muli_regular', '/contact')
-      .then(contact => contactObject = contact);
-
-    const randomProjectLogo = randomLogo(projectLogos);
-    if(!projLogoObject) createIcon(glScene, initialPos.projectLogo, randomProjectLogo)
-      .then(projectLogo => projLogoObject = projectLogo);
-    const randomTechLogo = randomLogo(techLogos);
-    if(!techLogoObject) createIcon(glScene, initialPos.techLogo, randomTechLogo)
-      .then(techLogo => techLogoObject = techLogo);
-    const randomContactIcon = randomLogo(contactIcons);
-    if(!contactIconObject) createIcon(glScene, initialPos.contactIcon, randomContactIcon)
-      .then(contactIcon => contactIconObject = contactIcon);
+  function createHomePage(width, height, position, rotation) {  
+    const planeObject = createPlane(width, height, position, rotation);  
+    glScene.add(planeObject);  
+ 
+    const cssObject = createBlankCSSObject(width, height, position, rotation, styles.project);  
+    cssScene.add(cssObject);
   }
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
   function createProject3DGeometry() {  
+    create3DText(nameObject, glScene, '#228B22', initialPos.nameObject, 100, 100, 100, 'Chris Ficht', 'muli_regular')
+      .then(name => nameObject = name);
+    create3DText(titleObject, glScene, '#558E40', initialPos.titleObject, 60, 60, 60, 'Software Developer', 'muli_regular')
+      .then(title => titleObject = title);
+
+    create3DText(projectObject, glScene, '#ff8c00', initialPos.projectObject, 60, 60, 60, 'Portfolio', 'muli_regular', 'PROJECTS')
+      .then(project => projectObject = project);
+    create3DText(techObject, glScene, '#ff8c00', initialPos.techObject, 60, 60, 60, 'Tech Stack', 'muli_regular', 'TECH')
+      .then(tech => techObject = tech);
+    create3DText(contactObject, glScene, '#ff8c00', initialPos.contactObject, 60, 60, 60, 'Contact', 'muli_regular', 'CONTACT')
+      .then(contact => contactObject = contact);
+    create3DText(aboutObject, glScene, '#ff8c00', initialPos.aboutObject, 60, 60, 60, 'About', 'muli_regular', 'ABOUT')
+      .then(about => aboutObject = about);
+
+
+    if(!projectIconObject) createIcon(glScene, initialPos.projectIcon, project)
+      .then(projectIcon => projectIconObject = projectIcon);
+    if(!techIconObject) createIcon(glScene, initialPos.techIcon, tech)
+      .then(techIcon => techIconObject = techIcon);
+    if(!contactIconObject) createIcon(glScene, initialPos.contactIcon, contact)
+      .then(contactIcon => contactIconObject = contactIcon);
+    if(!aboutIconObject) createIcon(glScene, initialPos.aboutIcon, about)
+      .then(aboutIcon => aboutIconObject = aboutIcon);
+
     const frameSize = {
-      x: 575,
-      y: 525,
+      x: 750,
+      y: 575,
       z: 512
     };
-    createPictureFrame(glScene, frameSize, initialPos.frameObject, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0))
-      .then(frame => frameObject = frame)
-      .then(() => console.log(frameObject));
+    createPictureFrame(glScene, frameSize, initialPos.frameObject, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0));
   }
 
   // INTERACTION
@@ -175,24 +165,31 @@ const Home = () => {
     const intersects = raycaster.intersectObjects(glScene.children, true);
     if(intersects.length > 0) {
       selectedObject = intersects[0];
-      if(selectedObject.object.id === projectObject.id || selectedObject.object.id === projLogoObject.id) {
+      if(selectedObject.object.userData === 'PROJECTS') {
         targetObject = { 
-          position: new THREE.Vector3(0, -1700, -4000),
+          position: initialPos.grassObject,
           url: '/projects'
         };
         navigateOn = true;
       }
-      if(selectedObject.object.id === techObject.id || selectedObject.object.id === techLogoObject.id) {
+      if(selectedObject.object.userData === 'TECH') {
         targetObject = { 
-          position: new THREE.Vector3(4000, 1500, -4000),
+          position: initialPos.sunObject,
           url: '/tech'
         };
         navigateOn = true;
       }
-      if(selectedObject.object.id === contactObject.id || selectedObject.object.id === contactIconObject.id) {
+      if(selectedObject.object.userData === 'CONTACT') {
         targetObject = { 
-          position: new THREE.Vector3(-4000, 1500, -4000),
+          position: initialPos.airplaneObject,
           url: '/contact'
+        };
+        navigateOn = true;
+      }
+      if(selectedObject.object.userData === 'ABOUT') {
+        targetObject = { 
+          position: initialPos.treeObject,
+          url: '/about'
         };
         navigateOn = true;
       }
@@ -232,9 +229,11 @@ const Home = () => {
       }
     }
 
-    if(projLogoObject) projLogoObject.rotation.y += .05;
-    if(techLogoObject) techLogoObject.rotation.y += .05;
+    if(projectIconObject) projectIconObject.rotation.y += .05;
+    if(techIconObject) techIconObject.rotation.y += .05;
     if(contactIconObject) contactIconObject.rotation.y += .05;
+    if(aboutIconObject) aboutIconObject.rotation.y += .05;
+
     cloudObjects.map(cloud => cloud.position.x >= 6000 ? cloud.position.x = -6000 : cloud.position.x += 5);
     
     glRenderer.render(glScene, camera);  
