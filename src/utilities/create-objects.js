@@ -76,7 +76,7 @@ export function createTree(width, height, position) {
 }
 
 export function createRock(width, height, position) {
-  const rock_url = './images/common_images/rock1.png';
+  const rock_url = './images/common_images/rock.png';
   const rockMaterial = new THREE.MeshToonMaterial({ map: textureLoader.load(rock_url), alphaTest: 0.4, transparent: true, side: THREE.DoubleSide, });
   const rockGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
   rockGeometry.center();

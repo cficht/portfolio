@@ -7,7 +7,7 @@ import { clouds, field, project, tech, contact, about } from '../../data/objects
 import styles from './Home.css';
 
 const Home = () => {
-  let camera, controls, glRenderer, cssRenderer, backgroundObject, cloudObjects, sunObject, airplaneObject, treeObject, rockObject, nameObject, titleObject, projectObject, projectIconObject, techObject, techIconObject, contactObject, contactIconObject, aboutObject, aboutIconObject, selectedObject, targetObject;
+  let camera, controls, glRenderer, cssRenderer, initialPos, backgroundObject, cloudObjects, sunObject, airplaneObject, treeObject, rockObject, cssObject, planeObject, frameObject, nameObject, titleObject, projectObject, projectIconObject, techObject, techIconObject, contactObject, contactIconObject, aboutObject, aboutIconObject, selectedObject, targetObject;
   let cameraDepth = 2750;
   let cameraStart = false;
   let navigateOn = false;
@@ -17,7 +17,9 @@ const Home = () => {
   const cssScene = new THREE.Scene();
   const OrbitControls = ThreeOrbitControls(THREE);
 
-  let initialPos = {
+  const desktopPos = {
+    cameraMainPos: new THREE.Vector3(0, 0, cameraDepth),
+    cameraStartPos: new THREE.Vector3(0, 2250, cameraDepth),
     sunObject: new THREE.Vector3(3500 * (setWidth / 1440), 1500, -4000),
     airplaneObject: new THREE.Vector3(-3500 * (setWidth / 1440), 1500, -4000),
     treeObject: new THREE.Vector3(-3500 * (setWidth / 1440), -1800, -4000),
@@ -27,8 +29,6 @@ const Home = () => {
     frameObject: new THREE.Vector3(0, 200, -2000),
     nameObject: new THREE.Vector3(-10, 300, -2000),
     titleObject: new THREE.Vector3(0, 100, -2000),
-    cameraMainPos: new THREE.Vector3(0, 0, cameraDepth),
-    cameraStartPos: new THREE.Vector3(0, 2250, cameraDepth),
     projectObject: new THREE.Vector3(1200, -1700, -2000),
     projectIcon: new THREE.Vector3(1200, -1400, -2000),
     techObject: new THREE.Vector3(400, -1700, -2000),
@@ -39,8 +39,31 @@ const Home = () => {
     aboutIcon: new THREE.Vector3(-1200, -1400, -2000)
   };
 
+  const mobilePos = {
+    cameraMainPos: new THREE.Vector3(0, 0, cameraDepth),
+    cameraStartPos: new THREE.Vector3(0, 2250, cameraDepth),
+    sunObject: new THREE.Vector3(3750 * (setWidth / 1440), 1500, -4000),
+    airplaneObject: new THREE.Vector3(-4200 * (setWidth / 1440), 1500, -4000),
+    treeObject: new THREE.Vector3(-3500 * (setWidth / 1440), -1800, -4000),
+    rockObject: new THREE.Vector3(4250 * (setWidth / 1440), -2400, -4000),
+    cssObject: new THREE.Vector3(0, 0, -2000),
+    planeObject: new THREE.Vector3(0, 0, -2000),
+    frameObject: new THREE.Vector3(0, 0, -2000),
+    nameObject: new THREE.Vector3(-10, 100, -2000),
+    titleObject: new THREE.Vector3(0, -100, -2000),
+    projectObject: new THREE.Vector3(900, -2450, -2000),
+    projectIcon: new THREE.Vector3(900, -2150, -2000),
+    techObject: new THREE.Vector3(300, -2450, -2000),
+    techIcon: new THREE.Vector3(300, -2150, -2000),
+    contactObject: new THREE.Vector3(-300, -2450, -2000),
+    contactIcon: new THREE.Vector3(-300, -2150, -2000),
+    aboutObject: new THREE.Vector3(-900, -2450, -2000),
+    aboutIcon: new THREE.Vector3(-900, -2150, -2000)
+  };
+
   // INITIALIZE PAGE
   useEffect(() => {
+    if(performance.navigation.type == 2) location.reload(true);
 
     // CAMERA
     if(navigator.userAgent.match(/Android/i) 
@@ -51,24 +74,10 @@ const Home = () => {
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) { 
-      cameraDepth = 5000;
-      initialPos.projectObject = new THREE.Vector3(1050, -2250, -1000);
-      initialPos.projectIcon = new THREE.Vector3(1050, -1950, -1000);
-      initialPos.techObject = new THREE.Vector3(350, -2250, -1000);
-      initialPos.techIcon = new THREE.Vector3(350, -1950, -1000);
-      initialPos.contactObject = new THREE.Vector3(-350, -2250, -1000);
-      initialPos.contactIcon = new THREE.Vector3(-350, -1950, -1000);
-      initialPos.aboutObject = new THREE.Vector3(-1050, -2250, -1000);
-      initialPos.aboutIcon = new THREE.Vector3(-1050, -1950, -1000);
-      initialPos.sunObject.x += 225;
-      initialPos.airplaneObject.x -= 325;
-      initialPos.treeObject.x -= 225;
-      initialPos.rockObject.x += 450;
-      initialPos.cssObject.y = 0;
-      initialPos.planeObject.y = 0;
-      initialPos.frameObject.y = 0;
-      initialPos.nameObject.y = 100;
-      initialPos.titleObject.y = -100;
+      cameraDepth = 4500;
+      initialPos = mobilePos;
+    } else {
+      initialPos = desktopPos;
     }
     camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 15000);
     camera.position.set(0, 0, cameraDepth);
@@ -119,14 +128,14 @@ const Home = () => {
     controls.maxPolarAngle = 2;
     controls.minPolarAngle = 1;
     controls.minDistance = 700;
-    controls.maxDistance = 4000;
+    controls.maxDistance = 5000;
     controls.enableKeys = false;
 
     // ON START
-    camera.position.set(initialPos.cameraStartPos.x, initialPos.cameraStartPos.y, cameraDepth);
-    camera.rotation.x = .5;
-    cameraStart = true;
-    controls.enabled = false;
+    // camera.position.set(initialPos.cameraStartPos.x, initialPos.cameraStartPos.y, cameraDepth);
+    // camera.rotation.x = .5;
+    // cameraStart = true;
+    // controls.enabled = false;
 
     // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('click', onClick, true);
@@ -135,18 +144,18 @@ const Home = () => {
 
   // SETUP OBJECTS THAT WILL CHANGE
   function createHomePage(width, height, position, rotation) {  
-    const planeObject = createPlane(width, height, position, rotation);  
+    planeObject = createPlane(width, height, position, rotation);  
     glScene.add(planeObject);  
  
-    const cssObject = createBlankCSSObject(width, height, position, rotation, styles.project);  
+    cssObject = createBlankCSSObject(width, height, position, rotation, styles.project);  
     cssScene.add(cssObject);
   }
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
   function createProject3DGeometry() {  
-    create3DText(nameObject, glScene, '#228B22', initialPos.nameObject, 100, 100, 100, 'Chris Ficht', 'muli_regular')
+    create3DText(nameObject, glScene, '#228B22', initialPos.nameObject, 100, 100, 100, 'Chris Ficht', 'muli_regular', 'NAME')
       .then(name => nameObject = name);
-    create3DText(titleObject, glScene, '#558E40', initialPos.titleObject, 60, 60, 60, 'Software Developer', 'muli_regular')
+    create3DText(titleObject, glScene, '#558E40', initialPos.titleObject, 60, 60, 60, 'Software Developer', 'muli_regular', 'TITLE')
       .then(title => titleObject = title);
 
     create3DText(projectObject, glScene, '#ff8c00', initialPos.projectObject, 60, 60, 60, 'Portfolio', 'muli_regular', 'PROJECTS')
@@ -173,7 +182,8 @@ const Home = () => {
       y: 800,
       z: 512
     };
-    createPictureFrame(glScene, frameSize, initialPos.frameObject, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0));
+    createPictureFrame(glScene, frameSize, initialPos.frameObject, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0))
+      .then(frame => frameObject = frame);
   }
 
   // INTERACTION
@@ -233,16 +243,34 @@ const Home = () => {
     }
 
     if(navigateOn) {
+      glScene.children.forEach(child => {
+        if(child.userData === 'PROJECTS') child.position.x += 150;
+        if(child.userData === 'TECH') {
+          child.position.z += 100;
+          child.position.x += 50;
+        }
+        if(child.userData === 'CONTACT') {
+          child.position.z += 100;
+          child.position.x -= 50;
+        }
+        if(child.userData === 'ABOUT') child.position.x -= 150;
+      });
+      nameObject.position.y += 150;
+      titleObject.position.y += 150;
+      cssObject.position.y += 150;
+      planeObject.position.y += 150;
+      frameObject.position.y += 150;
+
       controls.enabled = false;
       if(controls.target.z > targetObject.position.z) controls.target.z -= 25;
-      if(controls.target.y > targetObject.position.y) controls.target.y -= 25;
-      if(controls.target.y < targetObject.position.y) controls.target.y += 25;
+      if(controls.target.y > targetObject.position.y) controls.target.y -= 15;
+      if(controls.target.y < targetObject.position.y) controls.target.y += 15;
       if(controls.target.x > targetObject.position.x) controls.target.x -= 25;
       if(controls.target.x < targetObject.position.x) controls.target.x += 25;
       controls.update();    
       if(camera.position.z > targetObject.position.z) camera.position.z -= 25;
-      if(camera.position.y > targetObject.position.y) camera.position.y -= 25;
-      if(camera.position.y < targetObject.position.y) camera.position.y += 25;
+      if(camera.position.y > targetObject.position.y) camera.position.y -= 15;
+      if(camera.position.y < targetObject.position.y) camera.position.y += 15;
       if(camera.position.x > targetObject.position.x) camera.position.x -= 25;
       if(camera.position.x < targetObject.position.x) camera.position.x += 25;
       if(camera.position.z < 0) {
