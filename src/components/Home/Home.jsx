@@ -117,7 +117,7 @@ const Home = () => {
     rockObject = createRock(797, 340, initialPos.rockObject);
     glScene.add(rockObject);
 
-    createHomePage(1400, 900, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
+    createHomePage(1600, 900, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
     createProject3DGeometry();  
     update();
 
@@ -128,7 +128,7 @@ const Home = () => {
     controls.maxPolarAngle = 2;
     controls.minPolarAngle = 1;
     controls.minDistance = 700;
-    controls.maxDistance = 5000;
+    controls.maxDistance = 4550;
     controls.enableKeys = false;
 
     // ON START
