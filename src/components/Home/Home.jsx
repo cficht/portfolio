@@ -46,8 +46,8 @@ const Home = () => {
     sunObject: new THREE.Vector3(3750 * (setWidth / 1440), 1500, -4000),
     airplaneObject: new THREE.Vector3(-4200 * (setWidth / 1440), 1500, -4000),
     treeObject: new THREE.Vector3(-3500 * (setWidth / 1440), -1800, -4000),
-    rockObject: new THREE.Vector3(4250 * (setWidth / 1440), -2400, -4000),
-    grassObject: new THREE.Vector3(4250 * (setWidth / 1440), -2415, -3990),
+    rockObject: new THREE.Vector3(4250 * (setWidth / 1440), -2425, -4000),
+    grassObject: new THREE.Vector3(4250 * (setWidth / 1440), -2435, -3990),
     cssObject: new THREE.Vector3(0, 0, -2000),
     planeObject: new THREE.Vector3(0, 0, -2000),
     frameObject: new THREE.Vector3(0, 0, -2000),
@@ -139,12 +139,10 @@ const Home = () => {
     controls.enableKeys = false;
 
     // ON START
-    // camera.position.set(initialPos.cameraStartPos.x, initialPos.cameraStartPos.y, cameraDepth);
-    // camera.rotation.x = .5;
-    // cameraStart = true;
-    // controls.enabled = false;
-
-    // camera.position.set(3500 * (setWidth / 1440), -2400, -2500);
+    camera.position.set(initialPos.cameraStartPos.x, initialPos.cameraStartPos.y, cameraDepth);
+    camera.rotation.x = .5;
+    cameraStart = true;
+    controls.enabled = false;
 
     // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('click', onClick, true);
