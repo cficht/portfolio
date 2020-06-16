@@ -117,7 +117,7 @@ const Home = () => {
     rockObject = createRock(797, 340, initialPos.rockObject);
     glScene.add(rockObject);
 
-    createHomePage(1400, 800, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
+    createHomePage(1400, 900, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
     createProject3DGeometry();  
     update();
 
@@ -132,10 +132,10 @@ const Home = () => {
     controls.enableKeys = false;
 
     // ON START
-    camera.position.set(initialPos.cameraStartPos.x, initialPos.cameraStartPos.y, cameraDepth);
-    camera.rotation.x = .5;
-    cameraStart = true;
-    controls.enabled = false;
+    // camera.position.set(initialPos.cameraStartPos.x, initialPos.cameraStartPos.y, cameraDepth);
+    // camera.rotation.x = .5;
+    // cameraStart = true;
+    // controls.enabled = false;
 
     // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('click', onClick, true);
