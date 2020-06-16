@@ -3,7 +3,9 @@ import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer, createPlane, createBlankCSSObject } from '../../utilities/initialize-page';
 import { createBackground, createClouds, createSun, createAirplane, createTree, createRock, createGrass, create3DText, createIcon, createPictureFrame } from '../../utilities/create-objects';
+import { moveView } from '../../utilities/other';
 import { clouds, field, project, tech, contact, about } from '../../data/objects';
+import { desktopPositionsHome, mobilePositionsHome } from '../../data/positions';
 import styles from './Home.css';
 
 const Home = () => {
@@ -17,51 +19,8 @@ const Home = () => {
   const cssScene = new THREE.Scene();
   const OrbitControls = ThreeOrbitControls(THREE);
 
-  const desktopPos = {
-    cameraMainPos: new THREE.Vector3(0, 0, cameraDepth),
-    cameraStartPos: new THREE.Vector3(0, 2250, cameraDepth),
-    sunObject: new THREE.Vector3(3500 * (setWidth / 1440), 1500, -4000),
-    airplaneObject: new THREE.Vector3(-3500 * (setWidth / 1440), 1500, -4000),
-    treeObject: new THREE.Vector3(-3500 * (setWidth / 1440), -1800, -4000),
-    rockObject: new THREE.Vector3(3500 * (setWidth / 1440), -2400, -4000),
-    grassObject: new THREE.Vector3(3500 * (setWidth / 1440), -2415, -3990),
-    cssObject: new THREE.Vector3(0, 200, -2000),
-    planeObject: new THREE.Vector3(0, 200, -2000),
-    frameObject: new THREE.Vector3(0, 200, -2000),
-    nameObject: new THREE.Vector3(-10, 300, -2000),
-    titleObject: new THREE.Vector3(0, 100, -2000),
-    projectObject: new THREE.Vector3(1200, -1714.5, -2000),
-    projectIcon: new THREE.Vector3(1200, -1400, -2000),
-    techObject: new THREE.Vector3(400, -1700, -2000),
-    techIcon: new THREE.Vector3(400, -1400, -2000),
-    contactObject: new THREE.Vector3(-400, -1700, -2000),
-    contactIcon: new THREE.Vector3(-400, -1400, -2000),
-    aboutObject: new THREE.Vector3(-1200, -1700, -2000),
-    aboutIcon: new THREE.Vector3(-1200, -1400, -2000)
-  };
-
-  const mobilePos = {
-    cameraMainPos: new THREE.Vector3(0, 0, cameraDepth),
-    cameraStartPos: new THREE.Vector3(0, 2250, cameraDepth),
-    sunObject: new THREE.Vector3(3750 * (setWidth / 1440), 1500, -4000),
-    airplaneObject: new THREE.Vector3(-4200 * (setWidth / 1440), 1500, -4000),
-    treeObject: new THREE.Vector3(-3500 * (setWidth / 1440), -1800, -4000),
-    rockObject: new THREE.Vector3(4250 * (setWidth / 1440), -2425, -4000),
-    grassObject: new THREE.Vector3(4250 * (setWidth / 1440), -2435, -3990),
-    cssObject: new THREE.Vector3(0, 0, -2000),
-    planeObject: new THREE.Vector3(0, 0, -2000),
-    frameObject: new THREE.Vector3(0, 0, -2000),
-    nameObject: new THREE.Vector3(-10, 100, -2000),
-    titleObject: new THREE.Vector3(0, -100, -2000),
-    projectObject: new THREE.Vector3(900, -2450, -2000),
-    projectIcon: new THREE.Vector3(900, -2135.5, -2000),
-    techObject: new THREE.Vector3(300, -2435.5, -2000),
-    techIcon: new THREE.Vector3(300, -2135.5, -2000),
-    contactObject: new THREE.Vector3(-300, -2435.5, -2000),
-    contactIcon: new THREE.Vector3(-300, -2135.5, -2000),
-    aboutObject: new THREE.Vector3(-900, -2435.5, -2000),
-    aboutIcon: new THREE.Vector3(-900, -2135.5, -2000)
-  };
+  const desktopPos = desktopPositionsHome(cameraDepth, setWidth);
+  const mobilePos = mobilePositionsHome(cameraDepth, setWidth);
 
   // INITIALIZE PAGE
   useEffect(() => {
@@ -252,15 +211,11 @@ const Home = () => {
     if(navigateOn) {
       glScene.children.forEach(child => {
         if(child.userData === 'PROJECTS') child.position.x += 150;
-        if(child.userData === 'TECH') {
-          child.position.z += 100;
-          child.position.x += 50;
-        }
-        if(child.userData === 'CONTACT') {
-          child.position.z += 100;
-          child.position.x -= 50;
-        }
         if(child.userData === 'ABOUT') child.position.x -= 150;
+        if(child.userData === 'TECH' || child.userData === 'CONTACT') {
+          child.position.z += 100;
+          child.userData === 'TECH' ? child.position.x += 50 : child.position.x -= 50 ;
+        } 
       });
       nameObject.position.y += 150;
       titleObject.position.y += 150;
@@ -269,17 +224,9 @@ const Home = () => {
       frameObject.position.y += 150;
 
       controls.enabled = false;
-      if(controls.target.z > targetObject.position.z) controls.target.z -= 25;
-      if(controls.target.y > targetObject.position.y) controls.target.y -= 15;
-      if(controls.target.y < targetObject.position.y) controls.target.y += 15;
-      if(controls.target.x > targetObject.position.x) controls.target.x -= 25;
-      if(controls.target.x < targetObject.position.x) controls.target.x += 25;
+      moveView(controls, targetObject);
       controls.update();    
-      if(camera.position.z > targetObject.position.z) camera.position.z -= 25;
-      if(camera.position.y > targetObject.position.y) camera.position.y -= 15;
-      if(camera.position.y < targetObject.position.y) camera.position.y += 15;
-      if(camera.position.x > targetObject.position.x) camera.position.x -= 25;
-      if(camera.position.x < targetObject.position.x) camera.position.x += 25;
+      moveView(camera, targetObject);
       if(camera.position.z < 0) {
         navigateOn = false;
         window.location = targetObject.url;

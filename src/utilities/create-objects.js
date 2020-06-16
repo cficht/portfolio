@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { STLLoader } from '../loaders/STLLoader';
 import { GLTFLoader } from '../loaders/GLTFLoader';
-import { createColoredMaterial } from './create-other';
+import { createColoredMaterial } from './other';
 const textureLoader = new THREE.TextureLoader();
 const fontLoader = new THREE.FontLoader();
 const stlLoader = new STLLoader();

@@ -32,3 +32,14 @@ export function randomLogo(arr) {
   const randomIndex = Math.floor(Math.random() * arr.length);
   return arr[randomIndex];
 }
+
+export function moveView(viewObject, targetObject) {
+  let objectType;
+  if(viewObject.type === 'PerspectiveCamera') objectType = viewObject.position;
+  else objectType = viewObject.target;
+  if(objectType.z > targetObject.position.z) objectType.z -= 25;
+  if(objectType.y > targetObject.position.y) objectType.y -= 15;
+  if(objectType.y < targetObject.position.y) objectType.y += 15;
+  if(objectType.x > targetObject.position.x) objectType.x -= 25;
+  if(objectType.x < targetObject.position.x) objectType.x += 25;
+}

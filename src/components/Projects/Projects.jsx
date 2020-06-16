@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer, createPlane, createProjectCssObject } from '../../utilities/initialize-page';
 import { createBackground, createClouds, create3DText, createIcon, createArrow, createPictureFrame } from '../../utilities/create-objects';
-import { projectChange } from '../../utilities/create-other';
+import { projectChange } from '../../utilities/other';
 import { projects } from '../../data/info';
 import { clouds, field, github, site } from '../../data/objects';
 import styles from './Projects.css';
