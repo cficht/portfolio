@@ -2,12 +2,12 @@ import React, { useEffect } from 'react';
 import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer, createPlane, createBlankCSSObject } from '../../utilities/initialize-page';
-import { createBackground, createClouds, createSun, createAirplane, createTree, createRock, create3DText, createIcon, createPictureFrame } from '../../utilities/create-objects';
+import { createBackground, createClouds, createSun, createAirplane, createTree, createRock, createGrass, create3DText, createIcon, createPictureFrame } from '../../utilities/create-objects';
 import { clouds, field, project, tech, contact, about } from '../../data/objects';
 import styles from './Home.css';
 
 const Home = () => {
-  let camera, controls, glRenderer, cssRenderer, initialPos, backgroundObject, cloudObjects, sunObject, airplaneObject, treeObject, rockObject, cssObject, planeObject, frameObject, nameObject, titleObject, projectObject, projectIconObject, techObject, techIconObject, contactObject, contactIconObject, aboutObject, aboutIconObject, selectedObject, targetObject;
+  let camera, controls, glRenderer, cssRenderer, initialPos, backgroundObject, cloudObjects, sunObject, airplaneObject, treeObject, rockObject, grassObject, cssObject, planeObject, frameObject, nameObject, titleObject, projectObject, projectIconObject, techObject, techIconObject, contactObject, contactIconObject, aboutObject, aboutIconObject, selectedObject, targetObject;
   let cameraDepth = 2750;
   let cameraStart = false;
   let navigateOn = false;
@@ -24,12 +24,13 @@ const Home = () => {
     airplaneObject: new THREE.Vector3(-3500 * (setWidth / 1440), 1500, -4000),
     treeObject: new THREE.Vector3(-3500 * (setWidth / 1440), -1800, -4000),
     rockObject: new THREE.Vector3(3500 * (setWidth / 1440), -2400, -4000),
+    grassObject: new THREE.Vector3(3500 * (setWidth / 1440), -2415, -3990),
     cssObject: new THREE.Vector3(0, 200, -2000),
     planeObject: new THREE.Vector3(0, 200, -2000),
     frameObject: new THREE.Vector3(0, 200, -2000),
     nameObject: new THREE.Vector3(-10, 300, -2000),
     titleObject: new THREE.Vector3(0, 100, -2000),
-    projectObject: new THREE.Vector3(1200, -1700, -2000),
+    projectObject: new THREE.Vector3(1200, -1714.5, -2000),
     projectIcon: new THREE.Vector3(1200, -1400, -2000),
     techObject: new THREE.Vector3(400, -1700, -2000),
     techIcon: new THREE.Vector3(400, -1400, -2000),
@@ -46,24 +47,27 @@ const Home = () => {
     airplaneObject: new THREE.Vector3(-4200 * (setWidth / 1440), 1500, -4000),
     treeObject: new THREE.Vector3(-3500 * (setWidth / 1440), -1800, -4000),
     rockObject: new THREE.Vector3(4250 * (setWidth / 1440), -2400, -4000),
+    grassObject: new THREE.Vector3(4250 * (setWidth / 1440), -2415, -3990),
     cssObject: new THREE.Vector3(0, 0, -2000),
     planeObject: new THREE.Vector3(0, 0, -2000),
     frameObject: new THREE.Vector3(0, 0, -2000),
     nameObject: new THREE.Vector3(-10, 100, -2000),
     titleObject: new THREE.Vector3(0, -100, -2000),
     projectObject: new THREE.Vector3(900, -2450, -2000),
-    projectIcon: new THREE.Vector3(900, -2150, -2000),
-    techObject: new THREE.Vector3(300, -2450, -2000),
-    techIcon: new THREE.Vector3(300, -2150, -2000),
-    contactObject: new THREE.Vector3(-300, -2450, -2000),
-    contactIcon: new THREE.Vector3(-300, -2150, -2000),
-    aboutObject: new THREE.Vector3(-900, -2450, -2000),
-    aboutIcon: new THREE.Vector3(-900, -2150, -2000)
+    projectIcon: new THREE.Vector3(900, -2135.5, -2000),
+    techObject: new THREE.Vector3(300, -2435.5, -2000),
+    techIcon: new THREE.Vector3(300, -2135.5, -2000),
+    contactObject: new THREE.Vector3(-300, -2435.5, -2000),
+    contactIcon: new THREE.Vector3(-300, -2135.5, -2000),
+    aboutObject: new THREE.Vector3(-900, -2435.5, -2000),
+    aboutIcon: new THREE.Vector3(-900, -2135.5, -2000)
   };
 
   // INITIALIZE PAGE
   useEffect(() => {
-    if(performance.navigation.type == 2) location.reload(true);
+    window.addEventListener('pageshow', function(event) {
+      if(event.persisted) location.reload();
+    });
 
     // CAMERA
     if(navigator.userAgent.match(/Android/i) 
@@ -117,6 +121,9 @@ const Home = () => {
     rockObject = createRock(797, 340, initialPos.rockObject);
     glScene.add(rockObject);
 
+    grassObject = createGrass(1662, 81, initialPos.grassObject);
+    glScene.add(grassObject);
+
     createHomePage(1600, 900, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
     createProject3DGeometry();  
     update();
@@ -136,6 +143,8 @@ const Home = () => {
     // camera.rotation.x = .5;
     // cameraStart = true;
     // controls.enabled = false;
+
+    // camera.position.set(3500 * (setWidth / 1440), -2400, -2500);
 
     // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('click', onClick, true);
@@ -158,7 +167,7 @@ const Home = () => {
     create3DText(titleObject, glScene, '#558E40', initialPos.titleObject, 60, 60, 60, 'Software Developer', 'muli_regular', 'TITLE')
       .then(title => titleObject = title);
 
-    create3DText(projectObject, glScene, '#ff8c00', initialPos.projectObject, 60, 60, 60, 'Portfolio', 'muli_regular', 'PROJECTS')
+    create3DText(projectObject, glScene, '#ff8c00', initialPos.projectObject, 60, 60, 60, 'Projects', 'muli_regular', 'PROJECTS')
       .then(project => projectObject = project);
     create3DText(techObject, glScene, '#ff8c00', initialPos.techObject, 60, 60, 60, 'Tech', 'muli_regular', 'TECH')
       .then(tech => techObject = tech);

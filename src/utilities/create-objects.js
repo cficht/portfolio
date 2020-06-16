@@ -88,6 +88,19 @@ export function createRock(width, height, position) {
   return rockMesh;
 }
 
+export function createGrass(width, height, position) {
+  const grass_url = './images/common_images/grass2.png';
+  const grassMaterial = new THREE.MeshBasicMaterial({ map: textureLoader.load(grass_url), alphaTest: 0.8, transparent: true, side: THREE.DoubleSide });
+  const grassGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
+  grassGeometry.center();
+  const grassMesh = new THREE.Mesh(grassGeometry, grassMaterial);
+  grassMesh.scale.set(width * .09, height * .09, 1);
+  grassMesh.position.set(position.x, position.y, position.z);
+  grassMesh.rotation.copy(new THREE.Euler(0, 0, 0));
+  grassMesh.userData = 'GRASS';
+  return grassMesh;
+}
+
 export function create3DText(object, scene, color, position, width, height, depth, textContent, fontName, data) {
   return new Promise((resolve) => {
     if(object) {
