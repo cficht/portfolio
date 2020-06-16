@@ -132,10 +132,10 @@ const Home = () => {
     controls.enableKeys = false;
 
     // ON START
-    // camera.position.set(initialPos.cameraStartPos.x, initialPos.cameraStartPos.y, cameraDepth);
-    // camera.rotation.x = .5;
-    // cameraStart = true;
-    // controls.enabled = false;
+    camera.position.set(initialPos.cameraStartPos.x, initialPos.cameraStartPos.y, cameraDepth);
+    camera.rotation.x = .5;
+    cameraStart = true;
+    controls.enabled = false;
 
     // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('click', onClick, true);
