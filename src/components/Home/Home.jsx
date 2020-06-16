@@ -2,12 +2,12 @@ import React, { useEffect } from 'react';
 import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer, createPlane, createBlankCSSObject } from '../../utilities/initialize-page';
-import { createBackground, createClouds, createSun, createAirplane, createTree, create3DText, createIcon, createPictureFrame } from '../../utilities/create-objects';
+import { createBackground, createClouds, createSun, createAirplane, createTree, createRock, create3DText, createIcon, createPictureFrame } from '../../utilities/create-objects';
 import { clouds, field, project, tech, contact, about } from '../../data/objects';
 import styles from './Home.css';
 
 const Home = () => {
-  let camera, controls, glRenderer, cssRenderer, backgroundObject, cloudObjects, sunObject, airplaneObject, treeObject, nameObject, titleObject, projectObject, projectIconObject, techObject, techIconObject, contactObject, contactIconObject, aboutObject, aboutIconObject, selectedObject, targetObject;
+  let camera, controls, glRenderer, cssRenderer, backgroundObject, cloudObjects, sunObject, airplaneObject, treeObject, rockObject, nameObject, titleObject, projectObject, projectIconObject, techObject, techIconObject, contactObject, contactIconObject, aboutObject, aboutIconObject, selectedObject, targetObject;
   let cameraDepth = 2750;
   let cameraStart = false;
   let navigateOn = false;
@@ -17,16 +17,16 @@ const Home = () => {
   const cssScene = new THREE.Scene();
   const OrbitControls = ThreeOrbitControls(THREE);
 
-  const initialPos = {
-    sunObject: new THREE.Vector3(3000, 1500, -4000),
-    airplaneObject: new THREE.Vector3(-3000, 1300, -4000),
-    treeObject: new THREE.Vector3(-3000, -1800, -4000),
-    grassObject: new THREE.Vector3(3000, -1800, -4000),
-    cssObject: new THREE.Vector3(0, 100, 0),
-    planeObject: new THREE.Vector3(0, 100, 0),
-    frameObject: new THREE.Vector3(0, 100, 0),
-    nameObject: new THREE.Vector3(-10, 200, 0),
-    titleObject: new THREE.Vector3(0, 0, 0),
+  let initialPos = {
+    sunObject: new THREE.Vector3(3500 * (setWidth / 1440), 1500, -4000),
+    airplaneObject: new THREE.Vector3(-3500 * (setWidth / 1440), 1500, -4000),
+    treeObject: new THREE.Vector3(-3500 * (setWidth / 1440), -1800, -4000),
+    rockObject: new THREE.Vector3(3500 * (setWidth / 1440), -2400, -4000),
+    cssObject: new THREE.Vector3(0, 200, -2000),
+    planeObject: new THREE.Vector3(0, 200, -2000),
+    frameObject: new THREE.Vector3(0, 200, -2000),
+    nameObject: new THREE.Vector3(-10, 300, -2000),
+    titleObject: new THREE.Vector3(0, 100, -2000),
     cameraMainPos: new THREE.Vector3(0, 0, cameraDepth),
     cameraStartPos: new THREE.Vector3(0, 2250, cameraDepth),
     projectObject: new THREE.Vector3(1200, -1700, -2000),
@@ -50,7 +50,26 @@ const Home = () => {
     || navigator.userAgent.match(/iPad/i)
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
-    || navigator.userAgent.match(/Windows Phone/i)) cameraDepth = 4000;
+    || navigator.userAgent.match(/Windows Phone/i)) { 
+      cameraDepth = 5000;
+      initialPos.projectObject = new THREE.Vector3(1050, -2250, -1000);
+      initialPos.projectIcon = new THREE.Vector3(1050, -1950, -1000);
+      initialPos.techObject = new THREE.Vector3(350, -2250, -1000);
+      initialPos.techIcon = new THREE.Vector3(350, -1950, -1000);
+      initialPos.contactObject = new THREE.Vector3(-350, -2250, -1000);
+      initialPos.contactIcon = new THREE.Vector3(-350, -1950, -1000);
+      initialPos.aboutObject = new THREE.Vector3(-1050, -2250, -1000);
+      initialPos.aboutIcon = new THREE.Vector3(-1050, -1950, -1000);
+      initialPos.sunObject.x += 225;
+      initialPos.airplaneObject.x -= 325;
+      initialPos.treeObject.x -= 225;
+      initialPos.rockObject.x += 450;
+      initialPos.cssObject.y = 0;
+      initialPos.planeObject.y = 0;
+      initialPos.frameObject.y = 0;
+      initialPos.nameObject.y = 100;
+      initialPos.titleObject.y = -100;
+    }
     camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 15000);
     camera.position.set(0, 0, cameraDepth);
   
@@ -86,7 +105,10 @@ const Home = () => {
     treeObject = createTree(6814, 7571, initialPos.treeObject);
     glScene.add(treeObject);
 
-    createHomePage(1300, 650, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
+    rockObject = createRock(797, 340, initialPos.rockObject);
+    glScene.add(rockObject);
+
+    createHomePage(1400, 800, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
     createProject3DGeometry();  
     update();
 
@@ -129,7 +151,7 @@ const Home = () => {
 
     create3DText(projectObject, glScene, '#ff8c00', initialPos.projectObject, 60, 60, 60, 'Portfolio', 'muli_regular', 'PROJECTS')
       .then(project => projectObject = project);
-    create3DText(techObject, glScene, '#ff8c00', initialPos.techObject, 60, 60, 60, 'Tech Stack', 'muli_regular', 'TECH')
+    create3DText(techObject, glScene, '#ff8c00', initialPos.techObject, 60, 60, 60, 'Tech', 'muli_regular', 'TECH')
       .then(tech => techObject = tech);
     create3DText(contactObject, glScene, '#ff8c00', initialPos.contactObject, 60, 60, 60, 'Contact', 'muli_regular', 'CONTACT')
       .then(contact => contactObject = contact);
@@ -147,8 +169,8 @@ const Home = () => {
       .then(aboutIcon => aboutIconObject = aboutIcon);
 
     const frameSize = {
-      x: 750,
-      y: 575,
+      x: 800,
+      y: 800,
       z: 512
     };
     createPictureFrame(glScene, frameSize, initialPos.frameObject, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0));
@@ -167,7 +189,7 @@ const Home = () => {
       selectedObject = intersects[0];
       if(selectedObject.object.userData === 'PROJECTS') {
         targetObject = { 
-          position: initialPos.grassObject,
+          position: initialPos.rockObject,
           url: '/projects'
         };
         navigateOn = true;
