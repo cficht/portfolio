@@ -102,7 +102,6 @@ const Home = () => {
     camera.rotation.x = .5;
     cameraStart = true;
     controls.enabled = false;
-    camera.position.set(initialPos.cameraStartPos.x, initialPos.cameraMainPos.y, cameraDepth);
 
     // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('click', onClick, true);
