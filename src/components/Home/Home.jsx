@@ -19,8 +19,8 @@ const Home = () => {
   const cssScene = new THREE.Scene();
   const OrbitControls = ThreeOrbitControls(THREE);
 
-  const desktopPos = desktopPositionsHome(cameraDepth, setWidth);
-  const mobilePos = mobilePositionsHome(cameraDepth, setWidth);
+  const desktopPos = desktopPositionsHome(cameraDepth);
+  const mobilePos = mobilePositionsHome(cameraDepth);
 
   // INITIALIZE PAGE
   useEffect(() => {
@@ -102,6 +102,7 @@ const Home = () => {
     camera.rotation.x = .5;
     cameraStart = true;
     controls.enabled = false;
+    camera.position.set(initialPos.cameraStartPos.x, initialPos.cameraMainPos.y, cameraDepth);
 
     // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('click', onClick, true);
@@ -228,8 +229,8 @@ const Home = () => {
       controls.update();    
       moveView(camera, targetObject);
       if(camera.position.z < 0) {
-        navigateOn = false;
-        window.location = targetObject.url;
+        // navigateOn = false;
+        // window.location = targetObject.url;
       }
     }
 
