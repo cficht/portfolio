@@ -16,7 +16,7 @@ export function projectChange(nextLast, data, cssObject, glScene, changeProject,
     if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'background' || child.userData === 'CLOUD' || child.userData === 'ROCK' || child.userData === 'GRASS') return;
     if(child.userData === 'NEXT' || child.userData === 'LAST' || child.userData === 'GITHUB' || child.userData === 'SITE') {
       if(!changeProject) child.position.y -= 100;
-      if(changeProject && child.position.y <= -2200) child.position.y += 100;
+      if(changeProject && child.position.y < -2100) child.position.y += 100;
       return;
     }
     child.position.x += (100 * nextLast); 
