@@ -9,7 +9,7 @@ import { projectField, github, site } from '../../data/objects';
 import styles from './Projects.css';
 
 const Projects = () => {
-  let camera, controls, glRenderer, cssRenderer, backgroundObject, rockObject, rockObject2, grassObject,  cssObject, planeObject, frameObject, nameObject, leftArrowObject, rightArrowObject, gitHubObject, siteObject, selectedObject;
+  let camera, controls, glRenderer, cssRenderer, backgroundObject, rockObject, rockObject2, rockObject3, rockObject4, grassObject, cssObject, planeObject, frameObject, nameObject, leftArrowObject, rightArrowObject, gitHubObject, siteObject, selectedObject;
   let nextSlide = false, changeSlide = false, nextProject = false, lastProject = false, changeProject = false;
   let cameraDepth = 2750;
   let projectCount = 0;
@@ -22,8 +22,10 @@ const Projects = () => {
   const OrbitControls = ThreeOrbitControls(THREE);
 
   const initialPos = {
-    rockObject: new THREE.Vector3(-1500, -1750, -3050),
-    rockObject2: new THREE.Vector3(1500, -1750, -3050),
+    rockObject: new THREE.Vector3(-1500, -1950, -3450),
+    rockObject2: new THREE.Vector3(1500, -1850, -3450),
+    rockObject3: new THREE.Vector3(-1800, -1850, -3050),
+    rockObject4: new THREE.Vector3(1800, -2150, -2950),
     grassObject: new THREE.Vector3(0, -2350, -2800),
     cssObject: new THREE.Vector3(0, -1550, -3900),
     planeObject: new THREE.Vector3(0, -1550, -3900),
@@ -71,11 +73,17 @@ const Projects = () => {
     backgroundObject = createBackground(projectField);
     glScene.add(backgroundObject);
 
-    rockObject = createRock(797, 340, initialPos.rockObject, .15);
+    rockObject = createRock(797, 340, initialPos.rockObject, .15, 0, true);
     glScene.add(rockObject);
 
-    rockObject2 = createRock(797, 340, initialPos.rockObject2, .15, true);
+    rockObject2 = createRock(687, 503, initialPos.rockObject2, .15, 1);
     glScene.add(rockObject2);
+
+    rockObject3 = createRock(543, 480, initialPos.rockObject3, .15, 2, true);
+    glScene.add(rockObject3);
+
+    rockObject4 = createRock(348, 259, initialPos.rockObject4, .25, 3);
+    glScene.add(rockObject4);
 
     grassObject = createGrass(1662, 300, initialPos.grassObject, .18, 'tall');
     glScene.add(grassObject);

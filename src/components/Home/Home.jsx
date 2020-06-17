@@ -77,7 +77,7 @@ const Home = () => {
     treeObject = createTree(6814, 7571, initialPos.treeObject);
     glScene.add(treeObject);
 
-    rockObject = createRock(797, 340, initialPos.rockObject, .02);
+    rockObject = createRock(797, 340, initialPos.rockObject, .02, 0);
     glScene.add(rockObject);
 
     grassObject = createGrass(1662, 81, initialPos.grassObject, .09);

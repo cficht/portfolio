@@ -75,9 +75,14 @@ export function createTree(width, height, position) {
   return treeMesh;
 }
 
-export function createRock(width, height, position, scale, flip) {
-  const rock_url = './images/common_images/rock.png';
-  const rockMaterial = new THREE.MeshToonMaterial({ map: textureLoader.load(rock_url), alphaTest: 0.4, transparent: true, side: THREE.DoubleSide, });
+export function createRock(width, height, position, scale, rockNumber, flip) {
+  const rocks = [
+    './images/common_images/rocks/rock.png',
+    './images/common_images/rocks/rock2.png',
+    './images/common_images/rocks/rock3.png',
+    './images/common_images/rocks/rock4.png'
+  ];
+  const rockMaterial = new THREE.MeshToonMaterial({ map: textureLoader.load(rocks[rockNumber]), alphaTest: 0.4, transparent: true, side: THREE.DoubleSide, shininess: 0 });
   const rockGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
   rockGeometry.center();
   const rockMesh = new THREE.Mesh(rockGeometry, rockMaterial);
@@ -91,7 +96,7 @@ export function createRock(width, height, position, scale, flip) {
 
 export function createGrass(width, height, position, scale, type) {
   let grass_url;
-  type === 'tall' ? grass_url = './images/common_images/grass_projects.png' : grass_url = './images/common_images/grass2.png';
+  type === 'tall' ? grass_url = './images/common_images/grass/grass_projects.png' : grass_url = './images/common_images/grass/grass2.png';
   const grassMaterial = new THREE.MeshBasicMaterial({ map: textureLoader.load(grass_url), alphaTest: 0.9, transparent: true, side: THREE.DoubleSide });
   const grassGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
   grassGeometry.center();
