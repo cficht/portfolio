@@ -229,8 +229,8 @@ const Home = () => {
       controls.update();    
       moveView(camera, targetObject);
       if(camera.position.z < 0) {
-        // navigateOn = false;
-        // window.location = targetObject.url;
+        navigateOn = false;
+        window.location = targetObject.url;
       }
     }
 
