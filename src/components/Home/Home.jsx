@@ -77,10 +77,10 @@ const Home = () => {
     treeObject = createTree(6814, 7571, initialPos.treeObject);
     glScene.add(treeObject);
 
-    rockObject = createRock(797, 340, initialPos.rockObject);
+    rockObject = createRock(797, 340, initialPos.rockObject, .02);
     glScene.add(rockObject);
 
-    grassObject = createGrass(1662, 81, initialPos.grassObject);
+    grassObject = createGrass(1662, 81, initialPos.grassObject, .09);
     glScene.add(grassObject);
 
     createHomePage(1600, 900, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);

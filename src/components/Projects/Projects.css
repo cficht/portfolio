@@ -88,7 +88,7 @@
   padding: 10px;
   color: white;
   background-color: rgb(1, 1, 1);
-  font-size: 45px;
+  font-size: 64px;
   font-family: Georgia, 'Times New Roman', Times, serif;
 
   h3 {
@@ -102,8 +102,8 @@
   }
 
   img {
-    width: 90%;
-    height: 90%;
+    width: 95%;
+
   }
 }
 

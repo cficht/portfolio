@@ -75,26 +75,28 @@ export function createTree(width, height, position) {
   return treeMesh;
 }
 
-export function createRock(width, height, position) {
+export function createRock(width, height, position, scale, flip) {
   const rock_url = './images/common_images/rock.png';
   const rockMaterial = new THREE.MeshToonMaterial({ map: textureLoader.load(rock_url), alphaTest: 0.4, transparent: true, side: THREE.DoubleSide, });
   const rockGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
   rockGeometry.center();
   const rockMesh = new THREE.Mesh(rockGeometry, rockMaterial);
-  rockMesh.scale.set(width * .02, height * .02, 1);
+  rockMesh.scale.set(width * scale, height * scale, 1);
   rockMesh.position.set(position.x, position.y, position.z);
-  rockMesh.rotation.copy(new THREE.Euler(0, 0, 0));
+  flip ? rockMesh.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0)) : rockMesh.rotation.copy(new THREE.Euler(0, 0, 0));
   rockMesh.userData = 'ROCK';
   return rockMesh;
 }
 
-export function createGrass(width, height, position) {
-  const grass_url = './images/common_images/grass2.png';
+
+export function createGrass(width, height, position, scale, type) {
+  let grass_url;
+  type === 'tall' ? grass_url = './images/common_images/grass_projects.png' : grass_url = './images/common_images/grass2.png';
   const grassMaterial = new THREE.MeshBasicMaterial({ map: textureLoader.load(grass_url), alphaTest: 0.8, transparent: true, side: THREE.DoubleSide });
   const grassGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
   grassGeometry.center();
   const grassMesh = new THREE.Mesh(grassGeometry, grassMaterial);
-  grassMesh.scale.set(width * .09, height * .09, 1);
+  grassMesh.scale.set(width * scale, height * scale, 1);
   grassMesh.position.set(position.x, position.y, position.z);
   grassMesh.rotation.copy(new THREE.Euler(0, 0, 0));
   grassMesh.userData = 'GRASS';
@@ -184,6 +186,7 @@ export function createPictureFrame(scene, size, position, rotation) {
     const mesh = new THREE.MeshToonMaterial({ color: '#b5651d', flatShading: true });
     frame.children[0].children[0].children[0].children[0].children[0].material = mesh;
     frame.name = 'picture';
+    frame.userData = 'PICTURE';
     scene.add(frame);
     resolve(frame);
   }); 
