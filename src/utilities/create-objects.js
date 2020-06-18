@@ -49,13 +49,13 @@ export function createSun(width, height, position) {
   return sunMesh;
 }
 
-export function createAirplane(width, height, position) {
+export function createAirplane(width, height, position, scale) {
   const plane_url = './images/common_images/airplane.png';
   const planeMaterial = new THREE.MeshToonMaterial({ map: textureLoader.load(plane_url), alphaTest: 0.4, transparent: true, side: THREE.DoubleSide, });
   const planeGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
   planeGeometry.center();
   const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
-  planeMesh.scale.set(width * .05, height * .05, 1);
+  planeMesh.scale.set(width * scale, height * scale, 1);
   planeMesh.position.set(position.x, position.y, position.z);
   planeMesh.rotation.copy(new THREE.Euler(0, 0, 0));
   planeMesh.userData = 'PLANE';

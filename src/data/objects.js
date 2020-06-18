@@ -47,6 +47,8 @@ export const field = {
   depth: 10000
 };
 
+//// PROJECTS
+
 export const projectField = {
   floor: './images/common_images/floors/floor.png',
   ceiling: './images/common_images/ceilings/ceiling_projects.png',
@@ -73,6 +75,75 @@ export const site = {
   depth: '15',
   data: 'SITE'
 };
+
+//// CONTACT
+
+export const cloudsContact = [
+  {
+    url: './images/common_images/clouds/cloud1.png',
+    position: new THREE.Vector3(3000, 350, -2500),
+    scale: new THREE.Vector3(326, 152, 1)
+  },
+  {
+    url: './images/common_images/clouds/cloud2.png',
+    position: new THREE.Vector3(250, 1500, -4250),
+    scale: new THREE.Vector3(168, 80, 1)
+  },
+  {
+    url: './images/common_images/clouds/cloud3.png',
+    position: new THREE.Vector3(-3750, 200, -3000),
+    scale: new THREE.Vector3(403, 166, 1)
+  },
+  {
+    url: './images/common_images/clouds/cloud4.png',
+    position: new THREE.Vector3(5000, 1500, -3250),
+    scale: new THREE.Vector3(163, 47, 1)
+  },
+  {
+    url: './images/common_images/clouds/cloud5.png',
+    position: new THREE.Vector3(1500, -400, -4750),
+    scale: new THREE.Vector3(47, 21, 1)
+  },
+  {
+    url: './images/common_images/clouds/cloud6.png',
+    position: new THREE.Vector3(-2000, -200, -4000),
+    scale: new THREE.Vector3(121, 52, 1)
+  },
+  {
+    url: './images/common_images/clouds/cloud7.png',
+    position: new THREE.Vector3(-5000, 500, -4750),
+    scale: new THREE.Vector3(55, 22, 1)
+  }
+];
+
+export const githubContact = {
+  model: './models/common_models/github_icon.stl',
+  color: '#000000',
+  width: '15',
+  height: '15',
+  depth: '15',
+  data: 'GITHUB'
+};
+
+export const linkedin = {
+  model: './models/common_models/linkedin_logo.stl',
+  color: '#0E76A8',
+  width: '15',
+  height: '15',
+  depth: '15',
+  data: 'LINKEDIN'
+};
+
+export const email =   {
+  model: './models/common_models/email_icon.stl',
+  color: '#000000',
+  width: '15',
+  height: '15',
+  depth: '15',
+  data: 'EMAIL'
+};
+
+//// HOME
 
 export const project = {
   model: './models/common_models/projects_icon.stl',
@@ -110,6 +181,7 @@ export const about = {
   data: 'ABOUT'
 };
 
+//// TECH
 
 export const projectLogos = [
   {

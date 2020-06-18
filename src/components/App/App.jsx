@@ -7,6 +7,7 @@ import {
 import Projects from '../Projects/Projects';
 import Home from '../Home/Home';
 import './App.css';
+import Contact from '../Contact/Contact';
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
       <Switch>
         <Route path="/" exact component={Home} />
         <Route path="/projects" exact component={Projects} />
+        <Route path="/contact" exact component={Contact} />
       </Switch>
     </Router>
   );

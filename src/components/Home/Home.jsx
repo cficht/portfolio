@@ -71,7 +71,7 @@ const Home = () => {
     sunObject = createSun(973, 973, initialPos.sunObject);
     glScene.add(sunObject);
 
-    airplaneObject = createAirplane(920, 311, initialPos.airplaneObject);
+    airplaneObject = createAirplane(920, 311, initialPos.airplaneObject, .05);
     glScene.add(airplaneObject);
 
     treeObject = createTree(6814, 7571, initialPos.treeObject);
