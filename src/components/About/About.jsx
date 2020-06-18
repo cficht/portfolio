@@ -1,21 +1,17 @@
 import React, { useEffect } from 'react';
 import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
-import { createGlRenderer, createCssRenderer, createPlane, createProjectCssObject, createAboutCSSObject } from '../../utilities/initialize-page';
-import { createBackground, createTree, createRock, createGrass, create3DText, createIcon, createArrow, createPictureFrame } from '../../utilities/create-objects';
-import { projectChange } from '../../utilities/other';
+import { createGlRenderer, createCssRenderer, createPlane, createAboutCSSObject } from '../../utilities/initialize-page';
+import { createBackground, createTree, createGrass, create3DText, createArrow, createPictureFrame } from '../../utilities/create-objects';
 import { about } from '../../data/info';
 import { projectField } from '../../data/objects';
 import styles from './About.css';
 
 const About = () => {
-  let camera, controls, glRenderer, cssRenderer, backgroundObject, treeObject, grassObject, cssObject, planeObject, frameObject, nameObject, leftArrowObject, rightArrowObject, selectedObject;
-  let flipRight = false, flipLeft = false, backSide = false, changeSlide = false, waitSlide = false, nextProject = false, lastProject = false, changeProject = false;
+  let camera, controls, glRenderer, cssRenderer, backgroundObject, treeObject, treeTopObject, treeTopObject2, grassObject, grassObject2, nameObject, selectedObject;
+  let flipRight = false, flipLeft = false, backSide = false;
   let cameraDepth = 2750;
   let zoomMax = 4000;
-  let projectCount = 0;
-  let slideCount = 0;
-  const slideMax = 2;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   const glScene = new THREE.Scene();
@@ -24,20 +20,31 @@ const About = () => {
 
   const initialPos = {
     treeObject: new THREE.Vector3(200, 5100, 0),
+    treeTopObject: new THREE.Vector3(200, 2200, 25),
+    treeTopObject2: new THREE.Vector3(200, 2200, -25),
     grassObject: new THREE.Vector3(0, -2250, 100),
-    cssObject: new THREE.Vector3(0, -700, 100),
-    planeObject: new THREE.Vector3(0, -700, 100),
-    frameObject: new THREE.Vector3(0, -700, 100),
-    nameObject: new THREE.Vector3(-10, 300, 100),
+    grassObject2: new THREE.Vector3(0, -2250, -100),
+    cssObject: new THREE.Vector3(0, -700, 50),
+    planeObject: new THREE.Vector3(0, -700, 50),
+    frameObject: new THREE.Vector3(0, -700, 50),
+    cssObject2: new THREE.Vector3(0, -700, -50),
+    planeObject2: new THREE.Vector3(0, -700, -50),
+    frameObject2: new THREE.Vector3(0, -700, -50),
+    nameObject: new THREE.Vector3(-10, 300, 50),
     logoObject: new THREE.Vector3(0, 900, -3500),
-    leftArrowObject: new THREE.Vector3(-100, -1500, 100), 
-    rightArrowObject: new THREE.Vector3(100, -1500, 100),
+    leftArrowObjectFront: new THREE.Vector3(-100, -1500, 100), 
+    rightArrowObjectFront: new THREE.Vector3(100, -1500, 100),
+    leftArrowObjectBack: new THREE.Vector3(-100, -1500, -100), 
+    rightArrowObjectBack: new THREE.Vector3(100, -1500, -100),
     gitHubObject: new THREE.Vector3(-450, -2100, -2500),
     siteObject: new THREE.Vector3(450, -2100, -2500)
   };
 
   // INITIALIZE PAGE
   useEffect(() => {
+    window.addEventListener('pageshow', function(event) {
+      if(event.persisted) location.reload();
+    });
 
     // CAMERA
     if(navigator.userAgent.match(/Android/i) 
@@ -49,7 +56,7 @@ const About = () => {
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) { 
       cameraDepth = 3500;
-      zoomMax = 4600;
+      zoomMax = 4400;
     }
     camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 15000);
     camera.position.set(0, 0, cameraDepth);
@@ -80,7 +87,30 @@ const About = () => {
     grassObject = createGrass(1662, 300, initialPos.grassObject, .2, 'tall');
     glScene.add(grassObject);
 
-    createProjectPage(1400, 800, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
+    grassObject2 = createGrass(1662, 300, initialPos.grassObject2, .2, 'tall');
+    glScene.add(grassObject2);
+
+    const textureLoader = new THREE.TextureLoader();
+    function createTreeTop(width, height, position, scale, flip) {
+      const tree_url = './images/common_images/treetop.png';
+      const treeMaterial = new THREE.MeshToonMaterial({ map: textureLoader.load(tree_url), alphaTest: 0.4, transparent: true, side: THREE.DoubleSide, shininess: 0 });
+      const treeGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
+      treeGeometry.center();
+      const treeMesh = new THREE.Mesh(treeGeometry, treeMaterial);
+      treeMesh.scale.set(width * scale, height * scale, 1);
+      treeMesh.position.set(position.x, position.y, position.z);
+      flip ? treeMesh.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0)) : treeMesh.rotation.copy(new THREE.Euler(0, 0, 0));
+      treeMesh.userData = 'TREETOP';
+      return treeMesh;
+    }
+
+    treeTopObject = createTreeTop(2400, 1574, initialPos.treeTopObject, .15);
+    glScene.add(treeTopObject);
+    treeTopObject2 = createTreeTop(2400, 1574, initialPos.treeTopObject2, .15);
+    glScene.add(treeTopObject2);
+
+    createAboutPages(1400, 800, initialPos.cssObject, new THREE.Vector3(0, 0, 0), about.bio);
+    createAboutPages(1000, 600, initialPos.cssObject2, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0), about.other);
     createProject3DGeometry();  
     update();
 
@@ -88,7 +118,7 @@ const About = () => {
     controls = new OrbitControls(camera, glRenderer.domElement);
     controls.maxAzimuthAngle = 1;
     controls.minAzimuthAngle = -1;
-    controls.maxPolarAngle = 1.75;
+    controls.maxPolarAngle = 1.6;
     controls.minPolarAngle = 1;
     controls.minDistance = 1500;
     controls.maxDistance = zoomMax;
@@ -103,36 +133,23 @@ const About = () => {
   }, []);
 
   // SETUP OBJECTS THAT WILL CHANGE
-  function createProjectPage(width, height, position, rotation, number) {  
-    if(!planeObject) { 
-      planeObject = createPlane(width, height, position, rotation);  
-      glScene.add(planeObject);  
-    }
-    
-    if(!cssObject) {
-      cssObject = createAboutCSSObject(width, height, position, rotation, number, about, styles.about, slideCount);  
-      cssScene.add(cssObject);
-    } else {
-      const newPos = cssObject.position;
-      cssScene.remove(cssObject);
-      cssObject = createAboutCSSObject(width, height, newPos, rotation, number, about, styles.about, slideCount);  
-      cssScene.add(cssObject);
-    }
+  function createAboutPages(width, height, position, rotation, content) {  
+    const planeObject = createPlane(width, height, position, rotation);  
+    glScene.add(planeObject);   
+    const cssObject = createAboutCSSObject(width, height, position, rotation, content, styles.about);  
+    cssScene.add(cssObject);
   }
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
   function createProject3DGeometry() {  
     create3DText(nameObject, glScene, '#228B22', initialPos.nameObject, 115, 115, 100, 'About', 'muli_regular')
       .then(name => nameObject = name);
-    leftArrowObject = createArrow(glScene, '#ff8c00', initialPos.leftArrowObject, new THREE.Euler(0, 0, 0), 'LAST');
-    rightArrowObject = createArrow(glScene, '#ff8c00', initialPos.rightArrowObject, new THREE.Euler(0, 0, - 180 * THREE.MathUtils.DEG2RAD), 'NEXT');
-    const frameSize = {
-      x: 800,
-      y: 800,
-      z: 512
-    };
-    createPictureFrame(glScene, frameSize, initialPos.frameObject, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0))
-      .then(frame => frameObject = frame);
+    createArrow(glScene, '#ff8c00', initialPos.leftArrowObjectFront, new THREE.Euler(0, 0, 0), 'LAST');
+    createArrow(glScene, '#ff8c00', initialPos.rightArrowObjectFront, new THREE.Euler(0, 0, - 180 * THREE.MathUtils.DEG2RAD), 'NEXT');
+    createArrow(glScene, '#ff8c00', initialPos.leftArrowObjectBack, new THREE.Euler(0, 0, 0), 'NEXT');
+    createArrow(glScene, '#ff8c00', initialPos.rightArrowObjectBack, new THREE.Euler(0, 0, - 180 * THREE.MathUtils.DEG2RAD), 'LAST');
+    createPictureFrame(glScene, { x: 800, y: 800, z: 512 }, initialPos.frameObject, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0));
+    createPictureFrame(glScene, { x: 600, y: 600, z: 512 }, initialPos.frameObject2, new THREE.Euler(0, 0, 0));
   }
 
   // INTERACTION
@@ -150,104 +167,54 @@ const About = () => {
         backSide = !backSide;
         flipLeft = false;
         flipRight = true;
-        // controls.enabled = false;
       }
       if(selectedObject.object.userData === 'LAST') { 
         backSide = !backSide;
         flipRight = false;
         flipLeft = true;
-        // controls.enabled = false;
       }
-      // if(selectedObject.object.userData === 'SLIDE') { 
-      //   flipRight = true;
-      //   waitSlide = true;
-      // }
-      // if(selectedObject.object.userData === 'GITHUB') window.open(projects[projectCount].github, '_blank');
-      // if(selectedObject.object.userData === 'SITE') window.open(projects[projectCount].site, '_blank');
     }
   }
 
-  // CHANGE PROJECT OR SLIDE
-  // function newProject(type) {
-  //   if(type === 'Project') {
-  //     slideCount = 0;
-  //     leftArrowObject.material.color.set(projects[projectCount].secondaryColor);
-  //     rightArrowObject.material.color.set(projects[projectCount].secondaryColor);
-  //   } else {
-  //     slideCount < slideMax ? slideCount++ : slideCount = 0;
-  //   }
-  //   createProjectPage(1500, type === 'Project' ? 1300 : 1300, initialPos.cssObject, cssObject.rotation, projectCount);
-  // }
-
-  // function resetPositions() {
-  //   nextProject = false;
-  //   lastProject = false;
-  //   changeProject = false;
-  //   cssObject.position.x = initialPos.cssObject.x;
-  //   planeObject.position.x = initialPos.planeObject.x;
-  //   frameObject.position.x = initialPos.frameObject.x;
-  //   nameObject.position.x = initialPos.nameObject.x;
-  //   leftArrowObject.position.y = initialPos.leftArrowObject.y;
-  //   rightArrowObject.position.y = initialPos.rightArrowObject.y;
-  //   gitHubObject.position.y = initialPos.gitHubObject.y;
-  //   siteObject.position.y = initialPos.siteObject.y;
-  // }
-
   function resetCamera() {
+    if(flipLeft || flipRight) return;
     controls.reset();
     camera.position.set(0, -850, cameraDepth + 900);
-    controls.target = new THREE.Vector3(0, -850, 400);
+    controls.target = new THREE.Vector3(0, -850, 1400);
   }
 
   // CONSTANT UPDATE
   function update() { 
     if(flipRight) {
-      if(cssScene.quaternion._y <= -.999999) {
+      if(cssScene.quaternion._y <= -.999999 && backSide) {
         flipRight = false;
         glScene.rotation.set(0, - 180 * THREE.MathUtils.DEG2RAD, 0);
         cssScene.rotation.set(0, - 180 * THREE.MathUtils.DEG2RAD, 0);
       }
-      cssScene.rotation.y -= 0.02;
-      glScene.rotation.y -= 0.02;
+      if(cssScene.quaternion._y >= -.01 && !backSide) {
+        flipRight = false;
+        glScene.rotation.set(0, 0, 0);
+        cssScene.rotation.set(0, 0, 0);
+      } else {
+        cssScene.rotation.y -= 0.02;
+        glScene.rotation.y -= 0.02;
+      } 
     }
     if(flipLeft) {
-      if(cssScene.quaternion._y >= .999999) {
+      if(cssScene.quaternion._y >= .999999 && backSide) {
         flipLeft = false;
         glScene.rotation.set(0, - 180 * THREE.MathUtils.DEG2RAD, 0);
         cssScene.rotation.set(0, - 180 * THREE.MathUtils.DEG2RAD, 0);
-      }   
-      cssScene.rotation.y += 0.02;
-      glScene.rotation.y += 0.02;
+      }  
+      if(cssScene.quaternion._y >= -.01 && !backSide) {
+        flipLeft = false;
+        glScene.rotation.set(0, 0, 0);
+        cssScene.rotation.set(0, 0, 0);
+      } else {
+        cssScene.rotation.y += 0.02;
+        glScene.rotation.y += 0.02;
+      }  
     }
-
-    // if(waitSlide && !changeSlide) {
-    //   rockObject.position.x -= 150;
-    //   rockObject2.position.x += 150;
-    //   rockObject3.position.x -= 150;
-    //   rockObject4.position.x += 150;
-    //   grassObject.position.y -= 150;
-    // }
-    // if(waitSlide && changeSlide) {
-    //   if(rockObject.position.x < initialPos.rockObject.x) rockObject.position.x += 150;
-    //   if(rockObject2.position.x > initialPos.rockObject2.x) rockObject2.position.x -= 150;
-    //   if(rockObject3.position.x < initialPos.rockObject3.x) rockObject3.position.x += 150;
-    //   if(rockObject4.position.x > initialPos.rockObject4.x) rockObject4.position.x -= 150;
-    //   if(grassObject.position.y < initialPos.grassObject.y) grassObject.position.y += 150;
-    //   else { 
-    //     waitSlide = false;
-    //     changeSlide = false;
-    //   }
-    // }
-    
-    // if(nextProject) {
-    //   changeProject = projectChange(-1, 'PICTURE', cssObject, glScene, changeProject, newProject);
-    //   if(leftArrowObject.position.y === initialPos.leftArrowObject.y & changeProject === true) resetPositions();
-    // }
-
-    // if(lastProject) {
-    //   changeProject = projectChange(1, 'PICTURE', cssObject, glScene, changeProject, newProject);
-    //   if(rightArrowObject.position.y === initialPos.rightArrowObject.y & changeProject === true) resetPositions();    
-    // }
     glRenderer.render(glScene, camera);  
     cssRenderer.render(cssScene, camera);
     requestAnimationFrame(update);

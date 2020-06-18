@@ -81,5 +81,6 @@ export const projects = [
 ];
 
 export const about = {
-  bio: 'Chris is a software developer who thrives in collaborative work environments and enjoys challenging experiences that provide opportunities for growth. He enjoys applying creative and practical problem-solving techniques learned in the music industry to diverse teams.'
+  bio: 'Chris is a software developer who thrives in collaborative work environments and enjoys challenging experiences that provide opportunities for growth. He enjoys applying creative and practical problem-solving techniques learned in the music industry to diverse teams.',
+  other: 'More info soon...'
 };

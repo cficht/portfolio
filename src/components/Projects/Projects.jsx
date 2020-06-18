@@ -40,6 +40,9 @@ const Projects = () => {
 
   // INITIALIZE PAGE
   useEffect(() => {
+    window.addEventListener('pageshow', function(event) {
+      if(event.persisted) location.reload();
+    });
 
     // CAMERA
     if(navigator.userAgent.match(/Android/i) 

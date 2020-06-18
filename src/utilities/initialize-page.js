@@ -68,16 +68,16 @@ export function createProjectCssObject(width, height, position, rotation, number
   return cssObject;
 }
 
-export function createAboutCSSObject(width, height, position, rotation, number, about, style) {  
+export function createAboutCSSObject(width, height, position, rotation, content, style) {  
   const element = document.createElement('div');
   element.style.width = width + 'px';
   element.style.height = height + 'px';
   element.style.opacity = 1;
   element.className = style;
   
-  const bio = document.createElement('p');
-  bio.textContent = about.bio;
-  element.appendChild(bio);
+  const paragraph = document.createElement('p');
+  paragraph.textContent = content;
+  element.appendChild(paragraph);
   
   const cssObject = new CSS3DObject(element);
 
