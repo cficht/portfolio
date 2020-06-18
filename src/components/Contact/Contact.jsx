@@ -3,12 +3,13 @@ import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer } from '../../utilities/initialize-page';
 import { createBackground, createAirplane, createClouds, create3DText, createIcon } from '../../utilities/create-objects';
-import { field, cloudsContact, githubContact, linkedin, email } from '../../data/objects';
+import { fieldContact, cloudsContact, githubContact, linkedin, email } from '../../data/objects';
 import styles from './Contact.css';
 
 const Contact = () => {
-  let camera, controls, glRenderer, cssRenderer, backgroundObject, airplaneObject, cloudObjects, nameObject, gitHubObject, gitHubText, linkedinObject, linkedinText, emailObject, emailText, selectedObject;
+  let camera, controls, glRenderer, cssRenderer, backgroundObject, airplaneObject, cloudObjects, movingWall, movingWall2, movingWall3, movingWall4, nameObject, gitHubObject, gitHubText, linkedinObject, linkedinText, emailObject, emailText, selectedObject;
   let cameraDepth = 2750;
+  let zoomMax = 3500;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   const glScene = new THREE.Scene();
@@ -16,14 +17,14 @@ const Contact = () => {
   const OrbitControls = ThreeOrbitControls(THREE);
 
   const initialPos = {
-    airplaneObject: new THREE.Vector3(0, 1200, -3500),
-    nameObject: new THREE.Vector3(-10, 2000, -3500),
-    emailObject: new THREE.Vector3(-650, 350, -3500),
-    emailText: new THREE.Vector3(-650, 50, -3500),
-    linkedinObject: new THREE.Vector3(0, 350, -3500),
-    linkedinText: new THREE.Vector3(0, 50, -3500),
-    gitHubObject: new THREE.Vector3(650, 350, -3500),
-    gitHubText: new THREE.Vector3(650, 50, -3500)
+    airplaneObject: new THREE.Vector3(0, 200, -3500),
+    nameObject: new THREE.Vector3(-10, 1000, -3500),
+    emailObject: new THREE.Vector3(-650, -650, -3500),
+    emailText: new THREE.Vector3(-650, -950, -3500),
+    linkedinObject: new THREE.Vector3(0, -650, -3500),
+    linkedinText: new THREE.Vector3(0, -950, -3500),
+    gitHubObject: new THREE.Vector3(650, -650, -3500),
+    gitHubText: new THREE.Vector3(650, -950, -3500)
   };
 
   // INITIALIZE PAGE
@@ -37,7 +38,10 @@ const Contact = () => {
     || navigator.userAgent.match(/iPad/i)
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
-    || navigator.userAgent.match(/Windows Phone/i)) cameraDepth = 4500;
+    || navigator.userAgent.match(/Windows Phone/i)) {
+      cameraDepth = 4500;
+      zoomMax = 5050;
+    }
     camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 15000);
     camera.position.set(0, 0, cameraDepth);
   
@@ -58,7 +62,7 @@ const Contact = () => {
     glScene.add(directionalLight);
   
     // SCENE
-    backgroundObject = createBackground(field);
+    backgroundObject = createBackground(fieldContact);
     glScene.add(backgroundObject);
 
     airplaneObject = createAirplane(920, 311, initialPos.airplaneObject, .1);
@@ -67,21 +71,44 @@ const Contact = () => {
     cloudObjects = createClouds(cloudsContact);
     cloudObjects.map(cloudObject => glScene.add(cloudObject));
 
+    const textureLoader = new THREE.TextureLoader();
+    function createWall(width, height, position) {
+      const wall_url = './images/common_images/walls/wall_no_clouds.png';
+      const wallMaterial = new THREE.MeshBasicMaterial({ map: textureLoader.load(wall_url), side: THREE.DoubleSide, shininess: 0 });
+      const wallGeometry = new THREE.PlaneBufferGeometry(1, 1, 1);
+      wallGeometry.center();
+      const wallMesh = new THREE.Mesh(wallGeometry, wallMaterial);
+      wallMesh.scale.set(width * 1, height * 1, 1);
+      wallMesh.position.set(position.x, position.y, position.z);
+      wallMesh.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0));
+      wallMesh.userData = 'WALL';
+      return wallMesh;
+    }
+    movingWall = createWall(10000, 5000, new THREE.Vector3(0, 0, -4990));
+    glScene.add(movingWall);
+    movingWall2 = createWall(10000, 5000, new THREE.Vector3(10000, 0, -4990));
+    glScene.add(movingWall2);
+    movingWall3 = createWall(10000, 5000, new THREE.Vector3(-10000, 0, -4990));
+    glScene.add(movingWall3);
+    movingWall4 = createWall(10000, 5000, new THREE.Vector3(20000, 0, -4990));
+    glScene.add(movingWall4);
+
+
     createProject3DGeometry();  
     update();
 
     // CONTROLS
     controls = new OrbitControls(camera, glRenderer.domElement);
-    controls.maxAzimuthAngle = 1;
-    controls.minAzimuthAngle = -1;
+    controls.maxAzimuthAngle = .5;
+    controls.minAzimuthAngle = -.5;
     controls.maxPolarAngle = 2;
-    controls.minPolarAngle = 1.3;
+    controls.minPolarAngle = 1.2;
     controls.minDistance = 1500;
-    controls.maxDistance = 5050;
+    controls.maxDistance = zoomMax;
     controls.enableKeys = false;
     
-    camera.position.set(0, 1000, cameraDepth - 3000);
-    controls.target = new THREE.Vector3(0, 1000, -3500);
+    camera.position.set(0, -50, cameraDepth - 3000);
+    controls.target = new THREE.Vector3(0, -50, -3500);
 
     // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('click', onClick, true);
@@ -125,12 +152,21 @@ const Contact = () => {
 
   function resetCamera() {
     controls.reset();
-    camera.position.set(0, -1500, cameraDepth - 3000);
-    controls.target = new THREE.Vector3(0, -1500, -3500);
+    camera.position.set(0, -50, cameraDepth - 3000);
+    controls.target = new THREE.Vector3(0, -50, -3500);
   }
 
   // CONSTANT UPDATE
   function update() { 
+    if(movingWall) movingWall.position.x -= 10;
+    if(movingWall2) movingWall2.position.x -= 10;
+    if(movingWall3) movingWall3.position.x -= 10;
+    if(movingWall4) movingWall4.position.x -= 10;
+    if(movingWall.position.x === -20000) movingWall.position.x = 20000;
+    if(movingWall2.position.x === -20000) movingWall2.position.x = 20000;
+    if(movingWall3.position.x === -20000) movingWall3.position.x = 20000;
+    if(movingWall4.position.x === -20000) movingWall4.position.x = 20000;
+
     cloudObjects.map(cloud => cloud.position.x <= -6000 ? cloud.position.x = 6000 : cloud.position.x -= 10);
     if(emailObject) emailObject.rotation.y += .03;
     if(linkedinObject) linkedinObject.rotation.y += .03;
