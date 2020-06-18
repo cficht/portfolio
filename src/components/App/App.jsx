@@ -4,10 +4,11 @@ import {
   Switch,
   Route
 } from 'react-router-dom';
-import Projects from '../Projects/Projects';
 import Home from '../Home/Home';
-import './App.css';
+import Projects from '../Projects/Projects';
 import Contact from '../Contact/Contact';
+import About from '../About/About';
+import './App.css';
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/" exact component={Home} />
         <Route path="/projects" exact component={Projects} />
         <Route path="/contact" exact component={Contact} />
+        <Route path="/about" exact component={About} />
       </Switch>
     </Router>
   );

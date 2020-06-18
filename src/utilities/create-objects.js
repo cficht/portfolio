@@ -51,7 +51,7 @@ export function createSun(width, height, position) {
 
 export function createAirplane(width, height, position, scale) {
   const plane_url = './images/common_images/airplane.png';
-  const planeMaterial = new THREE.MeshToonMaterial({ map: textureLoader.load(plane_url), alphaTest: 0.4, transparent: true, side: THREE.DoubleSide, });
+  const planeMaterial = new THREE.MeshToonMaterial({ map: textureLoader.load(plane_url), alphaTest: 0.4, transparent: true, side: THREE.DoubleSide });
   const planeGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
   planeGeometry.center();
   const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
@@ -62,15 +62,15 @@ export function createAirplane(width, height, position, scale) {
   return planeMesh;
 }
 
-export function createTree(width, height, position) {
+export function createTree(width, height, position, scale, flip) {
   const tree_url = './images/common_images/tree.png';
-  const treeMaterial = new THREE.MeshToonMaterial({ map: textureLoader.load(tree_url), alphaTest: 0.4, transparent: true, side: THREE.DoubleSide, });
+  const treeMaterial = new THREE.MeshToonMaterial({ map: textureLoader.load(tree_url), alphaTest: 0.4, transparent: true, side: THREE.DoubleSide, shininess: 0 });
   const treeGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
   treeGeometry.center();
   const treeMesh = new THREE.Mesh(treeGeometry, treeMaterial);
-  treeMesh.scale.set(width * .01, height * .01, 1);
+  treeMesh.scale.set(width * scale, height * scale, 1);
   treeMesh.position.set(position.x, position.y, position.z);
-  treeMesh.rotation.copy(new THREE.Euler(0, 0, 0));
+  flip ? treeMesh.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0)) : treeMesh.rotation.copy(new THREE.Euler(0, 0, 0));
   treeMesh.userData = 'TREE';
   return treeMesh;
 }

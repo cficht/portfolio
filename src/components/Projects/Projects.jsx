@@ -272,7 +272,7 @@ const Projects = () => {
       <div className={styles.hud_box}> 
         <div className={styles.hud_contents}>
           <a href="/">Home</a>
-          <a href="/">About</a>
+          <a href="/about">About</a>
           <a href="/contact">Contact</a>
           <a href="/">Tech</a>
           <input type="image" src="./images/common_images/camera.png" alt="center camera" onClick={() => resetCamera()}/>

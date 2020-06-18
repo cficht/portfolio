@@ -78,3 +78,32 @@
     }
   }
 }
+
+.project {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 10px;
+  color: white;
+  background-color: rgb(1, 1, 1);
+  font-size: 64px;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+
+  h3 {
+    margin-block-start: .5em;
+    margin-block-end: .5em;
+    width: 90%;
+  }
+
+  p {
+    width: 90%;
+  }
+
+  img {
+    width: 95%;
+
+  }
+}
+
