@@ -93,10 +93,10 @@ const Tech = () => {
     controls.target = new THREE.Vector3(0, 100, 400);
 
     // EVENT LISTENERS
-    cssRenderer.domElement.addEventListener('mousedown', onClick, true);
-    cssRenderer.domElement.addEventListener('mouseup', onRelease, true);
-    cssRenderer.domElement.addEventListener('touchstart', onClick, true);
-    cssRenderer.domElement.addEventListener('touchend', onRelease, true);
+    cssRenderer.domElement.addEventListener('mousedown', onDown, true);
+    cssRenderer.domElement.addEventListener('mouseup', onUp, true);
+    cssRenderer.domElement.addEventListener('touchstart', onDown, true);
+    cssRenderer.domElement.addEventListener('touchend', onUp, true);
     window.addEventListener('resize', () => location.reload());
   }, []);
 
@@ -142,12 +142,18 @@ const Tech = () => {
   }
 
   // INTERACTION
-  function onClick(event) {
-    // if(rotateLeft || rotateRight) return;
+  function onDown(event) {
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
-    mouse.x = (event.clientX / setWidth) * 2 - 1;
-    mouse.y = - (event.clientY / setHeight) * 2 + 1;
+    if(event.type === 'mousedown') {
+      mouse.x = (event.clientX / setWidth) * 2 - 1;
+      mouse.y = - (event.clientY / setHeight) * 2 + 1;
+    }
+    if(event.type === 'touchstart') {
+      event.preventDefault();
+      mouse.x = (event.touches[0].clientX / setWidth) * 2 - 1;
+      mouse.y = - (event.touches[0].clientY / setHeight) * 2 + 1;
+    }
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(glScene.children, true);
     if(intersects.length > 0) {
@@ -163,13 +169,14 @@ const Tech = () => {
     }
   }
 
-  function onRelease() {
+  function onUp() {
     rotateLeft = false;
     rotateRight = false;
   }
 
   function resetCamera() {
     // if(rotateLeft || rotateRight) return;
+    event.preventDefault();
     controls.reset();
     camera.position.set(0, 100, cameraDepth + 900);
     controls.target = new THREE.Vector3(0, 0, 400);
