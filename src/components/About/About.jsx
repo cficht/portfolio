@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer, createPlane, createAboutCSSObject } from '../../utilities/initialize-page';
-import { createBackground, createTree, createGrass, create3DText, createArrow, createPictureFrame } from '../../utilities/create-objects';
+import { createBackground, createTree, createGrass, createTreeTop, create3DText, createArrow, createPictureFrame } from '../../utilities/create-objects';
 import { about } from '../../data/info';
 import { projectField } from '../../data/objects';
 import styles from './About.css';
@@ -89,20 +89,6 @@ const About = () => {
 
     grassObject2 = createGrass(1662, 300, initialPos.grassObject2, .2, 'tall');
     glScene.add(grassObject2);
-
-    const textureLoader = new THREE.TextureLoader();
-    function createTreeTop(width, height, position, scale, flip) {
-      const tree_url = './images/common_images/treetop.png';
-      const treeMaterial = new THREE.MeshToonMaterial({ map: textureLoader.load(tree_url), alphaTest: 0.4, transparent: true, side: THREE.DoubleSide, shininess: 0 });
-      const treeGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
-      treeGeometry.center();
-      const treeMesh = new THREE.Mesh(treeGeometry, treeMaterial);
-      treeMesh.scale.set(width * scale, height * scale, 1);
-      treeMesh.position.set(position.x, position.y, position.z);
-      flip ? treeMesh.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0)) : treeMesh.rotation.copy(new THREE.Euler(0, 0, 0));
-      treeMesh.userData = 'TREETOP';
-      return treeMesh;
-    }
 
     treeTopObject = createTreeTop(2400, 1574, initialPos.treeTopObject, .15);
     glScene.add(treeTopObject);
@@ -225,8 +211,8 @@ const About = () => {
       <div className={styles.hud_box}> 
         <div className={styles.hud_contents}>
           <a href="/">Home</a>
-          <a href="/Contact">Contact</a>
-          <a href="/">Tech</a>
+          <a href="/contact">Contact</a>
+          <a href="/tech">Tech</a>
           <a href="/projects">Projects</a>
           <input type="image" src="./images/common_images/camera.png" alt="center camera" onClick={() => resetCamera()}/>
         </div>       

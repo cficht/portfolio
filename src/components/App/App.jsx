@@ -5,9 +5,10 @@ import {
   Route
 } from 'react-router-dom';
 import Home from '../Home/Home';
-import Projects from '../Projects/Projects';
 import Contact from '../Contact/Contact';
 import About from '../About/About';
+import Tech from '../Tech/Tech';
+import Projects from '../Projects/Projects';
 import './App.css';
 
 export default function App() {
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="/projects" exact component={Projects} />
         <Route path="/contact" exact component={Contact} />
         <Route path="/about" exact component={About} />
+        <Route path="/tech" exact component={Tech} />
       </Switch>
     </Router>
   );

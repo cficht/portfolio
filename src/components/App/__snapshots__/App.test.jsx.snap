@@ -23,6 +23,11 @@ exports[`App component renders App 1`] = `
       exact={true}
       path="/about"
     />
+    <Route
+      component={[Function]}
+      exact={true}
+      path="/tech"
+    />
   </Switch>
 </BrowserRouter>
 `;

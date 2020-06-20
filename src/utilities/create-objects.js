@@ -36,13 +36,13 @@ export function createClouds(clouds) {
   });
 }
 
-export function createSun(width, height, position) {
+export function createSun(width, height, position, scale) {
   const sun_url = './images/common_images/sun.png';
   const sunMaterial = new THREE.MeshToonMaterial({ map: textureLoader.load(sun_url), alphaTest: 0.4, transparent: true, side: THREE.DoubleSide, });
   const sunGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
   sunGeometry.center();
   const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
-  sunMesh.scale.set(width * .1, height * .1, 1);
+  sunMesh.scale.set(width * scale, height * scale, 1);
   sunMesh.position.set(position.x, position.y, position.z);
   sunMesh.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0));
   sunMesh.userData = 'SUN';
@@ -106,6 +106,19 @@ export function createGrass(width, height, position, scale, type) {
   grassMesh.rotation.copy(new THREE.Euler(0, 0, 0));
   grassMesh.userData = 'GRASS';
   return grassMesh;
+}
+
+export function createTreeTop(width, height, position, scale, flip) {
+  const tree_url = './images/common_images/treetop.png';
+  const treeMaterial = new THREE.MeshToonMaterial({ map: textureLoader.load(tree_url), alphaTest: 0.4, transparent: true, side: THREE.DoubleSide, shininess: 0 });
+  const treeGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
+  treeGeometry.center();
+  const treeMesh = new THREE.Mesh(treeGeometry, treeMaterial);
+  treeMesh.scale.set(width * scale, height * scale, 1);
+  treeMesh.position.set(position.x, position.y, position.z);
+  flip ? treeMesh.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0)) : treeMesh.rotation.copy(new THREE.Euler(0, 0, 0));
+  treeMesh.userData = 'TREETOP';
+  return treeMesh;
 }
 
 export function create3DText(object, scene, color, position, width, height, depth, textContent, fontName, data) {

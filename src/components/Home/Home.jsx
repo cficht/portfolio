@@ -68,7 +68,7 @@ const Home = () => {
     cloudObjects = createClouds(clouds);
     cloudObjects.map(cloudObject => glScene.add(cloudObject));
 
-    sunObject = createSun(973, 973, initialPos.sunObject);
+    sunObject = createSun(973, 973, initialPos.sunObject, .1);
     glScene.add(sunObject);
 
     airplaneObject = createAirplane(920, 311, initialPos.airplaneObject, .05);

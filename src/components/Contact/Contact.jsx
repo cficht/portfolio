@@ -185,7 +185,7 @@ const Contact = () => {
         <div className={styles.hud_contents}>
           <a href="/">Home</a>
           <a href="/about">About</a>
-          <a href="/">Tech</a>
+          <a href="/tech">Tech</a>
           <a href="/projects">Projects</a>
           <input type="image" src="./images/common_images/camera.png" alt="center camera" onClick={() => resetCamera()}/>
         </div>       
