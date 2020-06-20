@@ -207,7 +207,7 @@ export const techLogos = [
     models: [
       {
         model: './models/tech_logo_models/javascript_logo.stl',
-        color: '#EAD64D',
+        color: '#FFCC00',
         width: '15',
         height: '15',
         depth: '15',
@@ -229,7 +229,7 @@ export const techLogos = [
         width: '15',
         height: '15',
         depth: '15',
-        name: 'HTML5',
+        name: 'HTML',
         position: new THREE.Vector3(1100 * Math.sin(THREE.Math.degToRad(144)), 0, 1100 * Math.cos(THREE.Math.degToRad(144)))
       },
       {
@@ -281,7 +281,7 @@ export const techLogos = [
       },
       {
         model: './models/tech_logo_models/materialui_logo.stl',
-        color: '#F9F9F9',
+        color: '#0E76A8',
         width: '15',
         height: '15',
         depth: '15',

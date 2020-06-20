@@ -8,8 +8,9 @@ import { sky, techLogos } from '../../data/objects';
 import styles from './Tech.css';
 
 const Tech = () => {
-  let camera, controls, mesh, pivot, glRenderer, cssRenderer, backgroundObject, sunObject, nameObject, selectedObject;
-  let rotateRight = false, rotateLeft = false, backSide = false;
+  let camera, controls, pivot, glRenderer, cssRenderer, backgroundObject, sunObject, nameObject, categoryObject, selectedObject;
+  let rotateRight = false, rotateLeft = false;
+  let techCount = 0;
   let cameraDepth = 2750;
   let zoomMax = 4000;
   const setWidth = window.innerWidth;
@@ -20,13 +21,15 @@ const Tech = () => {
 
   const initialPos = {
     sunObject: new THREE.Vector3(0, 0, 0),
-    testIcon: new THREE.Vector3(0, 0, 100),
     cssObject: new THREE.Vector3(0, -700, 50),
     planeObject: new THREE.Vector3(0, -700, 50),
     frameObject: new THREE.Vector3(0, -700, 50),
     nameObject: new THREE.Vector3(0, 1300, 0),
-    leftArrow: new THREE.Vector3(-100, -650, 900), 
-    rightArrow: new THREE.Vector3(100, -650, 900),
+    categoryObject: new THREE.Vector3(0, -750, 800),
+    leftArrow: new THREE.Vector3(-30, -375, 1300), 
+    rightArrow: new THREE.Vector3(30, -375, 1300),
+    upArrow: new THREE.Vector3(500, -725, 800), 
+    downArrow: new THREE.Vector3(500, -775, 800)
   };
 
   // INITIALIZE PAGE
@@ -97,13 +100,30 @@ const Tech = () => {
     cssRenderer.domElement.addEventListener('mouseup', onUp, true);
     cssRenderer.domElement.addEventListener('touchstart', onDown, true);
     cssRenderer.domElement.addEventListener('touchend', onUp, true);
+    cssRenderer.domElement.addEventListener('click', onClick, true);
     window.addEventListener('resize', () => location.reload());
   }, []);
 
   // SETUP OBJECTS THAT WILL CHANGE
   function createTech() {  
-    techLogos[0].models.map((tech, i) => {
-      const logoPosition = new THREE.Vector3(1300 * Math.sin(THREE.Math.degToRad(360 * (i / techLogos[0].models.length))), 0, 1300 * Math.cos(THREE.Math.degToRad(360 * (i / techLogos[0].models.length))));
+    pivot = new THREE.Group();
+    pivot.position.set(0.0, 0.0, 0);
+    glScene.add(pivot);
+    
+    // VISUALISE PIVOT
+    const pivotSphereGeo = new THREE.SphereGeometry(0.01);
+    const pivotSphere = new THREE.Mesh(pivotSphereGeo);
+    pivotSphere.position.set(0, 0, 0);
+    pivotSphere.position.z = 0.1;
+    glScene.add(pivotSphere);
+    
+    glScene.add(new THREE.AxesHelper());
+
+    create3DText(categoryObject, glScene, '#ff8c00', initialPos.categoryObject, 70, 70, 100, techLogos[techCount].category, 'muli_regular')
+      .then(category => categoryObject = category);
+
+    techLogos[techCount].models.map((tech, i) => {
+      const logoPosition = new THREE.Vector3(1300 * Math.sin(THREE.Math.degToRad(360 * (i / techLogos[techCount].models.length))), 0, 1300 * Math.cos(THREE.Math.degToRad(360 * (i / techLogos[techCount].models.length))));
       createIcon(glScene, logoPosition, tech)
         .then(logo => {
           logo.geometry.rotateZ(THREE.Math.degToRad(270));
@@ -122,23 +142,12 @@ const Tech = () => {
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
   function createProject3DGeometry() {      
-    pivot = new THREE.Group();
-    pivot.position.set(0.0, 0.0, 0);
-    glScene.add(pivot);
-    
-    // VISUALISE PIVOT
-    const pivotSphereGeo = new THREE.SphereGeometry(0.01);
-    const pivotSphere = new THREE.Mesh(pivotSphereGeo);
-    pivotSphere.position.set(0, 0, 0);
-    pivotSphere.position.z = 0.1;
-    glScene.add(pivotSphere);
-    
-    glScene.add(new THREE.AxesHelper());
-
     create3DText(nameObject, glScene, '#ff8c00', initialPos.nameObject, 115, 115, 100, 'Tech Stack', 'muli_regular')
       .then(name => nameObject = name);
-    createArrow(glScene, '#ff8c00', initialPos.leftArrow, new THREE.Euler(0, 0, 0), 'LAST');
-    createArrow(glScene, '#ff8c00', initialPos.rightArrow, new THREE.Euler(0, 0, - 180 * THREE.MathUtils.DEG2RAD), 'NEXT');
+    createArrow(glScene, '#ff8c00', initialPos.leftArrow, new THREE.Euler(0, 0, 0), 'LAST', .6);
+    createArrow(glScene, '#ff8c00', initialPos.rightArrow, new THREE.Euler(0, 0, -180 * THREE.MathUtils.DEG2RAD), 'NEXT', .6);
+    createArrow(glScene, '#ff8c00', initialPos.upArrow, new THREE.Euler(0, 0, -90 * THREE.MathUtils.DEG2RAD), 'UP', .6);
+    createArrow(glScene, '#ff8c00', initialPos.downArrow, new THREE.Euler(0, 0, -270 * THREE.MathUtils.DEG2RAD), 'DOWN', .6);
   }
 
   // INTERACTION
@@ -174,8 +183,29 @@ const Tech = () => {
     rotateRight = false;
   }
 
+  function onClick(event) {
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    mouse.x = (event.clientX / setWidth) * 2 - 1;
+    mouse.y = - (event.clientY / setHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(glScene.children, true);
+    if(intersects.length > 0) {
+      selectedObject = intersects[0];
+      if(selectedObject.object.userData === 'UP' && techCount < techLogos.length - 1) {
+        techCount++;
+        glScene.remove(pivot);
+        createTech();
+      }
+      if(selectedObject.object.userData === 'DOWN' && techCount > 0) { 
+        techCount--;
+        glScene.remove(pivot);
+        createTech();
+      }
+    }
+  }
+
   function resetCamera() {
-    // if(rotateLeft || rotateRight) return;
     event.preventDefault();
     controls.reset();
     camera.position.set(0, 100, cameraDepth + 900);

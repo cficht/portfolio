@@ -38,7 +38,7 @@ export function createClouds(clouds) {
 
 export function createSun(width, height, position, scale) {
   const sun_url = './images/common_images/sun.png';
-  const sunMaterial = new THREE.MeshToonMaterial({ map: textureLoader.load(sun_url), alphaTest: 0.4, transparent: true, side: THREE.DoubleSide, });
+  const sunMaterial = new THREE.MeshToonMaterial({ color: '#FFA500', map: textureLoader.load(sun_url), alphaTest: 0.4, transparent: true, side: THREE.DoubleSide, shininess: 0 });
   const sunGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
   sunGeometry.center();
   const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
@@ -180,13 +180,14 @@ export function createIcon(scene, position, { model, color, width, height, depth
   });
 }
 
-export function createArrow(scene, color, position, rotation, data) {
+export function createArrow(scene, color, position, rotation, data, scale) {
   const triangleShape = new THREE.Shape()
     .moveTo(0, -100)
     .lineTo(0, 100)
     .lineTo(-120, 0);
   const extrudeSettings = { depth: 20, bevelEnabled: true, bevelSegments: 2, steps: 2, bevelSize: 1, bevelThickness: 1 };
   const mesh = new THREE.Mesh(new THREE.ExtrudeBufferGeometry(triangleShape, extrudeSettings), createColoredMaterial(color)); 
+  if(scale) mesh.scale.set(scale, scale, scale);
   mesh.position.set(position.x, position.y, position.z);
   mesh.rotation.copy(rotation);
   mesh.userData = data;

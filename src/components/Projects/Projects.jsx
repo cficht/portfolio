@@ -166,12 +166,12 @@ const Projects = () => {
       if(selectedObject.object.userData === 'NEXT' && projectCount < projects.length - 1) {
         lastProject = false;
         nextProject = true; 
-        projectCount = projectCount + 1;
+        projectCount++;
       }
       if(selectedObject.object.userData === 'LAST' && projectCount > 0) { 
         nextProject = false; 
         lastProject = true;
-        projectCount = projectCount - 1;
+        projectCount--;
       }
       if(selectedObject.object.userData === 'SLIDE') { 
         nextSlide = true;
