@@ -201,260 +201,242 @@ export const sky = {
   depth: 10000
 };
 
-export const techLogos = {
-  languages: [
-    {
-      model: './models/tech_logo_models/javascript_logo.stl',
-      color: '#EAD64D',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'JavaScript',
-      type: 'Languages'
-    },
-    {
-      model: './models/tech_logo_models/csharp_logo.stl',
-      color: '#641F77',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'C#',
-      type: 'Languages'
-    },
-    {
-      model: './models/tech_logo_models/html5_logo.stl',
-      color: '#DF4B24',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'HTML5',
-      type: 'Languages'
-    },
-    {
-      model: './models/tech_logo_models/css_logo.stl',
-      color: '#254ADF',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'CSS',
-      type: 'Languages'
-    },
-    {
-      model: './models/tech_logo_models/max7_logo.stl',
-      color: '#53565D',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'Max/MSP',
-      type: 'Languages'
-    }
-  ],
-  front_end: [
-    {
-      model: './models/tech_logo_models/react_logo.stl',
-      color: '#5FD5F5',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'React',
-      type: 'Front-End'
-    },
-    {
-      model: './models/tech_logo_models/redux_logo.stl',
-      color: '#7D41C8',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'Redux',
-      type: 'Front-End'
-    },
-    {
-      model: './models/tech_logo_models/threejs_logo.stl',
-      color: '#3FB280',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'Three.js',
-      type: 'Front-End'
-    },
-    {
-      model: './models/tech_logo_models/materialui_logo.stl',
-      color: '#F9F9F9',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'Material-UI',
-      type: 'Front-End'
-    }
-  ],
-  back_end: [
-    {
-      model: './models/tech_logo_models/node_logo.stl',
-      color: '#8CC03C',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'Node.js',
-      type: 'Back-End'
-    },
-    {
-      model: './models/tech_logo_models/express_logo.stl',
-      color: '#868686',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'Express',
-      type: 'Back-End'
-    },
-    {
-      model: './models/tech_logo_models/cheerio_logo.stl',
-      color: '#BC9A65',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'Cheerio',
-      type: 'Back-End'
-    }
-  ],
-  databases: [
-    {
-      model: './models/tech_logo_models/mongodb_logo.stl',
-      color: '#429643',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'MongoDB',
-      type: 'Databases'
-    },
-    {
-      model: './models/tech_logo_models/postgresql_logo.stl',
-      color: '#31638C',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'PostgreSQL',
-      type: 'Databases'
-    }
-  ],
-  testing: [
-    {
-      model: './models/tech_logo_models/qunit_logo.stl',
-      color: '#9E2F97',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'Q-Unit',
-      type: 'Testing'
-    },
-    {
-      model: './models/tech_logo_models/jest_logo.stl',
-      color: '#C63D15',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'Jest',
-      type: 'Testing'
-    },
-    {
-      model: './models/tech_logo_models/travis_logo.stl',
-      color: '#C6334A',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'Travis CI',
-      type: 'Testing'
-    }
-  ],
-  tools: [
-    {
-      model: './models/common_models/github_icon.stl',
-      color: '#000000',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'GitHub',
-      type: 'Tools'
-    },
-    {
-      model: './models/tech_logo_models/vscode_logo.stl',
-      color: '#22A3EC',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'VS Code',
-      type: 'Tools'
-    },
-    {
-      model: './models/tech_logo_models/heroku_logo.stl',
-      color: '#8B6FBE',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'Heroku',
-      type: 'Tools'
-    },
-    {
-      model: './models/tech_logo_models/netlify_logo.stl',
-      color: '#32AEB5',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'Netlify',
-      type: 'Tools'
-    },
-    {
-      model: './models/tech_logo_models/postman_logo.stl',
-      color: '#EB5823',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'Postman',
-      type: 'Tools'
-    },
-    {
-      model: './models/tech_logo_models/unity_logo.stl',
-      color: '#000000',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'Unity',
-      type: 'Tools'
-    },
-    {
-      model: './models/tech_logo_models/protools_logo.stl',
-      color: '#7927ED',
-      width: '15',
-      height: '15',
-      depth: '15',
-      data: '/tech',
-      name: 'Pro Tools',
-      type: 'Tools'
-    }
-  ]
-};
+export const techLogos = [
+  {
+    category: 'Languages',
+    models: [
+      {
+        model: './models/tech_logo_models/javascript_logo.stl',
+        color: '#EAD64D',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'JavaScript',
+        position: new THREE.Vector3(1100 * Math.sin(THREE.Math.degToRad(0)), 0, 1100 * Math.cos(THREE.Math.degToRad(0)))
+      },
+      {
+        model: './models/tech_logo_models/csharp_logo.stl',
+        color: '#641F77',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'C#',
+        position: new THREE.Vector3(1100 * Math.sin(THREE.Math.degToRad(72)), 0, 1100 * Math.cos(THREE.Math.degToRad(72)))
+      },
+      {
+        model: './models/tech_logo_models/html5_logo.stl',
+        color: '#DF4B24',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'HTML5',
+        position: new THREE.Vector3(1100 * Math.sin(THREE.Math.degToRad(144)), 0, 1100 * Math.cos(THREE.Math.degToRad(144)))
+      },
+      {
+        model: './models/tech_logo_models/css_logo.stl',
+        color: '#254ADF',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'CSS',
+        position: new THREE.Vector3(1100 * Math.sin(THREE.Math.degToRad(216)), 0, 1100 * Math.cos(THREE.Math.degToRad(216)))
+      },
+      {
+        model: './models/tech_logo_models/max7_logo.stl',
+        color: '#53565D',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'Max/MSP',
+        position: new THREE.Vector3(1100 * Math.sin(THREE.Math.degToRad(288)), 0, 1100 * Math.cos(THREE.Math.degToRad(288)))
+      }
+    ],
+  },
+  {
+    category: 'Front-End',
+    models: [
+      {
+        model: './models/tech_logo_models/react_logo.stl',
+        color: '#5FD5F5',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'React'
+      },
+      {
+        model: './models/tech_logo_models/redux_logo.stl',
+        color: '#7D41C8',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'Redux'
+      },
+      {
+        model: './models/tech_logo_models/threejs_logo.stl',
+        color: '#3FB280',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'Three.js'
+      },
+      {
+        model: './models/tech_logo_models/materialui_logo.stl',
+        color: '#F9F9F9',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'Material-UI'
+      }
+    ]
+  },
+  {
+    category: 'Back-End',
+    models: [
+      {
+        model: './models/tech_logo_models/node_logo.stl',
+        color: '#8CC03C',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'Node.js'
+      },
+      {
+        model: './models/tech_logo_models/express_logo.stl',
+        color: '#868686',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'Express'
+      },
+      {
+        model: './models/tech_logo_models/cheerio_logo.stl',
+        color: '#BC9A65',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'Cheerio'
+      }
+    ]
+  },
+  {
+    category: 'Databases',
+    models: [
+      {
+        model: './models/tech_logo_models/mongodb_logo.stl',
+        color: '#429643',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'MongoDB'
+      },
+      {
+        model: './models/tech_logo_models/postgresql_logo.stl',
+        color: '#31638C',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'PostgreSQL'
+      }
+    ]
+  },
+  {
+    category: 'Testing',
+    models: [
+      {
+        model: './models/tech_logo_models/qunit_logo.stl',
+        color: '#9E2F97',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'Q-Unit'
+      },
+      {
+        model: './models/tech_logo_models/jest_logo.stl',
+        color: '#C63D15',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'Jest'
+      },
+      {
+        model: './models/tech_logo_models/travis_logo.stl',
+        color: '#C6334A',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'Travis CI'
+      }
+    ],
+  },
+  {
+    category: 'Tools',
+    models: [
+      {
+        model: './models/common_models/github_icon.stl',
+        color: '#000000',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'GitHub'
+      },
+      {
+        model: './models/tech_logo_models/vscode_logo.stl',
+        color: '#22A3EC',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'VS Code'
+      },
+      {
+        model: './models/tech_logo_models/heroku_logo.stl',
+        color: '#8B6FBE',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'Heroku'
+      },
+      {
+        model: './models/tech_logo_models/netlify_logo.stl',
+        color: '#32AEB5',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'Netlify'
+      },
+      {
+        model: './models/tech_logo_models/postman_logo.stl',
+        color: '#EB5823',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'Postman'
+      },
+      {
+        model: './models/tech_logo_models/unity_logo.stl',
+        color: '#000000',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'Unity'
+      },
+      {
+        model: './models/tech_logo_models/protools_logo.stl',
+        color: '#7927ED',
+        width: '15',
+        height: '15',
+        depth: '15',
+        name: 'Pro Tools'
+      }
+    ]
+  }
+];
+
+
+ 
+  
+  
+  
+
 
 // ETC
 

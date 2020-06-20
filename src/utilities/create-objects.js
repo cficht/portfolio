@@ -173,7 +173,7 @@ export function createIcon(scene, position, { model, color, width, height, depth
     mesh.position.set(position.x, position.y, position.z);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
-    mesh.userData = data;
+    data ? mesh.userData = data : mesh.userData = '';
     scene.add(mesh);
     resolve(mesh);
   });

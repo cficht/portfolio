@@ -9,7 +9,7 @@ import styles from './Tech.css';
 
 const Tech = () => {
   let camera, controls, mesh, pivot, glRenderer, cssRenderer, backgroundObject, sunObject, nameObject, selectedObject;
-  let flipRight = false, flipLeft = false, backSide = false;
+  let rotateRight = false, rotateLeft = false, backSide = false;
   let cameraDepth = 2750;
   let zoomMax = 4000;
   const setWidth = window.innerWidth;
@@ -25,8 +25,8 @@ const Tech = () => {
     planeObject: new THREE.Vector3(0, -700, 50),
     frameObject: new THREE.Vector3(0, -700, 50),
     nameObject: new THREE.Vector3(0, 1300, 0),
-    leftArrowObjectFront: new THREE.Vector3(-100, -1500, 100), 
-    rightArrowObjectFront: new THREE.Vector3(100, -1500, 100),
+    leftArrow: new THREE.Vector3(-100, -650, 900), 
+    rightArrow: new THREE.Vector3(100, -650, 900),
   };
 
   // INITIALIZE PAGE
@@ -75,6 +75,7 @@ const Tech = () => {
 
     // createAboutPages(1400, 800, initialPos.cssObject, new THREE.Vector3(0, 0, 0), about.bio);
     // createAboutPages(1000, 600, initialPos.cssObject2, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0), about.other);
+    createTech();
     createProject3DGeometry();  
     update();
 
@@ -92,34 +93,35 @@ const Tech = () => {
     controls.target = new THREE.Vector3(0, 100, 400);
 
     // EVENT LISTENERS
-    cssRenderer.domElement.addEventListener('click', onClick, true);
+    cssRenderer.domElement.addEventListener('mousedown', onClick, true);
+    cssRenderer.domElement.addEventListener('mouseup', onRelease, true);
+    cssRenderer.domElement.addEventListener('touchstart', onClick, true);
+    cssRenderer.domElement.addEventListener('touchend', onRelease, true);
     window.addEventListener('resize', () => location.reload());
   }, []);
 
   // SETUP OBJECTS THAT WILL CHANGE
-  // function createAboutPages(width, height, position, rotation, content) {  
-  //   const planeObject = createPlane(width, height, position, rotation);  
-  //   glScene.add(planeObject);   
-  //   const cssObject = createAboutCSSObject(width, height, position, rotation, content, styles.about);  
-  //   cssScene.add(cssObject);
-  // }
+  function createTech() {  
+    techLogos[0].models.map((tech, i) => {
+      const logoPosition = new THREE.Vector3(1300 * Math.sin(THREE.Math.degToRad(360 * (i / techLogos[0].models.length))), 0, 1300 * Math.cos(THREE.Math.degToRad(360 * (i / techLogos[0].models.length))));
+      createIcon(glScene, logoPosition, tech)
+        .then(logo => {
+          logo.geometry.rotateZ(THREE.Math.degToRad(270));
+          logo.rotation.set(0, 0, Math.PI / 2);
+          pivot.add(logo);
+        });
+      create3DText(false, glScene, '#ff8c00', logoPosition, 50, 50, 100, tech.name, 'muli_regular')
+        .then(text => {
+          text.geometry.rotateZ(THREE.Math.degToRad(270));
+          text.position.y = -250;
+          text.rotation.set(0, 0, Math.PI / 2);
+          pivot.add(text);
+        });
+    });
+  }
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
-  function createProject3DGeometry() {  
-    create3DText(nameObject, glScene, '#ff8c00', initialPos.nameObject, 115, 115, 100, 'Tech Stack', 'muli_regular')
-      .then(name => nameObject = name);
-    // createArrow(glScene, '#ff8c00', initialPos.leftArrowObjectFront, new THREE.Euler(0, 0, 0), 'LAST');
-    // createArrow(glScene, '#ff8c00', initialPos.rightArrowObjectFront, new THREE.Euler(0, 0, - 180 * THREE.MathUtils.DEG2RAD), 'NEXT');
-
-    createIcon(glScene, initialPos.testIcon, techLogos.languages[1])
-      .then(test => {
-        test.geometry.rotateZ(THREE.Math.degToRad(270));
-        test.position.set(0, 0, 1100); // MOVE THE GEOMOETRY UP BY HALF SO PIVOT IS AT THE BOTTOM OF THE GEO
-        test.rotation.set(0, 0, Math.PI / 2);
-        pivot.add(test);
-      });
-      
-    
+  function createProject3DGeometry() {      
     pivot = new THREE.Group();
     pivot.position.set(0.0, 0.0, 0);
     glScene.add(pivot);
@@ -132,11 +134,16 @@ const Tech = () => {
     glScene.add(pivotSphere);
     
     glScene.add(new THREE.AxesHelper());
+
+    create3DText(nameObject, glScene, '#ff8c00', initialPos.nameObject, 115, 115, 100, 'Tech Stack', 'muli_regular')
+      .then(name => nameObject = name);
+    createArrow(glScene, '#ff8c00', initialPos.leftArrow, new THREE.Euler(0, 0, 0), 'LAST');
+    createArrow(glScene, '#ff8c00', initialPos.rightArrow, new THREE.Euler(0, 0, - 180 * THREE.MathUtils.DEG2RAD), 'NEXT');
   }
 
   // INTERACTION
   function onClick(event) {
-    if(flipLeft || flipRight) return;
+    // if(rotateLeft || rotateRight) return;
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     mouse.x = (event.clientX / setWidth) * 2 - 1;
@@ -145,21 +152,24 @@ const Tech = () => {
     const intersects = raycaster.intersectObjects(glScene.children, true);
     if(intersects.length > 0) {
       selectedObject = intersects[0];
-      // if(selectedObject.object.userData === 'NEXT') {
-      //   backSide = !backSide;
-      //   flipLeft = false;
-      //   flipRight = true;
-      // }
-      // if(selectedObject.object.userData === 'LAST') { 
-      //   backSide = !backSide;
-      //   flipRight = false;
-      //   flipLeft = true;
-      // }
+      if(selectedObject.object.userData === 'NEXT') {
+        rotateLeft = false;
+        rotateRight = true;
+      }
+      if(selectedObject.object.userData === 'LAST') { 
+        rotateRight = false;
+        rotateLeft = true;
+      }
     }
   }
 
+  function onRelease() {
+    rotateLeft = false;
+    rotateRight = false;
+  }
+
   function resetCamera() {
-    if(flipLeft || flipRight) return;
+    // if(rotateLeft || rotateRight) return;
     controls.reset();
     camera.position.set(0, 100, cameraDepth + 900);
     controls.target = new THREE.Vector3(0, 0, 400);
@@ -167,37 +177,18 @@ const Tech = () => {
 
   // CONSTANT UPDATE
   function update() { 
-    pivot.rotation.y += 0.01;
-    // if(flipRight) {
-    //   if(cssScene.quaternion._y <= -.999999 && backSide) {
-    //     flipRight = false;
-    //     glScene.rotation.set(0, - 180 * THREE.MathUtils.DEG2RAD, 0);
-    //     cssScene.rotation.set(0, - 180 * THREE.MathUtils.DEG2RAD, 0);
-    //   }
-    //   if(cssScene.quaternion._y >= -.01 && !backSide) {
-    //     flipRight = false;
-    //     glScene.rotation.set(0, 0, 0);
-    //     cssScene.rotation.set(0, 0, 0);
-    //   } else {
-    //     cssScene.rotation.y -= 0.02;
-    //     glScene.rotation.y -= 0.02;
-    //   } 
-    // }
-    // if(flipLeft) {
-    //   if(cssScene.quaternion._y >= .999999 && backSide) {
-    //     flipLeft = false;
-    //     glScene.rotation.set(0, - 180 * THREE.MathUtils.DEG2RAD, 0);
-    //     cssScene.rotation.set(0, - 180 * THREE.MathUtils.DEG2RAD, 0);
-    //   }  
-    //   if(cssScene.quaternion._y >= -.01 && !backSide) {
-    //     flipLeft = false;
-    //     glScene.rotation.set(0, 0, 0);
-    //     cssScene.rotation.set(0, 0, 0);
-    //   } else {
-    //     cssScene.rotation.y += 0.02;
-    //     glScene.rotation.y += 0.02;
-    //   }  
-    // }
+    if(rotateRight) {
+      pivot.rotation.y += 0.01;
+      pivot.children.forEach(child => {
+        child.rotation.y = 0 - pivot.rotation.y;
+      });
+    }
+    if(rotateLeft) {
+      pivot.rotation.y -= 0.01;
+      pivot.children.forEach(child => {
+        child.rotation.y = 0 - pivot.rotation.y;
+      });
+    }
     glRenderer.render(glScene, camera);  
     cssRenderer.render(cssScene, camera);
     requestAnimationFrame(update);
