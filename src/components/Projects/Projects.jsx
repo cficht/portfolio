@@ -1,56 +1,62 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
-import { createGlRenderer, createCssRenderer, createPlane, createProjectCssObject, createColoredMaterial } from '../../utilities/three-create';
-import { GLTFLoader } from '../../loaders/GLTFLoader';
-import { STLLoader } from '../../loaders/STLLoader.js';
-import { projects } from '../../data/projects';
-import { fetchScheme } from '../../services/color-api';
+import { createGlRenderer, createCssRenderer, createPlane, createProjectCssObject } from '../../utilities/initialize-page';
+import { createBackground, createRock, createGrass, create3DText, createIcon, createArrow, createPictureFrame } from '../../utilities/create-objects';
+import { projectChange } from '../../utilities/other';
+import { projects } from '../../data/info';
+import { projectField, github, site } from '../../data/objects';
 import styles from './Projects.css';
 
 const Projects = () => {
-  const [firstScheme, setFirstScheme] = useState([]);
-  let camera, glScene, cssScene, glRenderer, cssRenderer, controls, cssObject, selectedObject, planeObject, frameObject, nameObject, logoObject, imageObject, leftArrowObject, rightArrowObject, upArrowObject, downArrowObject, schemeCopy;
-  let count = 0;
-  let nextRotate = false;
-  let lastRotate = false;
-  let upPicture = false;
-  let downPicture = false;
-  let changeProject = false;
+  let camera, controls, glRenderer, cssRenderer, backgroundObject, rockObject, rockObject2, rockObject3, rockObject4, grassObject, cssObject, planeObject, frameObject, nameObject, leftArrowObject, rightArrowObject, gitHubObject, siteObject, selectedObject;
+  let nextSlide = false, changeSlide = false, waitSlide = false, nextProject = false, lastProject = false, changeProject = false;
+  let cameraDepth = 2750;
+  let projectCount = 0;
+  let slideCount = 0;
+  const slideMax = 2;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
-  glScene = new THREE.Scene();
-  cssScene = new THREE.Scene();
+  const glScene = new THREE.Scene();
+  const cssScene = new THREE.Scene();
   const OrbitControls = ThreeOrbitControls(THREE);
 
-  const defaultPositions = {
-    cssObject: new THREE.Vector3(0, 300, 0),
-    planeObject: new THREE.Vector3(0, 300, 0),
-    frameObject: new THREE.Vector3(0, 300, 0),
-    nameObject: new THREE.Vector3(0, 925, 0),
-    logoObject: new THREE.Vector3(0, 6000, 0),
-    imageObject: new THREE.Vector3(0, -600, 0),
-    leftArrowObject: new THREE.Vector3(-750, 300, 0), 
-    rightArrowObject: new THREE.Vector3(750, 300, 0),
-    upArrowObject: new THREE.Vector3(800, -400, 0),
-    downArrowObject: new THREE.Vector3(800, -800, 0)
+  const initialPos = {
+    rockObject: new THREE.Vector3(-1500, -1950, -3450),
+    rockObject2: new THREE.Vector3(1500, -1850, -3450),
+    rockObject3: new THREE.Vector3(-1800, -1850, -3050),
+    rockObject4: new THREE.Vector3(1900, -2150, -2950),
+    grassObject: new THREE.Vector3(0, -2250, -2800),
+    cssObject: new THREE.Vector3(0, -1350, -3500),
+    planeObject: new THREE.Vector3(0, -1350, -3500),
+    frameObject: new THREE.Vector3(0, -1350, -3500),
+    nameObject: new THREE.Vector3(-10, -350, -3500),
+    logoObject: new THREE.Vector3(0, 900, -3500),
+    leftArrowObject: new THREE.Vector3(-100, -2100, -2500), 
+    rightArrowObject: new THREE.Vector3(100, -2100, -2500),
+    gitHubObject: new THREE.Vector3(-450, -2100, -2500),
+    siteObject: new THREE.Vector3(450, -2100, -2500)
   };
 
+  // INITIALIZE PAGE
   useEffect(() => {
-    //analogic, complement, analogic-complement
-    fetchScheme(projects[count].logoColor.slice(1), 'analogic')
-      .then(scheme => setFirstScheme(scheme));
-  }, []);
+    window.addEventListener('pageshow', function(event) {
+      if(event.persisted) location.reload();
+    });
 
-  useEffect(() => {
-    if(firstScheme.length === 0) return;
-    camera = new THREE.PerspectiveCamera(
-      45,
-      setWidth / setHeight,
-      1,
-      10000);
-    camera.position.set(0, 100, 2650);
+    // CAMERA
+    if(navigator.userAgent.match(/Android/i) 
+    || navigator.userAgent.match(/webOS/i)
+    || navigator.userAgent.match(/webOS/i)
+    || navigator.userAgent.match(/iPhone/i)
+    || navigator.userAgent.match(/iPad/i)
+    || navigator.userAgent.match(/iPod/i)
+    || navigator.userAgent.match(/BlackBerry/i)
+    || navigator.userAgent.match(/Windows Phone/i)) cameraDepth = 4500;
+    camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 15000);
+    camera.position.set(0, 0, cameraDepth);
   
+    // RENDERERS
     glRenderer = createGlRenderer(setWidth, setHeight, styles.three_box);
     cssRenderer = createCssRenderer(setWidth, setHeight, styles.three_box); 
     const holder = document.createElement('div');
@@ -59,356 +65,225 @@ const Projects = () => {
     holder.appendChild(cssRenderer.domElement);
     cssRenderer.domElement.appendChild(glRenderer.domElement);
   
+    // LIGHTING
     const ambientLight = new THREE.AmbientLight(0x555555);
     glScene.add(ambientLight);
-  
     const directionalLight = new THREE.DirectionalLight(0xffffff);
     directionalLight.position.set(0, 0, 300).normalize();
     glScene.add(directionalLight);
   
-    create3dPage(
-      1200, 700,
-      defaultPositions.cssObject,
-      new THREE.Vector3(0, 0, 0),
-      0,
-      firstScheme
-    );
-    create3dGeometry();  
+    // SCENE
+    backgroundObject = createBackground(projectField);
+    glScene.add(backgroundObject);
+
+    rockObject = createRock(797, 340, initialPos.rockObject, .15, 0, true);
+    glScene.add(rockObject);
+
+    rockObject2 = createRock(687, 503, initialPos.rockObject2, .17, 1);
+    glScene.add(rockObject2);
+
+    rockObject3 = createRock(543, 480, initialPos.rockObject3, .15, 2, true);
+    glScene.add(rockObject3);
+
+    rockObject4 = createRock(348, 259, initialPos.rockObject4, .25, 3);
+    glScene.add(rockObject4);
+
+    grassObject = createGrass(1662, 300, initialPos.grassObject, .18, 'tall');
+    glScene.add(grassObject);
+
+
+    createProjectPage(1500, 1300, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
+    createProject3DGeometry();  
     update();
 
+    // CONTROLS
     controls = new OrbitControls(camera, glRenderer.domElement);
-    controls.maxAzimuthAngle = 1.5;
-    controls.minAzimuthAngle = -1.5;
+    controls.maxAzimuthAngle = 1;
+    controls.minAzimuthAngle = -1;
+    controls.maxPolarAngle = 1.75;
+    controls.minPolarAngle = 1;
+    controls.minDistance = 1500;
+    controls.maxDistance = 5050;
+    controls.enableKeys = false;
+    
+    camera.position.set(0, -1500, cameraDepth - 3000);
+    controls.target = new THREE.Vector3(0, -1500, -3500);
 
+    // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('click', onClick, true);
-    cssRenderer.domElement.addEventListener('mousedown', onDown, true);
-    cssRenderer.domElement.addEventListener('mouseup', onUp, true);
-  }, [firstScheme]);
+    window.addEventListener('resize', () => location.reload());
+  }, []);
 
-  function create3dPage(w, h, position, rotation, number, colors) {  
+  // SETUP OBJECTS THAT WILL CHANGE
+  function createProjectPage(width, height, position, rotation, number) {  
     if(!planeObject) { 
-      planeObject = createPlane(w, h, position, rotation);  
+      planeObject = createPlane(width, height, position, rotation);  
       glScene.add(planeObject);  
     }
     
     if(!cssObject) {
-      cssObject = createProjectCssObject(w, h, position, rotation, number, projects, styles.project);  
+      cssObject = createProjectCssObject(width, height, position, rotation, number, projects, styles.project, slideCount);  
       cssScene.add(cssObject);
     } else {
       const newPos = cssObject.position;
       cssScene.remove(cssObject);
-      cssObject = createProjectCssObject(w, h, newPos, rotation, number, projects, styles.project);  
+      cssObject = createProjectCssObject(width, height, newPos, rotation, number, projects, styles.project, slideCount);  
       cssScene.add(cssObject);
     }
-    
-    const fontLoader = new THREE.FontLoader();
-    if(nameObject) {
-      fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
-        nameObject.geometry = new THREE.TextGeometry(`${projects[number].name}`, {
-          font: font,
-          size: 1,
-          height: 0.5,
-          curveSegments: 4,
-          bevelEnabled: true,
-          bevelThickness: 0.02,
-          bevelSize: 0.05,
-          bevelSegments: 3
-        });
-        nameObject.geometry.center();
-      });
-      nameObject.material.color.set(colors[2]);
-    } else {
-      fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
-        const geometry = new THREE.TextGeometry(`${projects[number].name}`, {
-          font: font,
-          size: 1,
-          height: 0.5,
-          curveSegments: 4,
-          bevelEnabled: true,
-          bevelThickness: 0.02,
-          bevelSize: 0.05,
-          bevelSegments: 3
-        });
-        geometry.center();
-        const material = new THREE.MeshToonMaterial({
-          color: colors[2],
-          flatShading: true,
-        });
-        const mesh = new THREE.Mesh(geometry, material);
-        mesh.scale.set(100, 100, 100);
-        mesh.position.x = defaultPositions.nameObject.x;
-        mesh.position.y = defaultPositions.nameObject.y;
-        mesh.position.z = defaultPositions.nameObject.z;
-        nameObject = mesh;
-        glScene.add(mesh);
-      });
-    }
 
-    const stlLoader = new STLLoader();
-    if(logoObject) { 
-      stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
-        logoObject.material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111, shininess: 200 });
-        logoObject.geometry = geometry;
-      });
-    } else {
-      stlLoader.load(`./models/project_logo_models/${projects[number].logoModel}`, function(geometry) {
-        const material = new THREE.MeshPhongMaterial({ color: `${projects[number].logoColor}`, specular: 0x111111, shininess: 200 });
-        const mesh = new THREE.Mesh(geometry, material);
-        mesh.position.set(defaultPositions.logoObject.x, defaultPositions.logoObject.y, defaultPositions.logoObject.z);
-        mesh.scale.set(20, 20, 20);
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-        mesh.name = 'logo';
-        logoObject = mesh;
-        glScene.add(mesh);
-      });
-    }
-
-    const textureLoader = new THREE.TextureLoader();
-    const materials = [
-      new THREE.MeshBasicMaterial({ color: projects[number].logoColor, side: THREE.DoubleSide }),
-      new THREE.MeshBasicMaterial({ color: projects[number].logoColor, side: THREE.DoubleSide }),
-      new THREE.MeshBasicMaterial({ map: textureLoader.load(projects[number].image1), side: THREE.DoubleSide  }),
-      new THREE.MeshBasicMaterial({ map: textureLoader.load(projects[number].image2), side: THREE.DoubleSide  }),
-      new THREE.MeshBasicMaterial({ color: projects[number].secondaryColor, side: THREE.DoubleSide }),
-      new THREE.MeshBasicMaterial({ color: projects[number].secondaryColor, side: THREE.DoubleSide })
-    ];
-    if(imageObject) {
-      imageObject.material = materials;
-    } else {
-      const geometry = new THREE.BoxGeometry(1920 * .6, 964 * .6, 964 * .6);
-      const boxMesh = new THREE.Mesh(geometry, materials);
-      boxMesh.rotation.copy(new THREE.Euler(- 270 * THREE.MathUtils.DEG2RAD, 0, 0));
-      boxMesh.position.x = defaultPositions.imageObject.x;
-      boxMesh.position.y = defaultPositions.imageObject.y;
-      boxMesh.position.z = defaultPositions.imageObject.z;
-      const wireGeo = new THREE.EdgesGeometry(boxMesh.geometry);
-      const wireMat = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 1 });
-      const wireframe = new THREE.LineSegments(wireGeo, wireMat);
-      wireframe.renderOrder = 2;
-      boxMesh.add(wireframe);
-      imageObject = boxMesh;
-      glScene.add(boxMesh);
-    }
+    create3DText(nameObject, glScene, projects[number].logoColor, initialPos.nameObject, 105, 105, 100, projects[number].name, 'muli_regular')
+      .then(name => nameObject = name);
+    if(!gitHubObject) createIcon(glScene, initialPos.gitHubObject, github)
+      .then(gitHub => gitHubObject = gitHub);
+    if(!siteObject) createIcon(glScene, initialPos.siteObject, site)
+      .then(site => siteObject = site);
   }
 
-
-  function create3dGeometry() {  
-    const triangleShape = new THREE.Shape()
-      .moveTo(0, -100)
-      .lineTo(0, 100)
-      .lineTo(-120, 0);
-
-    const triangleShape2 = new THREE.Shape()
-      .moveTo(0, -100)
-      .lineTo(0, 100)
-      .lineTo(120, 0);
-
-    const extrudeSettings = { depth: 20, bevelEnabled: true, bevelSegments: 2, steps: 2, bevelSize: 1, bevelThickness: 1 };
-
-    const mesh2 = new THREE.Mesh(
-      new THREE.ExtrudeBufferGeometry(triangleShape, extrudeSettings),
-      createColoredMaterial(firstScheme[5])); 
-    mesh2.position.x = defaultPositions.leftArrowObject.x;
-    mesh2.position.y = defaultPositions.leftArrowObject.y;
-    mesh2.position.z = defaultPositions.leftArrowObject.z;
-    mesh2.userData = 'LAST';
-    leftArrowObject = mesh2;
-    glScene.add(mesh2);   
-
-    const mesh3 = new THREE.Mesh(
-      new THREE.ExtrudeBufferGeometry(triangleShape2, extrudeSettings),
-      createColoredMaterial(firstScheme[5]));  
-    mesh3.position.x = defaultPositions.rightArrowObject.x;
-    mesh3.position.y = defaultPositions.rightArrowObject.y;
-    mesh3.position.z = defaultPositions.rightArrowObject.z;
-    mesh3.userData = 'NEXT'; 
-    rightArrowObject = mesh3; 
-    glScene.add(mesh3);
-
-    const mesh4 = new THREE.Mesh(
-      new THREE.ExtrudeBufferGeometry(triangleShape2, extrudeSettings),
-      createColoredMaterial(firstScheme[3]));  
-    mesh4.rotation.copy(new THREE.Euler(0, 0, - 270 * THREE.MathUtils.DEG2RAD));
-    mesh4.position.x = defaultPositions.upArrowObject.x;
-    mesh4.position.y = defaultPositions.upArrowObject.y;
-    mesh4.position.z = defaultPositions.upArrowObject.z;
-    mesh4.userData = 'UP'; 
-    upArrowObject = mesh4; 
-    glScene.add(mesh4);
-
-    const mesh5 = new THREE.Mesh(
-      new THREE.ExtrudeBufferGeometry(triangleShape2, extrudeSettings),
-      createColoredMaterial(firstScheme[3]));  
-    mesh5.rotation.copy(new THREE.Euler(0, 0, - 90 * THREE.MathUtils.DEG2RAD));
-    mesh5.position.x = defaultPositions.downArrowObject.x;
-    mesh5.position.y = defaultPositions.downArrowObject.y;
-    mesh5.position.z = defaultPositions.downArrowObject.z;
-    mesh5.userData = 'DOWN'; 
-    downArrowObject = mesh5; 
-    glScene.add(mesh5);
- 
-    const gltfLoader = new GLTFLoader();
-    const url = 'models/pictureframe_1/scene.gltf';
-    gltfLoader.load(url, (gltf) => {
-      const root = gltf.scene;
-      root.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0));
-      root.scale.set(700, 700, 512); 
-      root.position.x = defaultPositions.frameObject.x;
-      root.position.y = defaultPositions.frameObject.y;
-      const mesh = new THREE.MeshPhongMaterial({ color: '#b5651d' });
-      root.children[0].children[0].children[0].children[0].children[0].material = mesh;
-      root.name = 'picture';
-      frameObject = root;
-      glScene.add(root);
-    }); 
+  // SETUP OBJECTS THAT WILL NOT CHANGE
+  function createProject3DGeometry() {  
+    leftArrowObject = createArrow(glScene, projects[projectCount].secondaryColor, initialPos.leftArrowObject, new THREE.Euler(0, 0, 0), 'LAST');
+    rightArrowObject = createArrow(glScene, projects[projectCount].secondaryColor, initialPos.rightArrowObject, new THREE.Euler(0, 0, - 180 * THREE.MathUtils.DEG2RAD), 'NEXT');
+    const frameSize = {
+      x: 900,
+      y: 1200,
+      z: 512
+    };
+    createPictureFrame(glScene, frameSize, initialPos.frameObject, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0))
+      .then(frame => frameObject = frame);
   }
 
-
+  // INTERACTION
   function onClick(event) {
-    if(nextRotate || lastRotate) return;
+    if(nextProject || lastProject || nextSlide) return;
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     mouse.x = (event.clientX / setWidth) * 2 - 1;
     mouse.y = - (event.clientY / setHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(glScene.children, true); //array
+    const intersects = raycaster.intersectObjects(glScene.children, true);
     if(intersects.length > 0) {
       selectedObject = intersects[0];
-      if(selectedObject.object.userData === 'NEXT' && count < projects.length - 1) {
-        lastRotate = false;
-        nextRotate = true; 
-        count = count + 1;
+      if(selectedObject.object.userData === 'NEXT' && projectCount < projects.length - 1) {
+        lastProject = false;
+        nextProject = true; 
+        projectCount++;
       }
-      if(selectedObject.object.userData === 'LAST' && count > 0) { 
-        nextRotate = false; 
-        lastRotate = true;
-        count = count - 1;
+      if(selectedObject.object.userData === 'LAST' && projectCount > 0) { 
+        nextProject = false; 
+        lastProject = true;
+        projectCount--;
       }
+      if(selectedObject.object.userData === 'SLIDE') { 
+        nextSlide = true;
+        waitSlide = true;
+      }
+      if(selectedObject.object.userData === 'GITHUB') window.open(projects[projectCount].github, '_blank');
+      if(selectedObject.object.userData === 'SITE') window.open(projects[projectCount].site, '_blank');
     }
   }
 
-  function onDown(event) {
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-    mouse.x = (event.clientX / setWidth) * 2 - 1;
-    mouse.y = - (event.clientY / setHeight) * 2 + 1;
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(glScene.children, true); //array
-    if(intersects.length > 0) {
-      selectedObject = intersects[0];
-      if(selectedObject.object.userData === 'UP') {
-        downPicture = false;
-        upPicture = true; 
-      }
-      if(selectedObject.object.userData === 'DOWN') {
-        upPicture = false;
-        downPicture = true; 
-      }
+  // CHANGE PROJECT OR SLIDE
+  function newProject(type) {
+    if(type === 'Project') {
+      slideCount = 0;
+      leftArrowObject.material.color.set(projects[projectCount].secondaryColor);
+      rightArrowObject.material.color.set(projects[projectCount].secondaryColor);
+    } else {
+      slideCount < slideMax ? slideCount++ : slideCount = 0;
     }
+    createProjectPage(1500, type === 'Project' ? 1300 : 1300, initialPos.cssObject, cssObject.rotation, projectCount);
   }
 
-  function onUp() {
-    upPicture = false;
-    downPicture = false;
+  function resetPositions() {
+    nextProject = false;
+    lastProject = false;
+    changeProject = false;
+    cssObject.position.x = initialPos.cssObject.x;
+    planeObject.position.x = initialPos.planeObject.x;
+    frameObject.position.x = initialPos.frameObject.x;
+    nameObject.position.x = initialPos.nameObject.x;
+    leftArrowObject.position.y = initialPos.leftArrowObject.y;
+    rightArrowObject.position.y = initialPos.rightArrowObject.y;
+    gitHubObject.position.y = initialPos.gitHubObject.y;
+    siteObject.position.y = initialPos.siteObject.y;
   }
 
-  function newProject() {
-    fetchScheme(projects[count].logoColor.slice(1), 'analogic')
-      .then(scheme => {
-        schemeCopy = scheme;
-        create3dPage(
-          1200, 700,
-          defaultPositions.cssObject,
-          cssObject.rotation,
-          count,
-          schemeCopy
-        );
-        leftArrowObject.material.color.set(schemeCopy[5]);
-        rightArrowObject.material.color.set(schemeCopy[5]);
-      });
+  function resetCamera() {
+    controls.reset();
+    camera.position.set(0, -1500, cameraDepth - 3000);
+    controls.target = new THREE.Vector3(0, -1500, -3500);
   }
 
-  // UPDATE
+  // CONSTANT UPDATE
   function update() { 
-    if(upPicture) imageObject.rotation.x += .03;
-    if(downPicture) imageObject.rotation.x -= .03;
-
-    if(nextRotate) {
-      cssObject.position.x -= 100;
-      if(cssObject.position.x < -7000) cssObject.position.x = cssObject.position.x + 14000;
-      glScene.children.forEach(child => {
-        if(child.type === 'DirectionalLight' || child.type === 'AmbientLight') return;
-        child.position.x -= 100;
-        if(child.position.x < -5000) child.visible = false;
-        if(child.position.x < 5000 && child.position.x > -5000) child.visible = true;
-        if(child.position.x < -7000) { 
-          child.position.x = child.position.x + 14000;
-          if(changeProject === false) {
-            newProject();
-            changeProject = true;
-          }
+    if(nextSlide) {
+      if(rockObject3.position.x < -7000) waitSlide = false;
+      if(cssObject.quaternion._y >= 0) {
+        if(cssObject.quaternion._y >= .99 && changeSlide === false) {
+          newProject('Slide');
+          changeSlide = true;
         }
-      });
-      if(leftArrowObject.position.x < defaultPositions.leftArrowObject.x & changeProject === true) {
-        nextRotate = false;
-        lastRotate = false;
-        changeProject = false;
-        cssObject.position.x = defaultPositions.cssObject.x;
-        planeObject.position.x = defaultPositions.planeObject.x;
-        frameObject.position.x = defaultPositions.frameObject.x;
-        nameObject.position.x = defaultPositions.nameObject.x;
-        logoObject.position.x = defaultPositions.logoObject.x;
-        imageObject.position.x = defaultPositions.imageObject.x;
-        leftArrowObject.position.x = defaultPositions.leftArrowObject.x;
-        rightArrowObject.position.x = defaultPositions.rightArrowObject.x;
-        upArrowObject.position.x = defaultPositions.upArrowObject.x;
-        downArrowObject.position.x = defaultPositions.downArrowObject.x;
+        if(!waitSlide) {
+          frameObject.rotation.y += 0.06;
+          cssObject.rotation.y += 0.06;
+          planeObject.rotation.y += 0.06;  
+        }   
+      } else {
+        nextSlide = false;
+        waitSlide = true;
+        frameObject.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0));
+        planeObject.rotation.set(0, 0, 0);
+        cssObject.rotation.set(0, 0, 0);
       }
     }
 
-    if(lastRotate) {
-      cssObject.position.x += 100;
-      if(cssObject.position.x > 7000) cssObject.position.x = cssObject.position.x - 14000;
-      glScene.children.forEach(child => {
-        if(child.type === 'DirectionalLight' || child.type === 'AmbientLight') return;
-        child.position.x += 100;
-        if(child.position.x > 5000) child.visible = false;
-        if(child.position.x > -5000 && child.position.x < 5000) child.visible = true;
-        if(child.position.x > 7000) { 
-          child.position.x = child.position.x - 14000;
-          if(changeProject === false) {
-            newProject();
-            changeProject = true;
-          }
-        }
-      });
-      if(rightArrowObject.position.x > defaultPositions.rightArrowObject.x & changeProject === true) {
-        nextRotate = false;
-        lastRotate = false;
-        changeProject = false;
-        cssObject.position.x = defaultPositions.cssObject.x;
-        planeObject.position.x = defaultPositions.planeObject.x;
-        frameObject.position.x = defaultPositions.frameObject.x;
-        nameObject.position.x = defaultPositions.nameObject.x;
-        logoObject.position.x = defaultPositions.logoObject.x;
-        imageObject.position.x = defaultPositions.imageObject.x;
-        leftArrowObject.position.x = defaultPositions.leftArrowObject.x;
-        rightArrowObject.position.x = defaultPositions.rightArrowObject.x;
-        upArrowObject.position.x = defaultPositions.upArrowObject.x;
-        downArrowObject.position.x = defaultPositions.downArrowObject.x;
+    if(waitSlide && !changeSlide) {
+      rockObject.position.x -= 150;
+      rockObject2.position.x += 150;
+      rockObject3.position.x -= 150;
+      rockObject4.position.x += 150;
+      grassObject.position.y -= 150;
+    }
+    if(waitSlide && changeSlide) {
+      if(rockObject.position.x < initialPos.rockObject.x) rockObject.position.x += 150;
+      if(rockObject2.position.x > initialPos.rockObject2.x) rockObject2.position.x -= 150;
+      if(rockObject3.position.x < initialPos.rockObject3.x) rockObject3.position.x += 150;
+      if(rockObject4.position.x > initialPos.rockObject4.x) rockObject4.position.x -= 150;
+      if(grassObject.position.y < initialPos.grassObject.y) grassObject.position.y += 150;
+      else { 
+        waitSlide = false;
+        changeSlide = false;
       }
     }
+    
+    if(nextProject) {
+      changeProject = projectChange(-1, 'PICTURE', cssObject, glScene, changeProject, newProject);
+      if(leftArrowObject.position.y === initialPos.leftArrowObject.y & changeProject === true) resetPositions();
+    }
 
+    if(lastProject) {
+      changeProject = projectChange(1, 'PICTURE', cssObject, glScene, changeProject, newProject);
+      if(rightArrowObject.position.y === initialPos.rightArrowObject.y & changeProject === true) resetPositions();    
+    }
     glRenderer.render(glScene, camera);  
     cssRenderer.render(cssScene, camera);
     requestAnimationFrame(update);
   }
 
   return (
-    <div ref={ref => (ref)} />
+    <>
+      <div className={styles.hud_box}> 
+        <div className={styles.hud_contents}>
+          <a href="/">Home</a>
+          <a href="/about">About</a>
+          <a href="/contact">Contact</a>
+          <a href="/tech">Tech</a>
+          <input type="image" src="./images/common_images/camera.png" alt="center camera" onClick={() => resetCamera()}/>
+        </div>       
+      </div>
+      <div ref={ref => (ref)} />
+    </>
   );
 };
-
 
 export default Projects;
