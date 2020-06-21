@@ -23,13 +23,13 @@ export function createBackground({ wall, ceiling, floor, width, height, depth })
   return boxMesh;
 }
 
-export function createClouds(clouds) {
+export function createClouds(clouds, yDiff = 0, zDiff = 0) {
   return clouds.map(cloud => {
     const cloudMaterial = new THREE.MeshToonMaterial({ map: textureLoader.load(cloud.url), alphaTest: 0.4, transparent: true, side: THREE.DoubleSide, });
     const cloudGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
     const cloudMesh = new THREE.Mesh(cloudGeometry, cloudMaterial);
     cloudMesh.scale.set(cloud.scale.x * .25, cloud.scale.y * .25, 1);
-    cloudMesh.position.set(cloud.position.x, cloud.position.y, cloud.position.z);
+    cloudMesh.position.set(cloud.position.x, cloud.position.y + yDiff, cloud.position.z + zDiff);
     cloudMesh.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0));
     cloudMesh.userData = 'CLOUD';
     return cloudMesh;
