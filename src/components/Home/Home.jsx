@@ -2,15 +2,16 @@ import React, { useEffect } from 'react';
 import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer, createPlane, createBlankCSSObject } from '../../utilities/initialize-page';
-import { createBackground, createClouds, createSun, createAirplane, createTree, createRock, createGrass, create3DText, createIcon, createPictureFrame } from '../../utilities/create-objects';
+import { createBackground, createWall, createClouds, createSun, createAirplane, createTree, createRock, createGrass, create3DText, createIcon, createPictureFrame } from '../../utilities/create-objects';
 import { moveView } from '../../utilities/other';
-import { clouds, field, project, tech, contact, about } from '../../data/objects';
+import { clouds, field, project, tech, contact, about, fieldContact } from '../../data/objects';
 import { desktopPositionsHome, mobilePositionsHome } from '../../data/positions';
 import styles from './Home.css';
 
 const Home = () => {
   let camera, controls, glRenderer, cssRenderer, initialPos, backgroundObject, cloudObjects, sunObject, airplaneObject, treeObject, rockObject, grassObject, cssObject, planeObject, frameObject, nameObject, titleObject, projectObject, projectIconObject, techObject, techIconObject, contactObject, contactIconObject, aboutObject, aboutIconObject, selectedObject, targetObject;
   let cameraDepth = 2750;
+  let mobileDepth = 4500;
   let cameraStart = false;
   let navigateOn = false;
   const setWidth = window.innerWidth;
@@ -20,7 +21,7 @@ const Home = () => {
   const OrbitControls = ThreeOrbitControls(THREE);
 
   const desktopPos = desktopPositionsHome(cameraDepth);
-  const mobilePos = mobilePositionsHome(cameraDepth);
+  const mobilePos = mobilePositionsHome(mobileDepth);
 
   // INITIALIZE PAGE
   useEffect(() => {
@@ -37,7 +38,7 @@ const Home = () => {
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) { 
-      cameraDepth = 4500;
+      cameraDepth = mobileDepth;
       initialPos = mobilePos;
     } else {
       initialPos = desktopPos;
@@ -62,8 +63,17 @@ const Home = () => {
     glScene.add(directionalLight);
   
     // SCENE
-    backgroundObject = createBackground(field);
+    backgroundObject = createBackground(fieldContact);
     glScene.add(backgroundObject);
+
+    const wall1 = createWall(10000, 5000, new THREE.Vector3(0, 0, -4990));
+    glScene.add(wall1);
+    const wall2 = createWall(10000, 5000, new THREE.Vector3(10000, 0, -4990));
+    glScene.add(wall2);
+    const wall3 = createWall(10000, 5000, new THREE.Vector3(-10000, 0, -4990));
+    glScene.add(wall3);
+    const wall4 = createWall(10000, 5000, new THREE.Vector3(20000, 0, -4990));
+    glScene.add(wall4);
 
     cloudObjects = createClouds(clouds);
     cloudObjects.map(cloudObject => glScene.add(cloudObject));
@@ -89,19 +99,19 @@ const Home = () => {
 
     // CONTROLS
     controls = new OrbitControls(camera, glRenderer.domElement);
-    controls.maxAzimuthAngle = 1.5;
-    controls.minAzimuthAngle = -1.5;
-    controls.maxPolarAngle = 2;
-    controls.minPolarAngle = 1;
-    controls.minDistance = 700;
-    controls.maxDistance = 4550;
+    controls.maxAzimuthAngle = .3;
+    controls.minAzimuthAngle = -.3;
+    controls.maxPolarAngle = 1.75;
+    controls.minPolarAngle = 1.25;
+    controls.minDistance = cameraDepth - 1100;
+    controls.maxDistance = cameraDepth;
     controls.enableKeys = false;
 
     // ON START
-    camera.position.set(initialPos.cameraStartPos.x, initialPos.cameraStartPos.y, cameraDepth);
-    camera.rotation.x = .5;
-    cameraStart = true;
-    controls.enabled = false;
+    // camera.position.set(initialPos.cameraStart.x, initialPos.cameraStart.y, cameraDepth);
+    // camera.rotation.x = .5;
+    // cameraStart = true;
+    // controls.enabled = false;
 
     // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('click', onClick, true);
@@ -199,9 +209,9 @@ const Home = () => {
     if(cameraStart) {
       if(camera.rotation.x > 0) camera.rotation.x -= .00225;
       else camera.rotation.x = 0;
-      if(camera.position.y > initialPos.cameraMainPos.y) camera.position.y -= 10;
+      if(camera.position.y > initialPos.cameraMain.y) camera.position.y -= 10;
       else {
-        camera.position.set(initialPos.cameraMainPos.x, initialPos.cameraMainPos.y, cameraDepth);
+        camera.position.set(initialPos.cameraMain.x, initialPos.cameraMain.y, cameraDepth);
         camera.rotation.x = 0;
         cameraStart = false;
         controls.enabled = true;
@@ -238,7 +248,7 @@ const Home = () => {
     if(contactIconObject) contactIconObject.rotation.y += .05;
     if(aboutIconObject) aboutIconObject.rotation.y += .05;
 
-    cloudObjects.map(cloud => cloud.position.x >= 6000 ? cloud.position.x = -6000 : cloud.position.x += 5);
+    cloudObjects.map(cloud => cloud.position.x >= 10000 ? cloud.position.x = -10000 : cloud.position.x += 5);
     
     glRenderer.render(glScene, camera);  
     cssRenderer.render(cssScene, camera);

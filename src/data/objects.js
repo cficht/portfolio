@@ -12,37 +12,37 @@ export const field = {
 export const clouds = [
   {
     url: './images/common_images/clouds/cloud1.png',
-    position: new THREE.Vector3(3000, 750, -2500),
+    position: new THREE.Vector3(5250, 750, -2500),
     scale: new THREE.Vector3(326, 152, 1)
   },
   {
     url: './images/common_images/clouds/cloud2.png',
-    position: new THREE.Vector3(250, 250, -4250),
+    position: new THREE.Vector3(437.5, 250, -4250),
     scale: new THREE.Vector3(168, 80, 1)
   },
   {
     url: './images/common_images/clouds/cloud3.png',
-    position: new THREE.Vector3(-3750, 1250, -3000),
+    position: new THREE.Vector3(-6562.5, 1250, -3000),
     scale: new THREE.Vector3(403, 166, 1)
   },
   {
     url: './images/common_images/clouds/cloud4.png',
-    position: new THREE.Vector3(5000, -200, -3250),
+    position: new THREE.Vector3(8750, -200, -3250),
     scale: new THREE.Vector3(163, 47, 1)
   },
   {
     url: './images/common_images/clouds/cloud5.png',
-    position: new THREE.Vector3(1500, -400, -4750),
+    position: new THREE.Vector3(2625, -400, -4750),
     scale: new THREE.Vector3(47, 21, 1)
   },
   {
     url: './images/common_images/clouds/cloud6.png',
-    position: new THREE.Vector3(-2000, -200, -4000),
+    position: new THREE.Vector3(-3500, -200, -4000),
     scale: new THREE.Vector3(121, 52, 1)
   },
   {
     url: './images/common_images/clouds/cloud7.png',
-    position: new THREE.Vector3(-5000, 100, -4750),
+    position: new THREE.Vector3(-8750, 100, -4750),
     scale: new THREE.Vector3(55, 22, 1)
   }
 ];
@@ -198,7 +198,7 @@ export const sky = {
   wall: './images/common_images/ceilings/ceiling.png',
   width: 12000,
   height: 10000,
-  depth: 10000
+  depth: 15000
 };
 
 export const cloudsTech = [

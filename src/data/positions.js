@@ -2,8 +2,8 @@ import * as THREE from 'three';
 
 export const desktopPositionsHome = (cameraDepth) => {
   return {
-    cameraMainPos: new THREE.Vector3(0, -100, cameraDepth),
-    cameraStartPos: new THREE.Vector3(0, 2250, cameraDepth),
+    cameraMain: new THREE.Vector3(0, 0, cameraDepth),
+    cameraStart: new THREE.Vector3(0, 2250, cameraDepth),
     sunObject: new THREE.Vector3(3500, 1500, -4000),
     airplaneObject: new THREE.Vector3(-3500, 1500, -4000),
     treeObject: new THREE.Vector3(-3500, -1800, -4000),
@@ -27,8 +27,8 @@ export const desktopPositionsHome = (cameraDepth) => {
 
 export const mobilePositionsHome = (cameraDepth) => {
   return {
-    cameraMainPos: new THREE.Vector3(0, -100, cameraDepth),
-    cameraStartPos: new THREE.Vector3(0, 2250, cameraDepth),
+    cameraMain: new THREE.Vector3(0, 0, cameraDepth),
+    cameraStart: new THREE.Vector3(0, 2250, cameraDepth),
     sunObject: new THREE.Vector3(1000, 1500, -4000),
     airplaneObject: new THREE.Vector3(-1000, 1500, -4000),
     treeObject: new THREE.Vector3(-1000, -1800, -4000),
