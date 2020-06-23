@@ -4,31 +4,18 @@ import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer } from '../../utilities/initialize-page';
 import { createBackground, createWall, createAirplane, createClouds, create3DText, createIcon } from '../../utilities/create-objects';
 import { fieldContact, cloudsContact, githubContact, linkedin, email } from '../../data/objects';
-import styles from './Contact.css';
+import { contactPos as initialPos } from '../../data/positions';
+import styles from '../../Main.css';
 
 const Contact = () => {
   let camera, controls, glRenderer, cssRenderer, backgroundObject, airplaneObject, cloudObjects, movingWall, movingWall2, movingWall3, movingWall4, nameObject, gitHubObject, gitHubText, linkedinObject, linkedinText, emailObject, emailText, selectedObject;
-  let cameraDepth = 250;
-  let mobileDepth = 750;
-  // deskZoom = 3750
-  // mobZoom = 4250
+  let cameraDepth = 300;
+  let mobileDepth = 1500;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   const glScene = new THREE.Scene();
   const cssScene = new THREE.Scene();
   const OrbitControls = ThreeOrbitControls(THREE);
-
-  const initialPos = {
-    cameraMain: new THREE.Vector3(0, -50, -3500),
-    airplaneObject: new THREE.Vector3(0, 200, -3500),
-    nameObject: new THREE.Vector3(-10, 1000, -3500),
-    emailObject: new THREE.Vector3(-650, -650, -3500),
-    emailText: new THREE.Vector3(-650, -950, -3500),
-    linkedinObject: new THREE.Vector3(0, -650, -3500),
-    linkedinText: new THREE.Vector3(0, -950, -3500),
-    gitHubObject: new THREE.Vector3(650, -650, -3500),
-    gitHubText: new THREE.Vector3(650, -950, -3500)
-  };
 
   // INITIALIZE PAGE
   useEffect(() => {
@@ -84,7 +71,6 @@ const Contact = () => {
     movingWall4 = createWall(10000, 5000, new THREE.Vector3(20000, 0, -4990));
     glScene.add(movingWall4);
 
-
     createProject3DGeometry();  
     update();
 
@@ -97,8 +83,6 @@ const Contact = () => {
     controls.minDistance = cameraDepth + 2400;
     controls.maxDistance = cameraDepth + 3500;
     controls.enableKeys = false;
-    // deskZoom = 3750
-    // mobZoom = 4250
     
     camera.position.set(initialPos.cameraMain.x, initialPos.cameraMain.y, cameraDepth);
     controls.target.set(initialPos.cameraMain.x, initialPos.cameraMain.y, initialPos.cameraMain.z);
@@ -175,6 +159,7 @@ const Contact = () => {
         <div className={styles.hud_contents}>
           <a href="/">Home</a>
           <a href="/about">About</a>
+          <a>Contact</a>
           <a href="/tech">Tech</a>
           <a href="/projects">Projects</a>
           <input type="image" src="./images/common_images/camera.png" alt="center camera" onClick={() => resetCamera()}/>

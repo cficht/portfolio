@@ -4,14 +4,14 @@ import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer, createPlane, createBlankCSSObject } from '../../utilities/initialize-page';
 import { createBackground, createWall, createClouds, createSun, createAirplane, createTree, createRock, createGrass, create3DText, createIcon, createPictureFrame } from '../../utilities/create-objects';
 import { moveView } from '../../utilities/other';
-import { clouds, field, project, tech, contact, about, fieldContact } from '../../data/objects';
+import { clouds, project, tech, contact, about, fieldContact } from '../../data/objects';
 import { desktopPositionsHome, mobilePositionsHome } from '../../data/positions';
-import styles from './Home.css';
+import styles from '../../Main.css';
 
 const Home = () => {
   let camera, controls, glRenderer, cssRenderer, initialPos, backgroundObject, cloudObjects, sunObject, airplaneObject, treeObject, rockObject, grassObject, cssObject, planeObject, frameObject, nameObject, titleObject, projectObject, projectIconObject, techObject, techIconObject, contactObject, contactIconObject, aboutObject, aboutIconObject, selectedObject, targetObject;
-  let cameraDepth = 2750;
-  let mobileDepth = 4500;
+  let cameraDepth = 2650;
+  let mobileDepth = 4900;
   let cameraStart = false;
   let navigateOn = false;
   const setWidth = window.innerWidth;
@@ -94,7 +94,7 @@ const Home = () => {
     glScene.add(grassObject);
 
     createHomePage(1600, 900, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
-    createProject3DGeometry();  
+    createHome3DGeometry();  
     update();
 
     // CONTROLS
@@ -108,10 +108,10 @@ const Home = () => {
     controls.enableKeys = false;
 
     // ON START
-    // camera.position.set(initialPos.cameraStart.x, initialPos.cameraStart.y, cameraDepth);
-    // camera.rotation.x = .5;
-    // cameraStart = true;
-    // controls.enabled = false;
+    camera.position.set(initialPos.cameraStart.x, initialPos.cameraStart.y, cameraDepth);
+    camera.rotation.x = .5;
+    cameraStart = true;
+    controls.enabled = false;
 
     // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('click', onClick, true);
@@ -123,12 +123,12 @@ const Home = () => {
     planeObject = createPlane(width, height, position, rotation);  
     glScene.add(planeObject);  
  
-    cssObject = createBlankCSSObject(width, height, position, rotation, styles.project);  
+    cssObject = createBlankCSSObject(width, height, position, rotation, styles.home);  
     cssScene.add(cssObject);
   }
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
-  function createProject3DGeometry() {  
+  function createHome3DGeometry() {  
     create3DText(nameObject, glScene, '#228B22', initialPos.nameObject, 100, 100, 100, 'Chris Ficht', 'muli_regular', 'NAME')
       .then(name => nameObject = name);
     create3DText(titleObject, glScene, '#558E40', initialPos.titleObject, 60, 60, 60, 'Software Developer', 'muli_regular', 'TITLE')

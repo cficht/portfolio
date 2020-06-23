@@ -48,3 +48,15 @@ export function moveView(viewObject, targetObject) {
   if(objectType.x > targetObject.position.x) objectType.x -= 25;
   if(objectType.x < targetObject.position.x) objectType.x += 25;
 }
+
+export function mobileDetect(desktopDepth, mobileDepth) {
+  if(navigator.userAgent.match(/Android/i) 
+  || navigator.userAgent.match(/webOS/i)
+  || navigator.userAgent.match(/webOS/i)
+  || navigator.userAgent.match(/iPhone/i)
+  || navigator.userAgent.match(/iPad/i)
+  || navigator.userAgent.match(/iPod/i)
+  || navigator.userAgent.match(/BlackBerry/i)
+  || navigator.userAgent.match(/Windows Phone/i)) return mobileDepth;
+  else return desktopDepth;
+}

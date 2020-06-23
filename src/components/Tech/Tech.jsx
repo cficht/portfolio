@@ -4,32 +4,20 @@ import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer } from '../../utilities/initialize-page';
 import { createBackground, createSun, create3DText, createArrow, createIcon, createClouds } from '../../utilities/create-objects';
 import { sky, techLogos, cloudsTech } from '../../data/objects';
-import styles from './Tech.css';
+import { techPos as initialPos } from '../../data/positions';
+import styles from '../../Main.css';
 
 const Tech = () => {
   let camera, controls, pivot, glRenderer, cssRenderer, backgroundObject, sunObject, cloudObjects, nameObject, categoryObject, leftArrowObject, rightArrowObject, upArrowObject, downArrowObject, selectedObject;
   let rotateRight = false, rotateLeft = false, changeTech = false;
   let techCount = 0;
   let cameraDepth = 4000;
-  let mobileDepth = 4500;
-  // deskZoom = 3600
-  // mobZoom = 4100
+  let mobileDepth = 5200;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   const glScene = new THREE.Scene();
   const cssScene = new THREE.Scene();
   const OrbitControls = ThreeOrbitControls(THREE);
-
-  const initialPos = {
-    cameraMain: new THREE.Vector3(0, 100, 400),
-    sunObject: new THREE.Vector3(0, 200, 0),
-    nameObject: new THREE.Vector3(0, 900, 1300),
-    leftArrowObject: new THREE.Vector3(-50, -275, 1300), 
-    rightArrowObject: new THREE.Vector3(50, -275, 1300),
-    categoryObject: new THREE.Vector3(-100, -575, 1300),
-    upArrowObject: new THREE.Vector3(300, -550, 1300), 
-    downArrowObject: new THREE.Vector3(300, -600, 1300)
-  };
 
   // INITIALIZE PAGE
   useEffect(() => {
@@ -89,8 +77,6 @@ const Tech = () => {
     controls.minDistance = cameraDepth - 1500;
     controls.maxDistance = cameraDepth - 400;
     controls.enableKeys = false;
-    // deskZoom = 3600
-    // mobZoom = 4100
     
     camera.position.set(initialPos.cameraMain.x, initialPos.cameraMain.y, cameraDepth);
     controls.target.set(initialPos.cameraMain.x, initialPos.cameraMain.y, initialPos.cameraMain.z);
@@ -190,7 +176,6 @@ const Tech = () => {
   }
 
   function resetCamera() {
-    event.preventDefault();
     controls.reset();
     camera.position.set(initialPos.cameraMain.x, initialPos.cameraMain.y, cameraDepth);
     controls.target.set(initialPos.cameraMain.x, initialPos.cameraMain.y, initialPos.cameraMain.z);
@@ -242,6 +227,7 @@ const Tech = () => {
           <a href="/">Home</a>
           <a href="/about">About</a>
           <a href="/contact">Contact</a>
+          <a>Tech</a>
           <a href="/projects">Projects</a>
           <input type="image" src="./images/common_images/camera.png" alt="center camera" onClick={() => resetCamera()}/>
         </div>       

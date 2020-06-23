@@ -5,43 +5,19 @@ import { createGlRenderer, createCssRenderer, createPlane, createAboutCSSObject 
 import { createBackground, createTree, createGrass, createTreeTop, create3DText, createArrow, createPictureFrame } from '../../utilities/create-objects';
 import { about } from '../../data/info';
 import { projectField } from '../../data/objects';
-import styles from './About.css';
+import { aboutPos as initialPos } from '../../data/positions';
+import styles from '../../Main.css';
 
 const About = () => {
   let camera, controls, glRenderer, cssRenderer, backgroundObject, treeObject, treeTopObject, treeTopObject2, grassObject, grassObject2, nameObject, selectedObject;
   let flipRight = false, flipLeft = false, backSide = false;
-  let cameraDepth = 3750;
-  let mobileDepth = 4250;
-  // deskZoom = 2350
-  // mobZoom = 2850
+  let cameraDepth = 3700;
+  let mobileDepth = 4900;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   const glScene = new THREE.Scene();
   const cssScene = new THREE.Scene();
   const OrbitControls = ThreeOrbitControls(THREE);
-
-  const initialPos = {
-    cameraMain: new THREE.Vector3(0, -850, 1400),
-    treeObject: new THREE.Vector3(200, 5100, 0),
-    treeTopObject: new THREE.Vector3(200, 2200, 25),
-    treeTopObject2: new THREE.Vector3(200, 2200, -25),
-    grassObject: new THREE.Vector3(0, -2250, 100),
-    grassObject2: new THREE.Vector3(0, -2250, -100),
-    cssObject: new THREE.Vector3(0, -800, 50),
-    planeObject: new THREE.Vector3(0, -800, 50),
-    frameObject: new THREE.Vector3(0, -800, 50),
-    cssObject2: new THREE.Vector3(0, -800, -50),
-    planeObject2: new THREE.Vector3(0, -800, -50),
-    frameObject2: new THREE.Vector3(0, -800, -50),
-    nameObject: new THREE.Vector3(-10, 300, 50),
-    logoObject: new THREE.Vector3(0, 900, -3500),
-    leftArrowObjectFront: new THREE.Vector3(-100, -1550, 100), 
-    rightArrowObjectFront: new THREE.Vector3(100, -1550, 100),
-    leftArrowObjectBack: new THREE.Vector3(-100, -1550, -100), 
-    rightArrowObjectBack: new THREE.Vector3(100, -1550, -100),
-    gitHubObject: new THREE.Vector3(-450, -2100, -2500),
-    siteObject: new THREE.Vector3(450, -2100, -2500)
-  };
 
   // INITIALIZE PAGE
   useEffect(() => {
@@ -110,8 +86,6 @@ const About = () => {
     controls.minDistance = cameraDepth - 2500;
     controls.maxDistance = cameraDepth - 1400;
     controls.enableKeys = false;
-    // deskZoom = 2350
-    // mobZoom = 2850
     
     camera.position.set(initialPos.cameraMain.x, initialPos.cameraMain.y, cameraDepth);
     controls.target.set(initialPos.cameraMain.x, initialPos.cameraMain.y, initialPos.cameraMain.z);
@@ -214,6 +188,7 @@ const About = () => {
       <div className={styles.hud_box}> 
         <div className={styles.hud_contents}>
           <a href="/">Home</a>
+          <a>About</a>
           <a href="/contact">Contact</a>
           <a href="/tech">Tech</a>
           <a href="/projects">Projects</a>
