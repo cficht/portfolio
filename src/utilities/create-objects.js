@@ -23,6 +23,19 @@ export function createBackground({ wall, ceiling, floor, width, height, depth })
   return boxMesh;
 }
 
+export function createWall(width, height, position) {
+  const wall_url = './images/common_images/walls/wall_no_clouds.png';
+  const wallMaterial = new THREE.MeshBasicMaterial({ map: textureLoader.load(wall_url), side: THREE.DoubleSide, shininess: 0 });
+  const wallGeometry = new THREE.PlaneBufferGeometry(1, 1, 1);
+  wallGeometry.center();
+  const wallMesh = new THREE.Mesh(wallGeometry, wallMaterial);
+  wallMesh.scale.set(width * 1, height * 1, 1);
+  wallMesh.position.set(position.x, position.y, position.z);
+  wallMesh.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0));
+  wallMesh.userData = 'WALL';
+  return wallMesh;
+}
+
 export function createClouds(clouds, yDiff = 0, zDiff = 0) {
   return clouds.map(cloud => {
     const cloudMaterial = new THREE.MeshToonMaterial({ map: textureLoader.load(cloud.url), alphaTest: 0.4, transparent: true, side: THREE.DoubleSide, });
@@ -96,7 +109,7 @@ export function createRock(width, height, position, scale, rockNumber, flip) {
 
 export function createGrass(width, height, position, scale, type) {
   let grass_url;
-  type === 'tall' ? grass_url = './images/common_images/grass/grass_projects.png' : grass_url = './images/common_images/grass/grass2.png';
+  type === 'tall' ? grass_url = './images/common_images/grass/grass_tall.png' : grass_url = './images/common_images/grass/grass.png';
   const grassMaterial = new THREE.MeshBasicMaterial({ map: textureLoader.load(grass_url), alphaTest: 0.9, transparent: true, side: THREE.DoubleSide });
   const grassGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
   grassGeometry.center();

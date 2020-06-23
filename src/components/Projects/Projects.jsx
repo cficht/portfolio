@@ -6,12 +6,14 @@ import { createBackground, createRock, createGrass, create3DText, createIcon, cr
 import { projectChange } from '../../utilities/other';
 import { projects } from '../../data/info';
 import { projectField, github, site } from '../../data/objects';
-import styles from './Projects.css';
+import { projectPos as initialPos } from '../../data/positions';
+import styles from '../../Main.css';
 
 const Projects = () => {
   let camera, controls, glRenderer, cssRenderer, backgroundObject, rockObject, rockObject2, rockObject3, rockObject4, grassObject, cssObject, planeObject, frameObject, nameObject, leftArrowObject, rightArrowObject, gitHubObject, siteObject, selectedObject;
   let nextSlide = false, changeSlide = false, waitSlide = false, nextProject = false, lastProject = false, changeProject = false;
-  let cameraDepth = 2750;
+  let cameraDepth = 200;
+  let mobileDepth = 1400;
   let projectCount = 0;
   let slideCount = 0;
   const slideMax = 2;
@@ -20,23 +22,6 @@ const Projects = () => {
   const glScene = new THREE.Scene();
   const cssScene = new THREE.Scene();
   const OrbitControls = ThreeOrbitControls(THREE);
-
-  const initialPos = {
-    rockObject: new THREE.Vector3(-1500, -1950, -3450),
-    rockObject2: new THREE.Vector3(1500, -1850, -3450),
-    rockObject3: new THREE.Vector3(-1800, -1850, -3050),
-    rockObject4: new THREE.Vector3(1900, -2150, -2950),
-    grassObject: new THREE.Vector3(0, -2250, -2800),
-    cssObject: new THREE.Vector3(0, -1350, -3500),
-    planeObject: new THREE.Vector3(0, -1350, -3500),
-    frameObject: new THREE.Vector3(0, -1350, -3500),
-    nameObject: new THREE.Vector3(-10, -350, -3500),
-    logoObject: new THREE.Vector3(0, 900, -3500),
-    leftArrowObject: new THREE.Vector3(-100, -2100, -2500), 
-    rightArrowObject: new THREE.Vector3(100, -2100, -2500),
-    gitHubObject: new THREE.Vector3(-450, -2100, -2500),
-    siteObject: new THREE.Vector3(450, -2100, -2500)
-  };
 
   // INITIALIZE PAGE
   useEffect(() => {
@@ -52,7 +37,8 @@ const Projects = () => {
     || navigator.userAgent.match(/iPad/i)
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
-    || navigator.userAgent.match(/Windows Phone/i)) cameraDepth = 4500;
+    || navigator.userAgent.match(/Windows Phone/i)) cameraDepth = mobileDepth;
+    
     camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 15000);
     camera.position.set(0, 0, cameraDepth);
   
@@ -98,16 +84,16 @@ const Projects = () => {
 
     // CONTROLS
     controls = new OrbitControls(camera, glRenderer.domElement);
-    controls.maxAzimuthAngle = 1;
-    controls.minAzimuthAngle = -1;
+    controls.maxAzimuthAngle = .3;
+    controls.minAzimuthAngle = -.3;
     controls.maxPolarAngle = 1.75;
-    controls.minPolarAngle = 1;
-    controls.minDistance = 1500;
-    controls.maxDistance = 5050;
+    controls.minPolarAngle = 1.25;
+    controls.minDistance = cameraDepth + 2400;
+    controls.maxDistance = cameraDepth + 3500;
     controls.enableKeys = false;
     
-    camera.position.set(0, -1500, cameraDepth - 3000);
-    controls.target = new THREE.Vector3(0, -1500, -3500);
+    camera.position.set(initialPos.cameraMain.x, initialPos.cameraMain.y, cameraDepth);
+    controls.target.set(initialPos.cameraMain.x, initialPos.cameraMain.y, initialPos.cameraMain.z);
 
     // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('click', onClick, true);
@@ -210,8 +196,8 @@ const Projects = () => {
 
   function resetCamera() {
     controls.reset();
-    camera.position.set(0, -1500, cameraDepth - 3000);
-    controls.target = new THREE.Vector3(0, -1500, -3500);
+    camera.position.set(initialPos.cameraMain.x, initialPos.cameraMain.y, cameraDepth);
+    controls.target.set(initialPos.cameraMain.x, initialPos.cameraMain.y, initialPos.cameraMain.z);
   }
 
   // CONSTANT UPDATE
@@ -278,6 +264,7 @@ const Projects = () => {
           <a href="/about">About</a>
           <a href="/contact">Contact</a>
           <a href="/tech">Tech</a>
+          <a>Projects</a>
           <input type="image" src="./images/common_images/camera.png" alt="center camera" onClick={() => resetCamera()}/>
         </div>       
       </div>

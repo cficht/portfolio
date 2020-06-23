@@ -5,40 +5,19 @@ import { createGlRenderer, createCssRenderer, createPlane, createAboutCSSObject 
 import { createBackground, createTree, createGrass, createTreeTop, create3DText, createArrow, createPictureFrame } from '../../utilities/create-objects';
 import { about } from '../../data/info';
 import { projectField } from '../../data/objects';
-import styles from './About.css';
+import { aboutPos as initialPos } from '../../data/positions';
+import styles from '../../Main.css';
 
 const About = () => {
   let camera, controls, glRenderer, cssRenderer, backgroundObject, treeObject, treeTopObject, treeTopObject2, grassObject, grassObject2, nameObject, selectedObject;
   let flipRight = false, flipLeft = false, backSide = false;
-  let cameraDepth = 2750;
-  let zoomMax = 4000;
+  let cameraDepth = 3700;
+  let mobileDepth = 4900;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   const glScene = new THREE.Scene();
   const cssScene = new THREE.Scene();
   const OrbitControls = ThreeOrbitControls(THREE);
-
-  const initialPos = {
-    treeObject: new THREE.Vector3(200, 5100, 0),
-    treeTopObject: new THREE.Vector3(200, 2200, 25),
-    treeTopObject2: new THREE.Vector3(200, 2200, -25),
-    grassObject: new THREE.Vector3(0, -2250, 100),
-    grassObject2: new THREE.Vector3(0, -2250, -100),
-    cssObject: new THREE.Vector3(0, -700, 50),
-    planeObject: new THREE.Vector3(0, -700, 50),
-    frameObject: new THREE.Vector3(0, -700, 50),
-    cssObject2: new THREE.Vector3(0, -700, -50),
-    planeObject2: new THREE.Vector3(0, -700, -50),
-    frameObject2: new THREE.Vector3(0, -700, -50),
-    nameObject: new THREE.Vector3(-10, 300, 50),
-    logoObject: new THREE.Vector3(0, 900, -3500),
-    leftArrowObjectFront: new THREE.Vector3(-100, -1500, 100), 
-    rightArrowObjectFront: new THREE.Vector3(100, -1500, 100),
-    leftArrowObjectBack: new THREE.Vector3(-100, -1500, -100), 
-    rightArrowObjectBack: new THREE.Vector3(100, -1500, -100),
-    gitHubObject: new THREE.Vector3(-450, -2100, -2500),
-    siteObject: new THREE.Vector3(450, -2100, -2500)
-  };
 
   // INITIALIZE PAGE
   useEffect(() => {
@@ -54,10 +33,8 @@ const About = () => {
     || navigator.userAgent.match(/iPad/i)
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
-    || navigator.userAgent.match(/Windows Phone/i)) { 
-      cameraDepth = 3500;
-      zoomMax = 4400;
-    }
+    || navigator.userAgent.match(/Windows Phone/i)) cameraDepth = mobileDepth;
+  
     camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 15000);
     camera.position.set(0, 0, cameraDepth);
   
@@ -81,7 +58,7 @@ const About = () => {
     backgroundObject = createBackground(projectField);
     glScene.add(backgroundObject);
 
-    treeObject = createTree(6814, 7571, initialPos.treeObject, .11);
+    treeObject = createTree(5814, 7571, initialPos.treeObject, .11);
     glScene.add(treeObject);
 
     grassObject = createGrass(1662, 300, initialPos.grassObject, .2, 'tall');
@@ -95,23 +72,23 @@ const About = () => {
     treeTopObject2 = createTreeTop(2400, 1574, initialPos.treeTopObject2, .15);
     glScene.add(treeTopObject2);
 
-    createAboutPages(1400, 800, initialPos.cssObject, new THREE.Vector3(0, 0, 0), about.bio);
+    createAboutPages(1200, 800, initialPos.cssObject, new THREE.Vector3(0, 0, 0), about.bio);
     createAboutPages(1000, 600, initialPos.cssObject2, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0), about.other);
     createProject3DGeometry();  
     update();
 
     // CONTROLS
     controls = new OrbitControls(camera, glRenderer.domElement);
-    controls.maxAzimuthAngle = 1;
-    controls.minAzimuthAngle = -1;
-    controls.maxPolarAngle = 1.6;
-    controls.minPolarAngle = 1;
-    controls.minDistance = 1500;
-    controls.maxDistance = zoomMax;
+    controls.maxAzimuthAngle = .3;
+    controls.minAzimuthAngle = -.3;
+    controls.maxPolarAngle = 1.75;
+    controls.minPolarAngle = 1.25;
+    controls.minDistance = cameraDepth - 2500;
+    controls.maxDistance = cameraDepth - 1400;
     controls.enableKeys = false;
     
-    camera.position.set(0, -850, cameraDepth + 900);
-    controls.target = new THREE.Vector3(0, -850, 400);
+    camera.position.set(initialPos.cameraMain.x, initialPos.cameraMain.y, cameraDepth);
+    controls.target.set(initialPos.cameraMain.x, initialPos.cameraMain.y, initialPos.cameraMain.z);
 
     // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('click', onClick, true);
@@ -130,11 +107,11 @@ const About = () => {
   function createProject3DGeometry() {  
     create3DText(nameObject, glScene, '#228B22', initialPos.nameObject, 115, 115, 100, 'About', 'muli_regular')
       .then(name => nameObject = name);
-    createArrow(glScene, '#ff8c00', initialPos.leftArrowObjectFront, new THREE.Euler(0, 0, 0), 'LAST');
-    createArrow(glScene, '#ff8c00', initialPos.rightArrowObjectFront, new THREE.Euler(0, 0, - 180 * THREE.MathUtils.DEG2RAD), 'NEXT');
-    createArrow(glScene, '#ff8c00', initialPos.leftArrowObjectBack, new THREE.Euler(0, 0, 0), 'NEXT');
-    createArrow(glScene, '#ff8c00', initialPos.rightArrowObjectBack, new THREE.Euler(0, 0, - 180 * THREE.MathUtils.DEG2RAD), 'LAST');
-    createPictureFrame(glScene, { x: 800, y: 800, z: 512 }, initialPos.frameObject, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0));
+    createArrow(glScene, '#ff8c00', initialPos.leftArrowObjectFront, new THREE.Euler(0, 0, 0), 'LAST', 1.2);
+    createArrow(glScene, '#ff8c00', initialPos.rightArrowObjectFront, new THREE.Euler(0, 0, -180 * THREE.MathUtils.DEG2RAD), 'NEXT', 1.2);
+    createArrow(glScene, '#ff8c00', initialPos.leftArrowObjectBack, new THREE.Euler(0, 0, 0), 'NEXT', 1.2);
+    createArrow(glScene, '#ff8c00', initialPos.rightArrowObjectBack, new THREE.Euler(0, 0, -180 * THREE.MathUtils.DEG2RAD), 'LAST', 1.2);
+    createPictureFrame(glScene, { x: 700, y: 800, z: 512 }, initialPos.frameObject, new THREE.Euler(0, -180 * THREE.MathUtils.DEG2RAD, 0));
     createPictureFrame(glScene, { x: 600, y: 600, z: 512 }, initialPos.frameObject2, new THREE.Euler(0, 0, 0));
   }
 
@@ -165,8 +142,8 @@ const About = () => {
   function resetCamera() {
     if(flipLeft || flipRight) return;
     controls.reset();
-    camera.position.set(0, -850, cameraDepth + 900);
-    controls.target = new THREE.Vector3(0, -850, 1400);
+    camera.position.set(initialPos.cameraMain.x, initialPos.cameraMain.y, cameraDepth);
+    controls.target.set(initialPos.cameraMain.x, initialPos.cameraMain.y, initialPos.cameraMain.z);
   }
 
   // CONSTANT UPDATE
@@ -211,6 +188,7 @@ const About = () => {
       <div className={styles.hud_box}> 
         <div className={styles.hud_contents}>
           <a href="/">Home</a>
+          <a>About</a>
           <a href="/contact">Contact</a>
           <a href="/tech">Tech</a>
           <a href="/projects">Projects</a>

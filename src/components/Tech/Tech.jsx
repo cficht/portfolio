@@ -4,32 +4,20 @@ import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer } from '../../utilities/initialize-page';
 import { createBackground, createSun, create3DText, createArrow, createIcon, createClouds } from '../../utilities/create-objects';
 import { sky, techLogos, cloudsTech } from '../../data/objects';
-import styles from './Tech.css';
+import { techPos as initialPos } from '../../data/positions';
+import styles from '../../Main.css';
 
 const Tech = () => {
   let camera, controls, pivot, glRenderer, cssRenderer, backgroundObject, sunObject, cloudObjects, nameObject, categoryObject, leftArrowObject, rightArrowObject, upArrowObject, downArrowObject, selectedObject;
   let rotateRight = false, rotateLeft = false, changeTech = false;
   let techCount = 0;
-  let cameraDepth = 2750;
-  let zoomMax = 4000;
+  let cameraDepth = 4000;
+  let mobileDepth = 5200;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   const glScene = new THREE.Scene();
   const cssScene = new THREE.Scene();
   const OrbitControls = ThreeOrbitControls(THREE);
-
-  const initialPos = {
-    sunObject: new THREE.Vector3(0, 100, 0),
-    cssObject: new THREE.Vector3(0, -700, 50),
-    planeObject: new THREE.Vector3(0, -700, 50),
-    frameObject: new THREE.Vector3(0, -700, 50),
-    nameObject: new THREE.Vector3(0, 1300, 0),
-    categoryObject: new THREE.Vector3(-100, -750, 800),
-    leftArrowObject: new THREE.Vector3(-30, -375, 1300), 
-    rightArrowObject: new THREE.Vector3(30, -375, 1300),
-    upArrowObject: new THREE.Vector3(400, -725, 800), 
-    downArrowObject: new THREE.Vector3(400, -775, 800)
-  };
 
   // INITIALIZE PAGE
   useEffect(() => {
@@ -45,10 +33,8 @@ const Tech = () => {
     || navigator.userAgent.match(/iPad/i)
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
-    || navigator.userAgent.match(/Windows Phone/i)) { 
-      cameraDepth = 3500;
-      zoomMax = 4400;
-    }
+    || navigator.userAgent.match(/Windows Phone/i)) cameraDepth = mobileDepth;
+    
     camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 15000);
     camera.position.set(0, 0, cameraDepth);
 
@@ -84,22 +70,22 @@ const Tech = () => {
 
     // CONTROLS
     controls = new OrbitControls(camera, glRenderer.domElement);
-    controls.maxAzimuthAngle = .2;
-    controls.minAzimuthAngle = -.2;
-    controls.maxPolarAngle = 2;
-    controls.minPolarAngle = 1;
-    controls.minDistance = 1500;
-    controls.maxDistance = zoomMax;
+    controls.maxAzimuthAngle = .3;
+    controls.minAzimuthAngle = -.3;
+    controls.maxPolarAngle = 1.75;
+    controls.minPolarAngle = 1.25;
+    controls.minDistance = cameraDepth - 1500;
+    controls.maxDistance = cameraDepth - 400;
     controls.enableKeys = false;
     
-    camera.position.set(0, 100, cameraDepth + 900);
-    controls.target = new THREE.Vector3(0, 100, 400);
+    camera.position.set(initialPos.cameraMain.x, initialPos.cameraMain.y, cameraDepth);
+    controls.target.set(initialPos.cameraMain.x, initialPos.cameraMain.y, initialPos.cameraMain.z);
 
     // EVENT LISTENERS
-    cssRenderer.domElement.addEventListener('mousedown', onDown, true);
-    cssRenderer.domElement.addEventListener('mouseup', onUp, true);
-    cssRenderer.domElement.addEventListener('touchstart', onDown, true);
-    cssRenderer.domElement.addEventListener('touchend', onUp, true);
+    glRenderer.domElement.addEventListener('mousedown', onDown, true);
+    glRenderer.domElement.addEventListener('mouseup', onUp, true);
+    glRenderer.domElement.addEventListener('touchstart', onDown, true);
+    glRenderer.domElement.addEventListener('touchend', onUp, true);
     window.addEventListener('resize', () => location.reload());
   }, []);
 
@@ -116,21 +102,21 @@ const Tech = () => {
     glScene.add(pivotSphere);
     
     glScene.add(new THREE.AxesHelper());
-    create3DText(categoryObject, glScene, '#ff8c00', initialPos.categoryObject, 60, 60, 100, techLogos[techCount].category, 'muli_regular')
+    create3DText(categoryObject, glScene, '#ff8c00', initialPos.categoryObject, 50, 50, 35, techLogos[techCount].category, 'muli_regular')
       .then(category => categoryObject = category);
 
     techLogos[techCount].models.map((tech, i) => {
-      const logoPosition = new THREE.Vector3(1300 * Math.sin(THREE.Math.degToRad(360 * (i / techLogos[techCount].models.length))), 125, 1300 * Math.cos(THREE.Math.degToRad(360 * (i / techLogos[techCount].models.length))));
+      const logoPosition = new THREE.Vector3(1300 * Math.sin(THREE.Math.degToRad(360 * (i / techLogos[techCount].models.length))), 225, 1300 * Math.cos(THREE.Math.degToRad(360 * (i / techLogos[techCount].models.length))));
       createIcon(glScene, logoPosition, tech)
         .then(logo => {
           logo.geometry.rotateZ(THREE.Math.degToRad(270));
           logo.rotation.set(0, 0, Math.PI / 2);
           pivot.add(logo);
         });
-      create3DText(false, glScene, '#FF4500', logoPosition, 50, 50, 100, tech.name, 'muli_regular')
+      create3DText(false, glScene, '#FF4500', logoPosition, 50, 50, 35, tech.name, 'muli_regular')
         .then(text => {
           text.geometry.rotateZ(THREE.Math.degToRad(270));
-          text.position.y = -175;
+          text.position.y = -75;
           text.rotation.set(0, 0, Math.PI / 2);
           pivot.add(text);
         });
@@ -139,12 +125,12 @@ const Tech = () => {
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
   function createProject3DGeometry() {      
-    create3DText(nameObject, glScene, '#ff8c00', initialPos.nameObject, 115, 115, 100, 'Tech Stack', 'muli_regular')
+    create3DText(nameObject, glScene, '#ff8c00', initialPos.nameObject, 80, 80, 65, 'Tech Stack', 'muli_regular')
       .then(name => nameObject = name);
-    leftArrowObject = createArrow(glScene, '#EFFD5F', initialPos.leftArrowObject, new THREE.Euler(0, 0, 0), 'LAST', .6);
-    rightArrowObject = createArrow(glScene, '#EFFD5F', initialPos.rightArrowObject, new THREE.Euler(0, 0, -180 * THREE.MathUtils.DEG2RAD), 'NEXT', .6);
-    upArrowObject = createArrow(glScene, '#EFFD5F', initialPos.upArrowObject, new THREE.Euler(0, 0, -90 * THREE.MathUtils.DEG2RAD), 'UP', .6);
-    downArrowObject = createArrow(glScene, '#EFFD5F', initialPos.downArrowObject, new THREE.Euler(0, 0, -270 * THREE.MathUtils.DEG2RAD), 'DOWN', .6);
+    leftArrowObject = createArrow(glScene, '#EFFD5F', initialPos.leftArrowObject, new THREE.Euler(0, 0, 0), 'LAST', .8);
+    rightArrowObject = createArrow(glScene, '#EFFD5F', initialPos.rightArrowObject, new THREE.Euler(0, 0, -180 * THREE.MathUtils.DEG2RAD), 'NEXT', .8);
+    upArrowObject = createArrow(glScene, '#EFFD5F', initialPos.upArrowObject, new THREE.Euler(0, 0, -90 * THREE.MathUtils.DEG2RAD), 'UP', .8);
+    downArrowObject = createArrow(glScene, '#EFFD5F', initialPos.downArrowObject, new THREE.Euler(0, 0, -270 * THREE.MathUtils.DEG2RAD), 'DOWN', .8);
   }
 
   // INTERACTION
@@ -190,10 +176,9 @@ const Tech = () => {
   }
 
   function resetCamera() {
-    event.preventDefault();
     controls.reset();
-    camera.position.set(0, 100, cameraDepth + 900);
-    controls.target = new THREE.Vector3(0, 100, 400);
+    camera.position.set(initialPos.cameraMain.x, initialPos.cameraMain.y, cameraDepth);
+    controls.target.set(initialPos.cameraMain.x, initialPos.cameraMain.y, initialPos.cameraMain.z);
   }
 
   // CONSTANT UPDATE
@@ -242,6 +227,7 @@ const Tech = () => {
           <a href="/">Home</a>
           <a href="/about">About</a>
           <a href="/contact">Contact</a>
+          <a>Tech</a>
           <a href="/projects">Projects</a>
           <input type="image" src="./images/common_images/camera.png" alt="center camera" onClick={() => resetCamera()}/>
         </div>       

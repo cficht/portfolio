@@ -2,30 +2,20 @@ import React, { useEffect } from 'react';
 import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer } from '../../utilities/initialize-page';
-import { createBackground, createAirplane, createClouds, create3DText, createIcon } from '../../utilities/create-objects';
+import { createBackground, createWall, createAirplane, createClouds, create3DText, createIcon } from '../../utilities/create-objects';
 import { fieldContact, cloudsContact, githubContact, linkedin, email } from '../../data/objects';
-import styles from './Contact.css';
+import { contactPos as initialPos } from '../../data/positions';
+import styles from '../../Main.css';
 
 const Contact = () => {
   let camera, controls, glRenderer, cssRenderer, backgroundObject, airplaneObject, cloudObjects, movingWall, movingWall2, movingWall3, movingWall4, nameObject, gitHubObject, gitHubText, linkedinObject, linkedinText, emailObject, emailText, selectedObject;
-  let cameraDepth = 2750;
-  let zoomMax = 3500;
+  let cameraDepth = 300;
+  let mobileDepth = 1500;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   const glScene = new THREE.Scene();
   const cssScene = new THREE.Scene();
   const OrbitControls = ThreeOrbitControls(THREE);
-
-  const initialPos = {
-    airplaneObject: new THREE.Vector3(0, 200, -3500),
-    nameObject: new THREE.Vector3(-10, 1000, -3500),
-    emailObject: new THREE.Vector3(-650, -650, -3500),
-    emailText: new THREE.Vector3(-650, -950, -3500),
-    linkedinObject: new THREE.Vector3(0, -650, -3500),
-    linkedinText: new THREE.Vector3(0, -950, -3500),
-    gitHubObject: new THREE.Vector3(650, -650, -3500),
-    gitHubText: new THREE.Vector3(650, -950, -3500)
-  };
 
   // INITIALIZE PAGE
   useEffect(() => {
@@ -41,10 +31,8 @@ const Contact = () => {
     || navigator.userAgent.match(/iPad/i)
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
-    || navigator.userAgent.match(/Windows Phone/i)) {
-      cameraDepth = 4500;
-      zoomMax = 5050;
-    }
+    || navigator.userAgent.match(/Windows Phone/i)) cameraDepth = mobileDepth;
+ 
     camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 15000);
     camera.position.set(0, 0, cameraDepth);
   
@@ -74,19 +62,6 @@ const Contact = () => {
     cloudObjects = createClouds(cloudsContact);
     cloudObjects.map(cloudObject => glScene.add(cloudObject));
 
-    const textureLoader = new THREE.TextureLoader();
-    function createWall(width, height, position) {
-      const wall_url = './images/common_images/walls/wall_no_clouds.png';
-      const wallMaterial = new THREE.MeshBasicMaterial({ map: textureLoader.load(wall_url), side: THREE.DoubleSide, shininess: 0 });
-      const wallGeometry = new THREE.PlaneBufferGeometry(1, 1, 1);
-      wallGeometry.center();
-      const wallMesh = new THREE.Mesh(wallGeometry, wallMaterial);
-      wallMesh.scale.set(width * 1, height * 1, 1);
-      wallMesh.position.set(position.x, position.y, position.z);
-      wallMesh.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0));
-      wallMesh.userData = 'WALL';
-      return wallMesh;
-    }
     movingWall = createWall(10000, 5000, new THREE.Vector3(0, 0, -4990));
     glScene.add(movingWall);
     movingWall2 = createWall(10000, 5000, new THREE.Vector3(10000, 0, -4990));
@@ -96,22 +71,21 @@ const Contact = () => {
     movingWall4 = createWall(10000, 5000, new THREE.Vector3(20000, 0, -4990));
     glScene.add(movingWall4);
 
-
     createProject3DGeometry();  
     update();
 
     // CONTROLS
     controls = new OrbitControls(camera, glRenderer.domElement);
-    controls.maxAzimuthAngle = .5;
-    controls.minAzimuthAngle = -.5;
-    controls.maxPolarAngle = 2;
-    controls.minPolarAngle = 1.2;
-    controls.minDistance = 1500;
-    controls.maxDistance = zoomMax;
+    controls.maxAzimuthAngle = .3;
+    controls.minAzimuthAngle = -.3;
+    controls.maxPolarAngle = 1.75;
+    controls.minPolarAngle = 1.25;
+    controls.minDistance = cameraDepth + 2400;
+    controls.maxDistance = cameraDepth + 3500;
     controls.enableKeys = false;
     
-    camera.position.set(0, -50, cameraDepth - 3000);
-    controls.target = new THREE.Vector3(0, -50, -3500);
+    camera.position.set(initialPos.cameraMain.x, initialPos.cameraMain.y, cameraDepth);
+    controls.target.set(initialPos.cameraMain.x, initialPos.cameraMain.y, initialPos.cameraMain.z);
 
     // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('click', onClick, true);
@@ -155,8 +129,8 @@ const Contact = () => {
 
   function resetCamera() {
     controls.reset();
-    camera.position.set(0, -50, cameraDepth - 3000);
-    controls.target = new THREE.Vector3(0, -50, -3500);
+    camera.position.set(initialPos.cameraMain.x, initialPos.cameraMain.y, cameraDepth);
+    controls.target.set(initialPos.cameraMain.x, initialPos.cameraMain.y, initialPos.cameraMain.z);
   }
 
   // CONSTANT UPDATE
@@ -185,6 +159,7 @@ const Contact = () => {
         <div className={styles.hud_contents}>
           <a href="/">Home</a>
           <a href="/about">About</a>
+          <a>Contact</a>
           <a href="/tech">Tech</a>
           <a href="/projects">Projects</a>
           <input type="image" src="./images/common_images/camera.png" alt="center camera" onClick={() => resetCamera()}/>
