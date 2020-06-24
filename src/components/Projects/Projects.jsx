@@ -10,7 +10,7 @@ import { projectPos as initialPos } from '../../data/positions';
 import styles from '../../Main.css';
 
 const Projects = () => {
-  let camera, controls, glRenderer, cssRenderer, backgroundObject, rockObject, rockObject2, rockObject3, rockObject4, grassObject, cssObject, planeObject, frameObject, nameObject, leftArrowObject, rightArrowObject, gitHubObject, siteObject, selectedObject;
+  let camera, controls, glRenderer, cssRenderer, backgroundObject, rockObject, rockObject2, rockObject3, rockObject4, grassObject, cssObject, planeObject, frameObject, pageObject, nameObject, leftArrowObject, rightArrowObject, gitHubObject, siteObject, selectedObject;
   let nextSlide = false, changeSlide = false, waitSlide = false, nextProject = false, lastProject = false, changeProject = false;
   let cameraDepth = 200;
   let mobileDepth = 1400;
@@ -78,7 +78,7 @@ const Projects = () => {
     glScene.add(grassObject);
 
 
-    createProjectPage(1500, 1300, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
+    createProjectPage(1700, 1000, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
     createProject3DGeometry();  
     update();
 
@@ -117,7 +117,7 @@ const Projects = () => {
       cssScene.add(cssObject);
     }
 
-    create3DText(nameObject, glScene, projects[number].logoColor, initialPos.nameObject, 105, 105, 100, projects[number].name, 'muli_regular')
+    create3DText(nameObject, glScene, projects[number].logoColor, initialPos.nameObject, 85, 85, 85, projects[number].name, 'muli_regular')
       .then(name => nameObject = name);
     if(!gitHubObject) createIcon(glScene, initialPos.gitHubObject, github)
       .then(gitHub => gitHubObject = gitHub);
@@ -127,11 +127,13 @@ const Projects = () => {
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
   function createProject3DGeometry() {  
+    create3DText(pageObject, glScene, '#228B22', initialPos.pageObject, 120, 120, 120, 'Projects', 'muli_regular', 'PROJECTS')
+      .then(page => pageObject = page);
     leftArrowObject = createArrow(glScene, projects[projectCount].secondaryColor, initialPos.leftArrowObject, new THREE.Euler(0, 0, 0), 'LAST');
     rightArrowObject = createArrow(glScene, projects[projectCount].secondaryColor, initialPos.rightArrowObject, new THREE.Euler(0, 0, - 180 * THREE.MathUtils.DEG2RAD), 'NEXT');
     const frameSize = {
-      x: 900,
-      y: 1200,
+      x: 1000,
+      y: 1000,
       z: 512
     };
     createPictureFrame(glScene, frameSize, initialPos.frameObject, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0))
@@ -177,7 +179,7 @@ const Projects = () => {
     } else {
       slideCount < slideMax ? slideCount++ : slideCount = 0;
     }
-    createProjectPage(1500, type === 'Project' ? 1300 : 1300, initialPos.cssObject, cssObject.rotation, projectCount);
+    createProjectPage(1700, type === 'Project' ? 1000 : 1000, initialPos.cssObject, cssObject.rotation, projectCount);
   }
 
   function resetPositions() {

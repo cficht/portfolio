@@ -102,7 +102,7 @@ const Tech = () => {
     glScene.add(pivotSphere);
     
     glScene.add(new THREE.AxesHelper());
-    create3DText(categoryObject, glScene, '#ff8c00', initialPos.categoryObject, 50, 50, 35, techLogos[techCount].category, 'muli_regular')
+    create3DText(categoryObject, glScene, '#228B22', initialPos.categoryObject, 50, 50, 35, techLogos[techCount].category, 'muli_regular')
       .then(category => categoryObject = category);
 
     techLogos[techCount].models.map((tech, i) => {
@@ -125,12 +125,12 @@ const Tech = () => {
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
   function createProject3DGeometry() {      
-    create3DText(nameObject, glScene, '#ff8c00', initialPos.nameObject, 80, 80, 65, 'Tech Stack', 'muli_regular')
+    create3DText(nameObject, glScene, '#228B22', initialPos.nameObject, 80, 80, 65, 'Tech Stack', 'muli_regular')
       .then(name => nameObject = name);
-    leftArrowObject = createArrow(glScene, '#EFFD5F', initialPos.leftArrowObject, new THREE.Euler(0, 0, 0), 'LAST', .8);
-    rightArrowObject = createArrow(glScene, '#EFFD5F', initialPos.rightArrowObject, new THREE.Euler(0, 0, -180 * THREE.MathUtils.DEG2RAD), 'NEXT', .8);
-    upArrowObject = createArrow(glScene, '#EFFD5F', initialPos.upArrowObject, new THREE.Euler(0, 0, -90 * THREE.MathUtils.DEG2RAD), 'UP', .8);
-    downArrowObject = createArrow(glScene, '#EFFD5F', initialPos.downArrowObject, new THREE.Euler(0, 0, -270 * THREE.MathUtils.DEG2RAD), 'DOWN', .8);
+    leftArrowObject = createArrow(glScene, '#EFFD5F', initialPos.leftArrowObject, new THREE.Euler(0, 0, 0), 'LAST', .9);
+    rightArrowObject = createArrow(glScene, '#EFFD5F', initialPos.rightArrowObject, new THREE.Euler(0, 0, -180 * THREE.MathUtils.DEG2RAD), 'NEXT', .9);
+    upArrowObject = createArrow(glScene, '#EFFD5F', initialPos.upArrowObject, new THREE.Euler(0, 0, -90 * THREE.MathUtils.DEG2RAD), 'UP', .9);
+    downArrowObject = createArrow(glScene, '#EFFD5F', initialPos.downArrowObject, new THREE.Euler(0, 0, -270 * THREE.MathUtils.DEG2RAD), 'DOWN', .9);
   }
 
   // INTERACTION

@@ -13,7 +13,7 @@ export function projectChange(nextLast, data, cssObject, glScene, changeProject,
   cssObject.position.x += (100 * nextLast);
   if((cssObject.position.x * nextLast) >= 7000) cssObject.position.x = cssObject.position.x - (14000 * nextLast);
   glScene.children.map(child => {
-    if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'background' || child.userData === 'CLOUD' || child.userData === 'ROCK' || child.userData === 'GRASS') return;
+    if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'background' || child.userData === 'CLOUD' || child.userData === 'ROCK' || child.userData === 'GRASS' || child.userData === 'PROJECTS') return;
     if(child.userData === 'NEXT' || child.userData === 'LAST' || child.userData === 'GITHUB' || child.userData === 'SITE') {
       if(!changeProject) child.position.y -= 100;
       if(changeProject && child.position.y < -2100) child.position.y += 100;

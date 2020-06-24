@@ -75,31 +75,32 @@ export const aboutPos = {
 
 export const techPos = {
   cameraMain: new THREE.Vector3(0, 100, 400),
-  sunObject: new THREE.Vector3(0, 200, 0),
-  nameObject: new THREE.Vector3(0, 900, 1300),
-  leftArrowObject: new THREE.Vector3(-50, -350, 1300), 
-  rightArrowObject: new THREE.Vector3(50, -350, 1300),
-  categoryObject: new THREE.Vector3(-100, -675, 1300),
-  upArrowObject: new THREE.Vector3(300, -650, 1300), 
-  downArrowObject: new THREE.Vector3(300, -700, 1300)
+  sunObject: new THREE.Vector3(0, 250, 0),
+  nameObject: new THREE.Vector3(0, 1000, 1300),
+  leftArrowObject: new THREE.Vector3(-50, -300, 1300), 
+  rightArrowObject: new THREE.Vector3(50, -300, 1300),
+  categoryObject: new THREE.Vector3(-125, -650, 1300),
+  upArrowObject: new THREE.Vector3(325, -600, 1300), 
+  downArrowObject: new THREE.Vector3(325, -700, 1300)
 };
 
 export const projectPos = {
   cameraMain: new THREE.Vector3(0, -1500, -3500),
-  rockObject: new THREE.Vector3(-1500, -1950, -3450),
-  rockObject2: new THREE.Vector3(1500, -1850, -3450),
-  rockObject3: new THREE.Vector3(-1800, -1850, -3050),
-  rockObject4: new THREE.Vector3(1900, -2150, -2950),
-  grassObject: new THREE.Vector3(0, -2250, -2800),
-  cssObject: new THREE.Vector3(0, -1350, -3500),
-  planeObject: new THREE.Vector3(0, -1350, -3500),
-  frameObject: new THREE.Vector3(0, -1350, -3500),
-  nameObject: new THREE.Vector3(-10, -350, -3500),
+  rockObject: new THREE.Vector3(-1500, -2050, -3350),
+  rockObject2: new THREE.Vector3(1500, -1950, -3350),
+  rockObject3: new THREE.Vector3(-1800, -1950, -3050),
+  rockObject4: new THREE.Vector3(1900, -2250, -2950),
+  grassObject: new THREE.Vector3(0, -2350, -2800),
+  cssObject: new THREE.Vector3(0, -1450, -3500),
+  planeObject: new THREE.Vector3(0, -1450, -3500),
+  frameObject: new THREE.Vector3(0, -1450, -3500),
+  pageObject: new THREE.Vector3(-10, -300, -3500),
+  nameObject: new THREE.Vector3(-10, -625, -3500),
   logoObject: new THREE.Vector3(0, 900, -3500),
-  leftArrowObject: new THREE.Vector3(-100, -2100, -2500), 
-  rightArrowObject: new THREE.Vector3(100, -2100, -2500),
-  gitHubObject: new THREE.Vector3(-450, -2100, -2500),
-  siteObject: new THREE.Vector3(450, -2100, -2500)
+  leftArrowObject: new THREE.Vector3(-100, -2200, -2500), 
+  rightArrowObject: new THREE.Vector3(100, -2200, -2500),
+  gitHubObject: new THREE.Vector3(-450, -2200, -2500),
+  siteObject: new THREE.Vector3(450, -2200, -2500)
 };
 
 export const contactPos = {

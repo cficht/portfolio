@@ -197,7 +197,7 @@ export const sky = {
   ceiling: './images/common_images/ceilings/ceiling.png',
   wall: './images/common_images/ceilings/ceiling.png',
   width: 12000,
-  height: 10000,
+  height: 5000,
   depth: 15000
 };
 
