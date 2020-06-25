@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer, createPlane, createAboutCSSObject } from '../../utilities/initialize-page';
-import { createBackground, createTree, createGrass, createTreeTop, create3DText, createArrow, createPictureFrame } from '../../utilities/create-objects';
+import { createBackground, createTree, createGrass, createTreeTop, create3DText, createArrow, createPictureFrame, manager } from '../../utilities/create-objects';
 import { about } from '../../data/info';
 import { projectField } from '../../data/objects';
 import { aboutPos as initialPos } from '../../data/positions';
@@ -26,6 +26,20 @@ const About = () => {
     window.addEventListener('pageshow', function(event) {
       if(event.persisted) location.reload();
     });
+
+    manager.onStart = function(url, itemsLoaded, itemsTotal) {
+      console.log('Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
+    };
+    manager.onLoad = function() {
+      console.log('Loading complete!');
+      setIsLoading(false);
+    };
+    manager.onProgress = function(url, itemsLoaded, itemsTotal) {
+      console.log('Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
+    };
+    manager.onError = function(url) {
+      console.log('There was an error loading ' + url);
+    };
 
     // CAMERA
     if(navigator.userAgent.match(/Android/i) 
@@ -73,6 +87,8 @@ const About = () => {
     glScene.add(treeTopObject);
     treeTopObject2 = createTreeTop(2400, 1574, initialPos.treeTopObject2, .15);
     glScene.add(treeTopObject2);
+
+    // console.log(treeObject);
 
     createAboutPages(1200, 800, initialPos.cssObject, new THREE.Vector3(0, 0, 0), about.bio);
     createAboutPages(1000, 600, initialPos.cssObject2, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0), about.other);
@@ -185,12 +201,12 @@ const About = () => {
     requestAnimationFrame(update);
   }
 
-  const testTimer = () => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-  };
-  testTimer();
+  // const testTimer = () => {
+  //   setTimeout(() => {
+  //     setIsLoading(false);
+  //   }, 2000);
+  // };
+  // testTimer();
 
   const loadingScreen = () => {
     if(isLoading) {

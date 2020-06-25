@@ -2,10 +2,13 @@ import * as THREE from 'three';
 import { STLLoader } from '../loaders/STLLoader';
 import { GLTFLoader } from '../loaders/GLTFLoader';
 import { createColoredMaterial } from './other';
-const textureLoader = new THREE.TextureLoader();
-const fontLoader = new THREE.FontLoader();
-const stlLoader = new STLLoader();
-const gltfLoader = new GLTFLoader();
+
+export const manager = new THREE.LoadingManager();
+
+const textureLoader = new THREE.TextureLoader(manager);
+const fontLoader = new THREE.FontLoader(manager);
+const stlLoader = new STLLoader(manager);
+const gltfLoader = new GLTFLoader(manager);
 
 export function createBackground({ wall, ceiling, floor, width, height, depth, position }) {
   const materials = [
