@@ -7,7 +7,7 @@ const fontLoader = new THREE.FontLoader();
 const stlLoader = new STLLoader();
 const gltfLoader = new GLTFLoader();
 
-export function createBackground({ wall, ceiling, floor, width, height, depth }) {
+export function createBackground({ wall, ceiling, floor, width, height, depth, position }) {
   const materials = [
     new THREE.MeshBasicMaterial({ map: textureLoader.load(wall), side: THREE.DoubleSide }),
     new THREE.MeshBasicMaterial({ map: textureLoader.load(wall), side: THREE.DoubleSide  }),
@@ -18,7 +18,7 @@ export function createBackground({ wall, ceiling, floor, width, height, depth })
   ];
   const geometry = new THREE.BoxGeometry(width, height, depth);
   const boxMesh = new THREE.Mesh(geometry, materials);
-  boxMesh.position.set(0, 0, 0);
+  position ? boxMesh.position.set(position.x, position.y, position.z) : boxMesh.position.set(0, 0, 0);
   boxMesh.name = 'background';
   return boxMesh;
 }

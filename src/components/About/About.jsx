@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer, createPlane, createAboutCSSObject } from '../../utilities/initialize-page';
@@ -9,6 +9,8 @@ import { aboutPos as initialPos } from '../../data/positions';
 import styles from '../../Main.css';
 
 const About = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
   let camera, controls, glRenderer, cssRenderer, backgroundObject, treeObject, treeTopObject, treeTopObject2, grassObject, grassObject2, nameObject, selectedObject;
   let flipRight = false, flipLeft = false, backSide = false;
   let cameraDepth = 3700;
@@ -183,8 +185,28 @@ const About = () => {
     requestAnimationFrame(update);
   }
 
+  const testTimer = () => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  };
+  testTimer();
+
+  const loadingScreen = () => {
+    if(isLoading) {
+      return (
+        <div className={styles.loading}>
+          <div className={styles.loading_contents}>
+        Loading
+          </div>
+        </div>
+      );
+    }
+  };
+
   return (
     <>
+      { loadingScreen() }
       <div className={styles.hud_box}> 
         <div className={styles.hud_contents}>
           <a href="/">Home</a>
