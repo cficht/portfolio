@@ -13,7 +13,7 @@ export function projectChange(nextLast, data, cssObject, glScene, changeProject,
   cssObject.position.x += (100 * nextLast);
   if((cssObject.position.x * nextLast) >= 7000) cssObject.position.x = cssObject.position.x - (14000 * nextLast);
   glScene.children.map(child => {
-    if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'background' || child.userData === 'CLOUD' || child.userData === 'ROCK' || child.userData === 'GRASS') return;
+    if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'background' || child.userData === 'CLOUD' || child.userData === 'ROCK' || child.userData === 'GRASS' || child.userData === 'PROJECTS') return;
     if(child.userData === 'NEXT' || child.userData === 'LAST' || child.userData === 'GITHUB' || child.userData === 'SITE') {
       if(!changeProject) child.position.y -= 100;
       if(changeProject && child.position.y < -2100) child.position.y += 100;
@@ -47,4 +47,16 @@ export function moveView(viewObject, targetObject) {
   if(objectType.y < targetObject.position.y) objectType.y += 15;
   if(objectType.x > targetObject.position.x) objectType.x -= 25;
   if(objectType.x < targetObject.position.x) objectType.x += 25;
+}
+
+export function mobileDetect(desktopDepth, mobileDepth) {
+  if(navigator.userAgent.match(/Android/i) 
+  || navigator.userAgent.match(/webOS/i)
+  || navigator.userAgent.match(/webOS/i)
+  || navigator.userAgent.match(/iPhone/i)
+  || navigator.userAgent.match(/iPad/i)
+  || navigator.userAgent.match(/iPod/i)
+  || navigator.userAgent.match(/BlackBerry/i)
+  || navigator.userAgent.match(/Windows Phone/i)) return mobileDepth;
+  else return desktopDepth;
 }
