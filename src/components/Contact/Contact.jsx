@@ -10,6 +10,8 @@ import styles from '../../Main.css';
 let
   camera, 
   controls;
+let cameraDepth = 300;
+let mobileDepth = 1500;
 
 const Contact = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -33,8 +35,6 @@ const Contact = () => {
     emailObject, 
     emailText; 
   
-  let cameraDepth = 300;
-  let mobileDepth = 1500;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   const glScene = new THREE.Scene();
@@ -71,6 +71,7 @@ const Contact = () => {
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) cameraDepth = mobileDepth;
+    console.log(cameraDepth);
  
     camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 15000);
     camera.position.set(0, 0, cameraDepth);
@@ -173,6 +174,7 @@ const Contact = () => {
   }
 
   function resetCamera() {
+    console.log(cameraDepth)
     controls.reset();
     camera.position.set(initialPos.cameraMain.x, initialPos.cameraMain.y, cameraDepth);
     controls.target.set(initialPos.cameraMain.x, initialPos.cameraMain.y, initialPos.cameraMain.z);

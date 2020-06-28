@@ -10,6 +10,8 @@ import styles from '../../Main.css';
 let 
   camera, 
   controls;
+let cameraDepth = 4000;
+let mobileDepth = 5200;
 
 const Tech = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -33,8 +35,6 @@ const Tech = () => {
   
   let rotateRight = false, rotateLeft = false, changeTech = false;
   let techCount = 0;
-  let cameraDepth = 4000;
-  let mobileDepth = 5200;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   const glScene = new THREE.Scene();

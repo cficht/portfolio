@@ -12,6 +12,8 @@ import styles from '../../Main.css';
 let 
   camera, 
   controls;
+let cameraDepth = 200;
+let mobileDepth = 1400;
 
 const Projects = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -39,8 +41,6 @@ const Projects = () => {
   let projectObjects = [];
   
   let nextSlide = false, changeSlide = false, waitSlide = false, nextProject = false, lastProject = false, changeProject = false;
-  let cameraDepth = 200;
-  let mobileDepth = 1400;
   let projectCount = 0;
   let slideCount = 0;
   const slideMax = 2;

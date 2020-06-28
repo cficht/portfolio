@@ -11,6 +11,8 @@ import styles from '../../Main.css';
 let
   camera, 
   controls;
+let cameraDepth = 2650;
+let mobileDepth = 4900;
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -42,8 +44,6 @@ const Home = () => {
     aboutObject, 
     aboutIconObject;
   
-  let cameraDepth = 2650;
-  let mobileDepth = 4900;
   let cameraStart = false;
   let navigateOn = false;
   const setWidth = window.innerWidth;

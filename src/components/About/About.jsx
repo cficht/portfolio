@@ -11,6 +11,8 @@ import styles from '../../Main.css';
 let 
   camera, 
   controls;
+let cameraDepth = 3700;
+let mobileDepth = 4900;
 
 const About = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -30,8 +32,6 @@ const About = () => {
   let arrowObjects = [];
 
   let flipRight = false, flipLeft = false, backSide = false;
-  let cameraDepth = 3700;
-  let mobileDepth = 4900;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   const glScene = new THREE.Scene();
