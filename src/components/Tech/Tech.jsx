@@ -1,14 +1,36 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer } from '../../utilities/initialize-page';
-import { createBackground, createSun, create3DText, createArrow, createIcon, createClouds } from '../../utilities/create-objects';
+import { createBackground, createSun, create3DText, createArrow, createIcon, createClouds, manager } from '../../utilities/create-objects';
 import { sky, techLogos, cloudsTech } from '../../data/objects';
 import { techPos as initialPos } from '../../data/positions';
 import styles from '../../Main.css';
 
+let 
+  camera, 
+  controls;
+
 const Tech = () => {
-  let camera, controls, pivot, glRenderer, cssRenderer, backgroundObject, sunObject, cloudObjects, nameObject, categoryObject, leftArrowObject, rightArrowObject, upArrowObject, downArrowObject, selectedObject;
+  const [isLoading, setIsLoading] = useState(true);
+
+  let 
+    pivot, 
+    glRenderer, 
+    cssRenderer, 
+    selectedObject,
+    backgroundObject, 
+    sunObject, 
+    cloudObjects, 
+    nameObject, 
+    categoryObject, 
+    leftArrowObject, 
+    rightArrowObject, 
+    upArrowObject, 
+    downArrowObject;
+
+  let techObjects = [];
+  
   let rotateRight = false, rotateLeft = false, changeTech = false;
   let techCount = 0;
   let cameraDepth = 4000;
@@ -24,6 +46,22 @@ const Tech = () => {
     window.addEventListener('pageshow', function(event) {
       if(event.persisted) location.reload();
     });
+
+    manager.onStart = function(url, itemsLoaded, itemsTotal) {
+      console.log('Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
+    };
+    manager.onLoad = function() {
+      console.log('Loading complete!');
+      createTech();
+      update();
+      setIsLoading(false);
+    };
+    manager.onProgress = function(url, itemsLoaded, itemsTotal) {
+      console.log('Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
+    };
+    manager.onError = function(url) {
+      console.log('There was an error loading ' + url);
+    };
 
     // CAMERA
     if(navigator.userAgent.match(/Android/i) 
@@ -64,9 +102,8 @@ const Tech = () => {
     cloudObjects = createClouds(cloudsTech);
     cloudObjects.map(cloudObject => glScene.add(cloudObject));
 
-    createTech();
+    
     createProject3DGeometry();  
-    update();
 
     // CONTROLS
     controls = new OrbitControls(camera, glRenderer.domElement);
@@ -102,35 +139,70 @@ const Tech = () => {
     glScene.add(pivotSphere);
     
     glScene.add(new THREE.AxesHelper());
-    create3DText(categoryObject, glScene, '#228B22', initialPos.categoryObject, 50, 50, 35, techLogos[techCount].category, 'muli_regular')
-      .then(category => categoryObject = category);
 
-    techLogos[techCount].models.map((tech, i) => {
-      const logoPosition = new THREE.Vector3(1300 * Math.sin(THREE.Math.degToRad(360 * (i / techLogos[techCount].models.length))), 225, 1300 * Math.cos(THREE.Math.degToRad(360 * (i / techLogos[techCount].models.length))));
-      createIcon(glScene, logoPosition, tech)
-        .then(logo => {
-          logo.geometry.rotateZ(THREE.Math.degToRad(270));
-          logo.rotation.set(0, 0, Math.PI / 2);
-          pivot.add(logo);
-        });
-      create3DText(false, glScene, '#FF4500', logoPosition, 50, 50, 35, tech.name, 'muli_regular')
-        .then(text => {
-          text.geometry.rotateZ(THREE.Math.degToRad(270));
-          text.position.y = -75;
-          text.rotation.set(0, 0, Math.PI / 2);
-          pivot.add(text);
-        });
+    let lastCatPos;
+    if(categoryObject) lastCatPos = categoryObject.position;
+    categoryObject = techObjects[techCount].category;
+    if(lastCatPos) categoryObject.position.set(lastCatPos.x, lastCatPos.y, lastCatPos.z);
+    glScene.add(categoryObject);
+
+    techObjects[techCount].tech.map(techData => {
+      techData.icon.rotation.set(0, 0, Math.PI / 2);
+      techData.name.rotation.set(0, 0, Math.PI / 2);
+      pivot.add(techData.icon);
+      pivot.add(techData.name);
     });
   }
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
   function createProject3DGeometry() {      
-    create3DText(nameObject, glScene, '#228B22', initialPos.nameObject, 80, 80, 65, 'Tech Stack', 'muli_regular')
-      .then(name => nameObject = name);
-    leftArrowObject = createArrow(glScene, '#EFFD5F', initialPos.leftArrowObject, new THREE.Euler(0, 0, 0), 'LAST', .9);
-    rightArrowObject = createArrow(glScene, '#EFFD5F', initialPos.rightArrowObject, new THREE.Euler(0, 0, -180 * THREE.MathUtils.DEG2RAD), 'NEXT', .9);
-    upArrowObject = createArrow(glScene, '#EFFD5F', initialPos.upArrowObject, new THREE.Euler(0, 0, -90 * THREE.MathUtils.DEG2RAD), 'UP', .9);
-    downArrowObject = createArrow(glScene, '#EFFD5F', initialPos.downArrowObject, new THREE.Euler(0, 0, -270 * THREE.MathUtils.DEG2RAD), 'DOWN', .9);
+    create3DText('#228B22', initialPos.nameObject, 80, 80, 65, 'Tech Stack', 'muli_regular')
+      .then(name => nameObject = name)
+      .then(() => glScene.add(nameObject));
+
+    leftArrowObject = createArrow('#EFFD5F', initialPos.leftArrowObject, new THREE.Euler(0, 0, 0), 'LAST', .9);
+    glScene.add(leftArrowObject);
+    rightArrowObject = createArrow('#EFFD5F', initialPos.rightArrowObject, new THREE.Euler(0, 0, -180 * THREE.MathUtils.DEG2RAD), 'NEXT', .9);
+    glScene.add(rightArrowObject);
+    upArrowObject = createArrow('#EFFD5F', initialPos.upArrowObject, new THREE.Euler(0, 0, -90 * THREE.MathUtils.DEG2RAD), 'UP', .9);
+    glScene.add(upArrowObject);
+    downArrowObject = createArrow('#EFFD5F', initialPos.downArrowObject, new THREE.Euler(0, 0, -270 * THREE.MathUtils.DEG2RAD), 'DOWN', .9);
+    glScene.add(downArrowObject);
+
+    techLogos.map((tech, j) => {
+      const categoryProm = create3DText('#228B22', initialPos.categoryObject, 50, 50, 35, tech.category, 'muli_regular');
+      techObjects.push({
+        category: '',
+        tech: []
+      });
+
+      tech.models.map((tech, i) => {
+        const logoPosition = new THREE.Vector3(1300 * Math.sin(THREE.Math.degToRad(360 * (i / techLogos[j].models.length))), 225, 1300 * Math.cos(THREE.Math.degToRad(360 * (i / techLogos[j].models.length))));
+        const logoIcon = createIcon(logoPosition, tech)
+          .then(logo => {
+            logo.geometry.rotateZ(THREE.Math.degToRad(270));
+            logo.rotation.set(0, 0, Math.PI / 2);
+            return logo;
+          });
+        const logoText = create3DText('#FF4500', logoPosition, 50, 50, 35, tech.name, 'muli_regular')
+          .then(text => {
+            text.geometry.rotateZ(THREE.Math.degToRad(270));
+            text.position.y = -75;
+            text.rotation.set(0, 0, Math.PI / 2);
+            return text;
+          });
+        return Promise.all([logoIcon, logoText]).then((values) => {
+          techObjects[j].tech.push({
+            icon: values[0], 
+            name: values[1]
+          });
+        });
+      });
+
+      return Promise.all([categoryProm]).then((values) => {
+        techObjects[j].category = values[0];
+      });
+    });
   }
 
   // INTERACTION
@@ -220,8 +292,21 @@ const Tech = () => {
     requestAnimationFrame(update);
   }
 
+  const loadingScreen = () => {
+    if(isLoading) {
+      return (
+        <div className={styles.loading}>
+          <div className={styles.loading_contents}>
+        Loading
+          </div>
+        </div>
+      );
+    }
+  };
+
   return (
     <>
+      { loadingScreen() }
       <div className={styles.hud_box}> 
         <div className={styles.hud_contents}>
           <a href="/">Home</a>

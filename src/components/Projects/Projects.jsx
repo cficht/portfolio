@@ -1,16 +1,43 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer, createPlane, createProjectCssObject } from '../../utilities/initialize-page';
-import { createBackground, createRock, createGrass, create3DText, createIcon, createArrow, createPictureFrame } from '../../utilities/create-objects';
+import { createBackground, createRock, createGrass, create3DText, createIcon, createArrow, createPictureFrame, manager } from '../../utilities/create-objects';
 import { projectChange } from '../../utilities/other';
 import { projects } from '../../data/info';
 import { projectField, github, site } from '../../data/objects';
 import { projectPos as initialPos } from '../../data/positions';
 import styles from '../../Main.css';
 
+let 
+  camera, 
+  controls;
+
 const Projects = () => {
-  let camera, controls, glRenderer, cssRenderer, backgroundObject, rockObject, rockObject2, rockObject3, rockObject4, grassObject, cssObject, planeObject, frameObject, pageObject, nameObject, leftArrowObject, rightArrowObject, gitHubObject, siteObject, selectedObject;
+  const [isLoading, setIsLoading] = useState(true);
+
+  let 
+    glRenderer, 
+    cssRenderer, 
+    selectedObject,
+    backgroundObject, 
+    rockObject, 
+    rockObject2, 
+    rockObject3, 
+    rockObject4, 
+    grassObject, 
+    cssObject, 
+    planeObject, 
+    frameObject, 
+    pageObject, 
+    nameObject, 
+    leftArrowObject, 
+    rightArrowObject, 
+    gitHubObject, 
+    siteObject;
+
+  let projectObjects = [];
+  
   let nextSlide = false, changeSlide = false, waitSlide = false, nextProject = false, lastProject = false, changeProject = false;
   let cameraDepth = 200;
   let mobileDepth = 1400;
@@ -28,6 +55,22 @@ const Projects = () => {
     window.addEventListener('pageshow', function(event) {
       if(event.persisted) location.reload();
     });
+
+    manager.onStart = function(url, itemsLoaded, itemsTotal) {
+      console.log('Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
+    };
+    manager.onLoad = function() {
+      console.log('Files loadeded!');
+      createProjectPage(1700, 1000, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
+      update();
+      setIsLoading(false);
+    };
+    manager.onProgress = function(url, itemsLoaded, itemsTotal) {
+      console.log('Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
+    };
+    manager.onError = function(url) {
+      console.log('There was an error loading ' + url);
+    };
 
     // CAMERA
     if(navigator.userAgent.match(/Android/i) 
@@ -61,26 +104,18 @@ const Projects = () => {
     // SCENE
     backgroundObject = createBackground(projectField);
     glScene.add(backgroundObject);
-
     rockObject = createRock(797, 340, initialPos.rockObject, .15, 0, true);
     glScene.add(rockObject);
-
     rockObject2 = createRock(687, 503, initialPos.rockObject2, .17, 1);
     glScene.add(rockObject2);
-
     rockObject3 = createRock(543, 480, initialPos.rockObject3, .15, 2, true);
     glScene.add(rockObject3);
-
     rockObject4 = createRock(348, 259, initialPos.rockObject4, .25, 3);
     glScene.add(rockObject4);
-
     grassObject = createGrass(1662, 300, initialPos.grassObject, .18, 'tall');
     glScene.add(grassObject);
 
-
-    createProjectPage(1700, 1000, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
     createProject3DGeometry();  
-    update();
 
     // CONTROLS
     controls = new OrbitControls(camera, glRenderer.domElement);
@@ -117,32 +152,45 @@ const Projects = () => {
       cssScene.add(cssObject);
     }
 
-    create3DText(nameObject, glScene, projects[number].logoColor, initialPos.nameObject, 85, 85, 85, projects[number].name, 'muli_regular')
-      .then(name => nameObject = name);
-    if(!gitHubObject) createIcon(glScene, initialPos.gitHubObject, github)
-      .then(gitHub => gitHubObject = gitHub);
-    if(!siteObject) createIcon(glScene, initialPos.siteObject, site)
-      .then(site => siteObject = site);
+    let nameObjPos;
+    if(nameObject) nameObjPos = nameObject.position;
+    glScene.remove(nameObject);
+    nameObject = projectObjects[number].name;
+    if(nameObjPos) nameObject.position.set(nameObjPos.x, nameObjPos.y, nameObjPos.z);
+    glScene.add(nameObject);
   }
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
   function createProject3DGeometry() {  
-    create3DText(pageObject, glScene, '#228B22', initialPos.pageObject, 120, 120, 120, 'Projects', 'muli_regular', 'PROJECTS')
-      .then(page => pageObject = page);
-    leftArrowObject = createArrow(glScene, projects[projectCount].secondaryColor, initialPos.leftArrowObject, new THREE.Euler(0, 0, 0), 'LAST');
-    rightArrowObject = createArrow(glScene, projects[projectCount].secondaryColor, initialPos.rightArrowObject, new THREE.Euler(0, 0, - 180 * THREE.MathUtils.DEG2RAD), 'NEXT');
-    const frameSize = {
-      x: 1000,
-      y: 1000,
-      z: 512
-    };
-    createPictureFrame(glScene, frameSize, initialPos.frameObject, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0))
-      .then(frame => frameObject = frame);
+    create3DText('#228B22', initialPos.pageObject, 120, 120, 120, 'Projects', 'muli_regular', 'PROJECTS')
+      .then(page => pageObject = page)
+      .then(() => glScene.add(pageObject));
+
+    leftArrowObject = createArrow(projects[projectCount].secondaryColor, initialPos.leftArrowObject, new THREE.Euler(0, 0, 0), 'LAST');
+    glScene.add(leftArrowObject);
+    rightArrowObject = createArrow(projects[projectCount].secondaryColor, initialPos.rightArrowObject, new THREE.Euler(0, 0, - 180 * THREE.MathUtils.DEG2RAD), 'NEXT');
+    glScene.add(rightArrowObject);
+
+    projects.map(project => {
+      create3DText(project.logoColor, initialPos.nameObject, 85, 85, 85, project.name, 'muli_regular')
+        .then(projectName => projectObjects.push({ name: projectName }));
+    });
+    
+    createIcon(initialPos.gitHubObject, github)
+      .then(gitHub => gitHubObject = gitHub)
+      .then(() => glScene.add(gitHubObject));
+    createIcon(initialPos.siteObject, site)
+      .then(site => siteObject = site)
+      .then(() => glScene.add(siteObject));
+
+    createPictureFrame({ x: 1000, y: 1000, z: 512 }, initialPos.frameObject, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0))
+      .then(frame => frameObject = frame)
+      .then(() => glScene.add(frameObject));
   }
 
   // INTERACTION
   function onClick(event) {
-    if(nextProject || lastProject || nextSlide) return;
+    if(nextProject || lastProject || nextSlide || waitSlide) return;
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     mouse.x = (event.clientX / setWidth) * 2 - 1;
@@ -258,8 +306,21 @@ const Projects = () => {
     requestAnimationFrame(update);
   }
 
+  const loadingScreen = () => {
+    if(isLoading) {
+      return (
+        <div className={styles.loading}>
+          <div className={styles.loading_contents}>
+        Loading
+          </div>
+        </div>
+      );
+    }
+  };
+
   return (
     <>
+      { loadingScreen() }
       <div className={styles.hud_box}> 
         <div className={styles.hud_contents}>
           <a href="/">Home</a>

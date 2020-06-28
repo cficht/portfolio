@@ -2,12 +2,15 @@ import * as THREE from 'three';
 import { STLLoader } from '../loaders/STLLoader';
 import { GLTFLoader } from '../loaders/GLTFLoader';
 import { createColoredMaterial } from './other';
-const textureLoader = new THREE.TextureLoader();
-const fontLoader = new THREE.FontLoader();
-const stlLoader = new STLLoader();
-const gltfLoader = new GLTFLoader();
 
-export function createBackground({ wall, ceiling, floor, width, height, depth }) {
+export const manager = new THREE.LoadingManager();
+
+const textureLoader = new THREE.TextureLoader(manager);
+const fontLoader = new THREE.FontLoader(manager);
+const stlLoader = new STLLoader(manager);
+const gltfLoader = new GLTFLoader(manager);
+
+export function createBackground({ wall, ceiling, floor, width, height, depth, position }) {
   const materials = [
     new THREE.MeshBasicMaterial({ map: textureLoader.load(wall), side: THREE.DoubleSide }),
     new THREE.MeshBasicMaterial({ map: textureLoader.load(wall), side: THREE.DoubleSide  }),
@@ -18,7 +21,7 @@ export function createBackground({ wall, ceiling, floor, width, height, depth })
   ];
   const geometry = new THREE.BoxGeometry(width, height, depth);
   const boxMesh = new THREE.Mesh(geometry, materials);
-  boxMesh.position.set(0, 0, 0);
+  position ? boxMesh.position.set(position.x, position.y, position.z) : boxMesh.position.set(0, 0, 0);
   boxMesh.name = 'background';
   return boxMesh;
 }
@@ -134,50 +137,32 @@ export function createTreeTop(width, height, position, scale, flip) {
   return treeMesh;
 }
 
-export function create3DText(object, scene, color, position, width, height, depth, textContent, fontName, data) {
+export function create3DText(color, position, width, height, depth, textContent, fontName, data) {
   return new Promise((resolve) => {
-    if(object) {
-      fontLoader.load(`./fonts/${fontName}.typeface.json`, function(font) {
-        object.geometry = new THREE.TextGeometry(`${textContent}`, {
-          font: font,
-          size: 1.5,
-          height: 0.3,
-          curveSegments: 12,
-          bevelEnabled: true,
-          bevelThickness: 0.02,
-          bevelSize: 0.04,
-          bevelSegments: 1
-        });
-        object.geometry.center();
+    fontLoader.load(`./fonts/${fontName}.typeface.json`, function(font) {
+      const geometry = new THREE.TextGeometry(`${textContent}`, {
+        font: font,
+        size: 1.5,
+        height: 0.3,
+        curveSegments: 12,
+        bevelEnabled: true,
+        bevelThickness: 0.02,
+        bevelSize: 0.04,
+        bevelSegments: 1
       });
-      object.material.color.set(color);
-    } else {
-      fontLoader.load(`./fonts/${fontName}.typeface.json`, function(font) {
-        const geometry = new THREE.TextGeometry(`${textContent}`, {
-          font: font,
-          size: 1.5,
-          height: 0.3,
-          curveSegments: 12,
-          bevelEnabled: true,
-          bevelThickness: 0.02,
-          bevelSize: 0.04,
-          bevelSegments: 1
-        });
-        geometry.center();
-        const material = new THREE.MeshToonMaterial({ color: color, flatShading: true });
-        const mesh = new THREE.Mesh(geometry, material);
-        mesh.scale.set(width, height, depth);
-        mesh.position.set(position.x, position.y, position.z);
-        mesh.userData = data ? data : '';
-        scene.add(mesh);
-        resolve(mesh);
-      });
-    }
+      geometry.center();
+      const material = new THREE.MeshToonMaterial({ color: color, flatShading: true });
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.scale.set(width, height, depth);
+      mesh.position.set(position.x, position.y, position.z);
+      mesh.userData = data ? data : '';
+      resolve(mesh);
+    });
   });
 }
 
-
-export function createIcon(scene, position, { model, color, width, height, depth, data }) {
+// REFACTOR
+export function createIcon(position, { model, color, width, height, depth, data }) {
   return new Promise((resolve) => { stlLoader.load(model, function(geometry) {
     const material = new THREE.MeshToonMaterial({ color: color, flatShading: true });
     const mesh = new THREE.Mesh(geometry, material);
@@ -187,13 +172,12 @@ export function createIcon(scene, position, { model, color, width, height, depth
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     data ? mesh.userData = data : mesh.userData = '';
-    scene.add(mesh);
     resolve(mesh);
   });
   });
 }
 
-export function createArrow(scene, color, position, rotation, data, scale) {
+export function createArrow(color, position, rotation, data, scale) {
   const triangleShape = new THREE.Shape()
     .moveTo(0, -100)
     .lineTo(0, 100)
@@ -204,11 +188,10 @@ export function createArrow(scene, color, position, rotation, data, scale) {
   mesh.position.set(position.x, position.y, position.z);
   mesh.rotation.copy(rotation);
   mesh.userData = data;
-  scene.add(mesh); 
   return mesh;  
 }
 
-export function createPictureFrame(scene, size, position, rotation) {
+export function createPictureFrame(size, position, rotation) {
   const url = 'models/pictureframe_1/scene.gltf';
   return new Promise((resolve) => {gltfLoader.load(url, (gltf) => {
     const frame = gltf.scene;
@@ -219,7 +202,6 @@ export function createPictureFrame(scene, size, position, rotation) {
     frame.children[0].children[0].children[0].children[0].children[0].material = mesh;
     frame.name = 'picture';
     frame.userData = 'PICTURE';
-    scene.add(frame);
     resolve(frame);
   }); 
   });

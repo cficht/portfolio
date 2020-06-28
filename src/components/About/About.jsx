@@ -1,15 +1,34 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer, createPlane, createAboutCSSObject } from '../../utilities/initialize-page';
-import { createBackground, createTree, createGrass, createTreeTop, create3DText, createArrow, createPictureFrame } from '../../utilities/create-objects';
+import { createBackground, createTree, createGrass, createTreeTop, create3DText, createArrow, createPictureFrame, manager } from '../../utilities/create-objects';
 import { about } from '../../data/info';
 import { projectField } from '../../data/objects';
 import { aboutPos as initialPos } from '../../data/positions';
 import styles from '../../Main.css';
 
+let 
+  camera, 
+  controls;
+
 const About = () => {
-  let camera, controls, glRenderer, cssRenderer, backgroundObject, treeObject, treeTopObject, treeTopObject2, grassObject, grassObject2, nameObject, selectedObject;
+  const [isLoading, setIsLoading] = useState(true);
+
+  let 
+    glRenderer, 
+    cssRenderer, 
+    selectedObject,
+    backgroundObject, 
+    treeObject, 
+    treeTopObject, 
+    treeTopObject2, 
+    grassObject, 
+    grassObject2, 
+    nameObject;
+
+  let arrowObjects = [];
+
   let flipRight = false, flipLeft = false, backSide = false;
   let cameraDepth = 3700;
   let mobileDepth = 4900;
@@ -24,6 +43,23 @@ const About = () => {
     window.addEventListener('pageshow', function(event) {
       if(event.persisted) location.reload();
     });
+
+    manager.onStart = function(url, itemsLoaded, itemsTotal) {
+      console.log('Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
+    };
+    manager.onLoad = function() {
+      console.log('Loading complete!');
+      createAboutPages(1200, 800, initialPos.cssObject, new THREE.Vector3(0, 0, 0), about.bio);
+      createAboutPages(1000, 600, initialPos.cssObject2, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0), about.other);
+      update();
+      setIsLoading(false);
+    };
+    manager.onProgress = function(url, itemsLoaded, itemsTotal) {
+      console.log('Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
+    };
+    manager.onError = function(url) {
+      console.log('There was an error loading ' + url);
+    };
 
     // CAMERA
     if(navigator.userAgent.match(/Android/i) 
@@ -57,25 +93,18 @@ const About = () => {
     // SCENE
     backgroundObject = createBackground(projectField);
     glScene.add(backgroundObject);
-
     treeObject = createTree(5814, 7571, initialPos.treeObject, .11);
     glScene.add(treeObject);
-
     grassObject = createGrass(1662, 300, initialPos.grassObject, .2, 'tall');
     glScene.add(grassObject);
-
     grassObject2 = createGrass(1662, 300, initialPos.grassObject2, .2, 'tall');
     glScene.add(grassObject2);
-
     treeTopObject = createTreeTop(2400, 1574, initialPos.treeTopObject, .15);
     glScene.add(treeTopObject);
     treeTopObject2 = createTreeTop(2400, 1574, initialPos.treeTopObject2, .15);
     glScene.add(treeTopObject2);
 
-    createAboutPages(1200, 800, initialPos.cssObject, new THREE.Vector3(0, 0, 0), about.bio);
-    createAboutPages(1000, 600, initialPos.cssObject2, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0), about.other);
     createProject3DGeometry();  
-    update();
 
     // CONTROLS
     controls = new OrbitControls(camera, glRenderer.domElement);
@@ -105,14 +134,20 @@ const About = () => {
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
   function createProject3DGeometry() {  
-    create3DText(nameObject, glScene, '#228B22', initialPos.nameObject, 115, 115, 100, 'About', 'muli_regular')
-      .then(name => nameObject = name);
-    createArrow(glScene, '#ff8c00', initialPos.leftArrowObjectFront, new THREE.Euler(0, 0, 0), 'LAST', 1.2);
-    createArrow(glScene, '#ff8c00', initialPos.rightArrowObjectFront, new THREE.Euler(0, 0, -180 * THREE.MathUtils.DEG2RAD), 'NEXT', 1.2);
-    createArrow(glScene, '#ff8c00', initialPos.leftArrowObjectBack, new THREE.Euler(0, 0, 0), 'NEXT', 1.2);
-    createArrow(glScene, '#ff8c00', initialPos.rightArrowObjectBack, new THREE.Euler(0, 0, -180 * THREE.MathUtils.DEG2RAD), 'LAST', 1.2);
-    createPictureFrame(glScene, { x: 700, y: 800, z: 512 }, initialPos.frameObject, new THREE.Euler(0, -180 * THREE.MathUtils.DEG2RAD, 0));
-    createPictureFrame(glScene, { x: 600, y: 600, z: 512 }, initialPos.frameObject2, new THREE.Euler(0, 0, 0));
+    create3DText('#228B22', initialPos.nameObject, 115, 115, 100, 'About', 'muli_regular')
+      .then(name => nameObject = name)
+      .then(() => glScene.add(nameObject));
+
+    arrowObjects = [...arrowObjects, createArrow('#ff8c00', initialPos.leftArrowObjectFront, new THREE.Euler(0, 0, 0), 'LAST', 1.2)];
+    arrowObjects = [...arrowObjects, createArrow('#ff8c00', initialPos.rightArrowObjectFront, new THREE.Euler(0, 0, -180 * THREE.MathUtils.DEG2RAD), 'NEXT', 1.2)];
+    arrowObjects = [...arrowObjects, createArrow('#ff8c00', initialPos.leftArrowObjectBack, new THREE.Euler(0, 0, 0), 'NEXT', 1.2)];
+    arrowObjects = [...arrowObjects, createArrow('#ff8c00', initialPos.rightArrowObjectBack, new THREE.Euler(0, 0, -180 * THREE.MathUtils.DEG2RAD), 'LAST', 1.2)];
+    arrowObjects.map(arrow => glScene.add(arrow));
+
+    createPictureFrame({ x: 700, y: 800, z: 512 }, initialPos.frameObject, new THREE.Euler(0, -180 * THREE.MathUtils.DEG2RAD, 0))
+      .then(frame => glScene.add(frame));
+    createPictureFrame({ x: 600, y: 600, z: 512 }, initialPos.frameObject2, new THREE.Euler(0, 0, 0))
+      .then(frame => glScene.add(frame));
   }
 
   // INTERACTION
@@ -183,8 +218,21 @@ const About = () => {
     requestAnimationFrame(update);
   }
 
+  const loadingScreen = () => {
+    if(isLoading) {
+      return (
+        <div className={styles.loading}>
+          <div className={styles.loading_contents}>
+        Loading
+          </div>
+        </div>
+      );
+    }
+  };
+
   return (
     <>
+      { loadingScreen() }
       <div className={styles.hud_box}> 
         <div className={styles.hud_contents}>
           <a href="/">Home</a>
