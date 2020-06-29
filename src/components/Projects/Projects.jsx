@@ -256,7 +256,7 @@ const Projects = () => {
   // CONSTANT UPDATE
   function update() { 
     // console.log(cssObject.position.x, frameObject.position.x, planeObject.position.x);
-    if(cssObject) cssObject.position.x = frameObject.position.x;
+    if(cssObject && frameObject) cssObject.position.x = frameObject.position.x;
     if(nextSlide) {
       if(rockObject3.position.x < -7000) waitSlide = false;
       if(cssObject.quaternion._y >= 0) {
