@@ -65,7 +65,7 @@ const Projects = () => {
       loadingBar(styles, modelsLoaded, modelsTotal);
     };
     manager.onLoad = function() {
-      createProjectPage(1900, 1000, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
+      createProjectPage(1900, 1200, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
       update();
       setIsLoading(false);
     };
@@ -144,8 +144,6 @@ const Projects = () => {
       planeObject = createPlane(width, height, position, rotation);  
       glScene.add(planeObject);  
     }
-    
-    console.log(width);
 
     if(!cssObject) {
       cssObject = createProjectCssObject(width, height, position, rotation, number, projects, styles.project, slideCount);  
@@ -231,7 +229,7 @@ const Projects = () => {
     } else {
       slideCount < slideMax ? slideCount++ : slideCount = 0;
     }
-    createProjectPage(1900, type === 'Project' ? 1000 : 1000, initialPos.cssObject, cssObject.rotation, projectCount);
+    createProjectPage(1900, type === 'Project' ? 1200 : 1200, initialPos.cssObject, cssObject.rotation, projectCount);
   }
 
   function resetPositions() {
