@@ -24,7 +24,7 @@ export function createCssRenderer(width, height, style) {
 }
 
 export function createPlane(width, height, position, rotation) {  
-  const material = new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 0.0, side: THREE.DoubleSide });  
+  const material = new THREE.MeshBasicMaterial({ color: 'black', opacity: 0.0, side: THREE.DoubleSide });  
   const geometry = new THREE.PlaneGeometry(width, height);  
   const mesh = new THREE.Mesh(geometry, material);  
   mesh.userData = 'SLIDE';
@@ -64,9 +64,51 @@ export function createProjectCssObject(width, height, position, rotation, number
 
   cssObject.position.set(position.x, position.y, position.z);
   cssObject.rotation.set(rotation.x, rotation.y, rotation.z);
-  cssObject.userData = 'SLIDECSS';
 
   return cssObject;
+}
+
+export function updateProjectCssObject(width, height, number, projects, style, slideCount) {  
+  const element = document.createElement('div');
+  element.style.width = width + 'px';
+  element.style.height = height + 'px';
+  element.style.opacity = 1;
+  element.style.position = 'absolute';
+  element.style.pointerEvents = 'auto';
+  element.className = style;
+
+  if(slideCount === 0) {
+    const stack = document.createElement('h3');
+    stack.textContent = projects[number].stack;
+    element.appendChild(stack);
+  
+    const desc = document.createElement('p');
+    desc.textContent = projects[number].description;
+    element.appendChild(desc);
+  }
+  if(slideCount === 1) {
+    const img1 = document.createElement('img');
+    img1.src = projects[number].image1;
+    element.appendChild(img1);
+  }
+  if(slideCount === 2) {
+    const img2 = document.createElement('img');
+    img2.src = projects[number].image2;
+    element.appendChild(img2);
+  }
+  return element;
+}
+
+export function clearProjectCssObject(width, height, style) {  
+  const element = document.createElement('div');
+  element.style.width = width + 'px';
+  element.style.height = height + 'px';
+  element.style.opacity = 1;
+  element.style.position = 'absolute';
+  element.style.pointerEvents = 'auto';
+  element.className = style;
+
+  return element;
 }
 
 export function createAboutCSSObject(width, height, position, rotation, content, style) {  

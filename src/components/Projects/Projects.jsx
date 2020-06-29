@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
-import { createGlRenderer, createCssRenderer, createPlane, createProjectCssObject } from '../../utilities/initialize-page';
+import { createGlRenderer, createCssRenderer, createPlane, createProjectCssObject, updateProjectCssObject, clearProjectCssObject } from '../../utilities/initialize-page';
 import { createBackground, createRock, createGrass, create3DText, createIcon, createArrow, createPictureFrame, manager } from '../../utilities/create-objects';
 import { projectChange, loadingBar } from '../../utilities/other';
 import { projects } from '../../data/info';
@@ -149,10 +149,9 @@ const Projects = () => {
       cssObject = createProjectCssObject(width, height, position, rotation, number, projects, styles.project, slideCount);  
       cssScene.add(cssObject);
     } else {
-      const newPos = cssObject.position;
-      cssScene.remove(cssObject);
-      cssObject = createProjectCssObject(width, height, newPos, rotation, number, projects, styles.project, slideCount);  
-      cssScene.add(cssObject);
+      cssObject.element.style.opacity = 0;
+      const newElement = updateProjectCssObject(width, height, number, projects, styles.project, slideCount);
+      cssObject.element = newElement;
     }
 
     let nameObjPos;
@@ -255,6 +254,7 @@ const Projects = () => {
 
   // CONSTANT UPDATE
   function update() { 
+    // if(cssObject) console.log(cssObject.element);
     if(nextSlide) {
       if(rockObject3.position.x < -7000) waitSlide = false;
       if(cssObject.quaternion._y >= 0) {
