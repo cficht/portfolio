@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer } from '../../utilities/initialize-page';
 import { createBackground, createSun, create3DText, createArrow, createIcon, createClouds, manager } from '../../utilities/create-objects';
+import { loadingBar } from '../../utilities/other';
 import { sky, techLogos, cloudsTech } from '../../data/objects';
 import { techPos as initialPos } from '../../data/positions';
 import styles from '../../Main.css';
@@ -32,6 +33,9 @@ const Tech = () => {
     downArrowObject;
 
   let techObjects = [];
+
+  let modelsLoaded = 0;
+  let modelsTotal = 0;
   
   let rotateRight = false, rotateLeft = false, changeTech = false;
   let techCount = 0;
@@ -48,19 +52,19 @@ const Tech = () => {
     });
 
     manager.onStart = function(url, itemsLoaded, itemsTotal) {
-      console.log('Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
+      modelsLoaded = itemsLoaded;
+      modelsTotal = itemsTotal;
+      loadingBar(styles, modelsLoaded, modelsTotal);
     };
     manager.onLoad = function() {
-      console.log('Loading complete!');
       createTech();
       update();
       setIsLoading(false);
     };
     manager.onProgress = function(url, itemsLoaded, itemsTotal) {
-      console.log('Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
-    };
-    manager.onError = function(url) {
-      console.log('There was an error loading ' + url);
+      modelsLoaded = itemsLoaded;
+      modelsTotal = itemsTotal;
+      loadingBar(styles, modelsLoaded, modelsTotal);
     };
 
     // CAMERA
@@ -156,7 +160,7 @@ const Tech = () => {
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
   function createProject3DGeometry() {      
-    create3DText('#228B22', initialPos.nameObject, 80, 80, 65, 'Tech Stack', 'muli_regular')
+    create3DText('#ff8c00', initialPos.nameObject, 80, 80, 65, 'Tech Stack', 'muli_regular')
       .then(name => nameObject = name)
       .then(() => glScene.add(nameObject));
 
@@ -170,7 +174,7 @@ const Tech = () => {
     glScene.add(downArrowObject);
 
     techLogos.map((tech, j) => {
-      const categoryProm = create3DText('#228B22', initialPos.categoryObject, 50, 50, 35, tech.category, 'muli_regular');
+      const categoryProm = create3DText('#ff8c00', initialPos.categoryObject, 50, 50, 35, tech.category, 'muli_regular');
       techObjects.push({
         category: '',
         tech: []
@@ -297,7 +301,11 @@ const Tech = () => {
       return (
         <div className={styles.loading}>
           <div className={styles.loading_contents}>
-        Loading
+            Loading
+            <p className={styles.loading_text}>0%</p>
+            <div className={styles.progress}>
+              <div className={styles.bar}></div>
+            </div>
           </div>
         </div>
       );

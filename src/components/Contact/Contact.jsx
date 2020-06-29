@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer } from '../../utilities/initialize-page';
 import { createBackground, createWall, createAirplane, createClouds, create3DText, createIcon, manager } from '../../utilities/create-objects';
+import { loadingBar } from '../../utilities/other';
 import { fieldContact, cloudsContact, githubContact, linkedin, email } from '../../data/objects';
 import { contactPos as initialPos } from '../../data/positions';
 import styles from '../../Main.css';
@@ -34,6 +35,9 @@ const Contact = () => {
     linkedinText, 
     emailObject, 
     emailText; 
+
+  let modelsLoaded = 0;
+  let modelsTotal = 0;
   
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
@@ -48,18 +52,18 @@ const Contact = () => {
     });
 
     manager.onStart = function(url, itemsLoaded, itemsTotal) {
-      console.log('Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
+      modelsLoaded = itemsLoaded;
+      modelsTotal = itemsTotal;
+      loadingBar(styles, modelsLoaded, modelsTotal);
     };
     manager.onLoad = function() {
-      console.log('Files loadeded!');
       update();
       setIsLoading(false);
     };
     manager.onProgress = function(url, itemsLoaded, itemsTotal) {
-      console.log('Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
-    };
-    manager.onError = function(url) {
-      console.log('There was an error loading ' + url);
+      modelsLoaded = itemsLoaded;
+      modelsTotal = itemsTotal;
+      loadingBar(styles, modelsLoaded, modelsTotal);
     };
 
     // CAMERA
@@ -71,7 +75,6 @@ const Contact = () => {
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) cameraDepth = mobileDepth;
-    console.log(cameraDepth);
  
     camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 15000);
     camera.position.set(0, 0, cameraDepth);
@@ -133,7 +136,7 @@ const Contact = () => {
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
   function createProject3DGeometry() {  
-    create3DText('#228B22', initialPos.nameObject, 115, 115, 100, 'Contact', 'muli_regular')
+    create3DText('#ff8c00', initialPos.nameObject, 115, 115, 100, 'Contact', 'muli_regular')
       .then(name => nameObject = name)
       .then(() => glScene.add(nameObject));
     create3DText('#ff8c00', initialPos.emailText, 60, 60, 60, 'Email', 'muli_regular', 'EMAIL')
@@ -174,7 +177,6 @@ const Contact = () => {
   }
 
   function resetCamera() {
-    console.log(cameraDepth)
     controls.reset();
     camera.position.set(initialPos.cameraMain.x, initialPos.cameraMain.y, cameraDepth);
     controls.target.set(initialPos.cameraMain.x, initialPos.cameraMain.y, initialPos.cameraMain.z);
@@ -205,7 +207,11 @@ const Contact = () => {
       return (
         <div className={styles.loading}>
           <div className={styles.loading_contents}>
-        Loading
+            Loading
+            <p className={styles.loading_text}>0%</p>
+            <div className={styles.progress}>
+              <div className={styles.bar}></div>
+            </div>
           </div>
         </div>
       );

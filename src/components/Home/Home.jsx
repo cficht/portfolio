@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer, createPlane, createBlankCSSObject } from '../../utilities/initialize-page';
 import { createBackground, createWall, createClouds, createSun, createAirplane, createTree, createRock, createGrass, create3DText, createIcon, createPictureFrame, manager } from '../../utilities/create-objects';
-import { moveView } from '../../utilities/other';
+import { moveView, loadingBar } from '../../utilities/other';
 import { clouds, project, tech, contact, about, fieldContact } from '../../data/objects';
 import { desktopPositionsHome, mobilePositionsHome } from '../../data/positions';
 import styles from '../../Main.css';
@@ -43,6 +43,9 @@ const Home = () => {
     contactIconObject, 
     aboutObject, 
     aboutIconObject;
+
+  let modelsLoaded = 0;
+  let modelsTotal = 0;
   
   let cameraStart = false;
   let navigateOn = false;
@@ -62,18 +65,18 @@ const Home = () => {
     });
 
     manager.onStart = function(url, itemsLoaded, itemsTotal) {
-      console.log('Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
+      modelsLoaded = itemsLoaded;
+      modelsTotal = itemsTotal;
+      loadingBar(styles, modelsLoaded, modelsTotal);
     };
     manager.onLoad = function() {
-      console.log('Files loadeded!');
       update();
       setIsLoading(false);
     };
     manager.onProgress = function(url, itemsLoaded, itemsTotal) {
-      console.log('Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
-    };
-    manager.onError = function(url) {
-      console.log('There was an error loading ' + url);
+      modelsLoaded = itemsLoaded;
+      modelsTotal = itemsTotal;
+      loadingBar(styles, modelsLoaded, modelsTotal);
     };
 
     // CAMERA
@@ -168,12 +171,14 @@ const Home = () => {
     cssScene.add(cssObject);
   }
 
+  // #228B22 DARK GREEN
+  // #558E40 LIGHT GREEN
   // SETUP OBJECTS THAT WILL NOT CHANGE
   function createHome3DGeometry() {  
-    create3DText('#228B22', initialPos.nameObject, 100, 100, 100, 'Chris Ficht', 'muli_regular', 'NAME')
+    create3DText('#ff8c00', initialPos.nameObject, 100, 100, 100, 'Chris Ficht', 'muli_regular', 'NAME')
       .then(name => nameObject = name)
       .then(() => glScene.add(nameObject));
-    create3DText('#558E40', initialPos.titleObject, 60, 60, 60, 'Software Developer', 'muli_regular', 'TITLE')
+    create3DText('#ff8c00', initialPos.titleObject, 60, 60, 60, 'Software Developer', 'muli_regular', 'TITLE')
       .then(title => titleObject = title)
       .then(() => glScene.add(titleObject));
 
@@ -307,7 +312,11 @@ const Home = () => {
       return (
         <div className={styles.loading}>
           <div className={styles.loading_contents}>
-        Loading
+            Loading
+            <p className={styles.loading_text}>0%</p>
+            <div className={styles.progress}>
+              <div className={styles.bar}></div>
+            </div>
           </div>
         </div>
       );

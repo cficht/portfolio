@@ -60,3 +60,11 @@ export function mobileDetect(desktopDepth, mobileDepth) {
   || navigator.userAgent.match(/Windows Phone/i)) return mobileDepth;
   else return desktopDepth;
 }
+
+export const loadingBar = (styles, modelsLoaded, modelsTotal) => {
+  let elem = document.getElementsByClassName(styles.bar)[0];
+  let elem2 = document.getElementsByClassName(styles.loading_text)[0];
+  const percentage = ((modelsLoaded / modelsTotal) * 100).toFixed(2);
+  elem.style.width = percentage + '%';
+  elem2.innerHTML = percentage + '%';
+};
