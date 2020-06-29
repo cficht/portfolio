@@ -259,8 +259,6 @@ const Home = () => {
   // CONSTANT UPDATE
   function update() { 
     if(cameraStart) {
-      // if(camera.rotation.x > 0) camera.rotation.x -= .00225;
-      // else camera.rotation.x = 0;
       if(camera.position.y > initialPos.cameraMain.y) camera.position.y -= 30;
       else {
         camera.position.set(initialPos.cameraMain.x, initialPos.cameraMain.y, cameraDepth);
