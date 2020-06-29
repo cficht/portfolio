@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
-import { createGlRenderer, createCssRenderer, createPlane, createProjectCssObject, updateProjectCssObject, clearProjectCssObject } from '../../utilities/initialize-page';
+import { createGlRenderer, createCssRenderer, createPlane, createProjectCssObject, updateProjectCssObject } from '../../utilities/initialize-page';
 import { createBackground, createRock, createGrass, create3DText, createIcon, createArrow, createPictureFrame, manager } from '../../utilities/create-objects';
 import { projectChange, loadingBar } from '../../utilities/other';
 import { projects } from '../../data/info';
@@ -65,7 +65,7 @@ const Projects = () => {
       loadingBar(styles, modelsLoaded, modelsTotal);
     };
     manager.onLoad = function() {
-      createProjectPage(1700, 1000, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
+      createProjectPage(1900, 1000, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
       update();
       setIsLoading(false);
     };
@@ -145,6 +145,8 @@ const Projects = () => {
       glScene.add(planeObject);  
     }
     
+    console.log(width);
+
     if(!cssObject) {
       cssObject = createProjectCssObject(width, height, position, rotation, number, projects, styles.project, slideCount);  
       cssScene.add(cssObject);
@@ -229,7 +231,7 @@ const Projects = () => {
     } else {
       slideCount < slideMax ? slideCount++ : slideCount = 0;
     }
-    createProjectPage(1700, type === 'Project' ? 1000 : 1000, initialPos.cssObject, cssObject.rotation, projectCount);
+    createProjectPage(1900, type === 'Project' ? 1000 : 1000, initialPos.cssObject, cssObject.rotation, projectCount);
   }
 
   function resetPositions() {

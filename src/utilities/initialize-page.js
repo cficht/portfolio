@@ -99,18 +99,6 @@ export function updateProjectCssObject(width, height, number, projects, style, s
   return element;
 }
 
-export function clearProjectCssObject(width, height, style) {  
-  const element = document.createElement('div');
-  element.style.width = width + 'px';
-  element.style.height = height + 'px';
-  element.style.opacity = 1;
-  element.style.position = 'absolute';
-  element.style.pointerEvents = 'auto';
-  element.className = style;
-
-  return element;
-}
-
 export function createAboutCSSObject(width, height, position, rotation, content, style) {  
   const element = document.createElement('div');
   element.style.width = width + 'px';
