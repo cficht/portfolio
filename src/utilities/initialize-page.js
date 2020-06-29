@@ -64,6 +64,7 @@ export function createProjectCssObject(width, height, position, rotation, number
 
   cssObject.position.set(position.x, position.y, position.z);
   cssObject.rotation.set(rotation.x, rotation.y, rotation.z);
+  cssObject.userData = 'SLIDECSS';
 
   return cssObject;
 }

@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer, createPlane, createProjectCssObject } from '../../utilities/initialize-page';
 import { createBackground, createRock, createGrass, create3DText, createIcon, createArrow, createPictureFrame, manager } from '../../utilities/create-objects';
-import { projectChange } from '../../utilities/other';
+import { projectChange, loadingBar } from '../../utilities/other';
 import { projects } from '../../data/info';
 import { projectField, github, site } from '../../data/objects';
 import { projectPos as initialPos } from '../../data/positions';
@@ -12,6 +12,8 @@ import styles from '../../Main.css';
 let 
   camera, 
   controls;
+let cameraDepth = 200;
+let mobileDepth = 1400;
 
 const Projects = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -37,10 +39,11 @@ const Projects = () => {
     siteObject;
 
   let projectObjects = [];
+
+  let modelsLoaded = 0;
+  let modelsTotal = 0;
   
   let nextSlide = false, changeSlide = false, waitSlide = false, nextProject = false, lastProject = false, changeProject = false;
-  let cameraDepth = 200;
-  let mobileDepth = 1400;
   let projectCount = 0;
   let slideCount = 0;
   const slideMax = 2;
@@ -57,19 +60,19 @@ const Projects = () => {
     });
 
     manager.onStart = function(url, itemsLoaded, itemsTotal) {
-      console.log('Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
+      modelsLoaded = itemsLoaded;
+      modelsTotal = itemsTotal;
+      loadingBar(styles, modelsLoaded, modelsTotal);
     };
     manager.onLoad = function() {
-      console.log('Files loadeded!');
       createProjectPage(1700, 1000, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
       update();
       setIsLoading(false);
     };
     manager.onProgress = function(url, itemsLoaded, itemsTotal) {
-      console.log('Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
-    };
-    manager.onError = function(url) {
-      console.log('There was an error loading ' + url);
+      modelsLoaded = itemsLoaded;
+      modelsTotal = itemsTotal;
+      loadingBar(styles, modelsLoaded, modelsTotal);
     };
 
     // CAMERA
@@ -162,7 +165,7 @@ const Projects = () => {
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
   function createProject3DGeometry() {  
-    create3DText('#228B22', initialPos.pageObject, 120, 120, 120, 'Projects', 'muli_regular', 'PROJECTS')
+    create3DText('#ff8c00', initialPos.pageObject, 120, 120, 120, 'Projects', 'muli_regular', 'PROJECTS')
       .then(page => pageObject = page)
       .then(() => glScene.add(pageObject));
 
@@ -252,6 +255,7 @@ const Projects = () => {
 
   // CONSTANT UPDATE
   function update() { 
+    // console.log(cssObject.position.x, frameObject.position.x, planeObject.position.x);
     if(nextSlide) {
       if(rockObject3.position.x < -7000) waitSlide = false;
       if(cssObject.quaternion._y >= 0) {
@@ -293,12 +297,12 @@ const Projects = () => {
     }
     
     if(nextProject) {
-      changeProject = projectChange(-1, 'PICTURE', cssObject, glScene, changeProject, newProject);
+      changeProject = projectChange(-1, 'PICTURE', cssObject, glScene, changeProject, newProject, frameObject);
       if(leftArrowObject.position.y === initialPos.leftArrowObject.y & changeProject === true) resetPositions();
     }
 
     if(lastProject) {
-      changeProject = projectChange(1, 'PICTURE', cssObject, glScene, changeProject, newProject);
+      changeProject = projectChange(1, 'PICTURE', cssObject, glScene, changeProject, newProject, frameObject);
       if(rightArrowObject.position.y === initialPos.rightArrowObject.y & changeProject === true) resetPositions();    
     }
     glRenderer.render(glScene, camera);  
@@ -311,7 +315,11 @@ const Projects = () => {
       return (
         <div className={styles.loading}>
           <div className={styles.loading_contents}>
-        Loading
+            Loading
+            <p className={styles.loading_text}>0%</p>
+            <div className={styles.progress}>
+              <div className={styles.bar}></div>
+            </div>
           </div>
         </div>
       );

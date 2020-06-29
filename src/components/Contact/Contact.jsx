@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer } from '../../utilities/initialize-page';
 import { createBackground, createWall, createAirplane, createClouds, create3DText, createIcon, manager } from '../../utilities/create-objects';
+import { loadingBar } from '../../utilities/other';
 import { fieldContact, cloudsContact, githubContact, linkedin, email } from '../../data/objects';
 import { contactPos as initialPos } from '../../data/positions';
 import styles from '../../Main.css';
@@ -10,6 +11,8 @@ import styles from '../../Main.css';
 let
   camera, 
   controls;
+let cameraDepth = 300;
+let mobileDepth = 1500;
 
 const Contact = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -32,9 +35,10 @@ const Contact = () => {
     linkedinText, 
     emailObject, 
     emailText; 
+
+  let modelsLoaded = 0;
+  let modelsTotal = 0;
   
-  let cameraDepth = 300;
-  let mobileDepth = 1500;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   const glScene = new THREE.Scene();
@@ -48,18 +52,18 @@ const Contact = () => {
     });
 
     manager.onStart = function(url, itemsLoaded, itemsTotal) {
-      console.log('Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
+      modelsLoaded = itemsLoaded;
+      modelsTotal = itemsTotal;
+      loadingBar(styles, modelsLoaded, modelsTotal);
     };
     manager.onLoad = function() {
-      console.log('Files loadeded!');
       update();
       setIsLoading(false);
     };
     manager.onProgress = function(url, itemsLoaded, itemsTotal) {
-      console.log('Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
-    };
-    manager.onError = function(url) {
-      console.log('There was an error loading ' + url);
+      modelsLoaded = itemsLoaded;
+      modelsTotal = itemsTotal;
+      loadingBar(styles, modelsLoaded, modelsTotal);
     };
 
     // CAMERA
@@ -132,7 +136,7 @@ const Contact = () => {
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
   function createProject3DGeometry() {  
-    create3DText('#228B22', initialPos.nameObject, 115, 115, 100, 'Contact', 'muli_regular')
+    create3DText('#ff8c00', initialPos.nameObject, 115, 115, 100, 'Contact', 'muli_regular')
       .then(name => nameObject = name)
       .then(() => glScene.add(nameObject));
     create3DText('#ff8c00', initialPos.emailText, 60, 60, 60, 'Email', 'muli_regular', 'EMAIL')
@@ -203,7 +207,11 @@ const Contact = () => {
       return (
         <div className={styles.loading}>
           <div className={styles.loading_contents}>
-        Loading
+            Loading
+            <p className={styles.loading_text}>0%</p>
+            <div className={styles.progress}>
+              <div className={styles.bar}></div>
+            </div>
           </div>
         </div>
       );

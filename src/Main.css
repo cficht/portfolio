@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300&family=Inter&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Muli:wght@300;400&display=swap');
+
 
 .three_box {
   display: flex;
@@ -20,12 +22,45 @@
 
 .loading_contents {
   display: flex;
-  justify-content: space-evenly;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
   height: 100vh;
   width: 100%;
   background-color: black;
-  color: white;
+  font-family: 'Muli', sans-serif;
+  font-weight: 400;
+  font-size: 3em;
+  text-decoration: none;
+  color: #FFDF24;
+  -webkit-text-stroke: .6px #ff8c00;
+}
+
+.progress {
+  width: 80%;
+  border-radius: 10px;
+  background-color: grey;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  width: 0%;
+  height: 50px;
+  border-radius: 10px;
+  background-color: #4CAF50;
+  line-height: 30px;
+}
+
+.loading_text {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+  align-items: center;
+  font-weight: 300;
+  font-size: .4em;
+  color: #FFDF24;
+  -webkit-text-stroke: .6px #ff8c00;
 }
 
 .hud_box {
@@ -57,12 +92,14 @@
   border-top-right-radius: 10px;
 
   a {
-    padding: 10px;
+    padding: 5px 10px 5px 10px;
     border-radius: 20px;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Muli', sans-serif;
+    font-weight: 400;
     font-size: 1.1em;
     text-decoration: none;
-    color: white;
+    color: #FFDF24;
+    -webkit-text-stroke: .4px #ff8c00;
   }
 
   a:active {
@@ -70,8 +107,8 @@
   }
 
   input[type=image] {
-    padding: 5px 10px 5px 10px;
-    width: 5vh;
+    padding: 8px 10px 5px 10px;
+    width: 6vh;
     border-radius: 20px;
     outline-width: 0;
   }
@@ -98,14 +135,17 @@
 
     a {
       border-radius: 20px;
-      font-family: 'Inter', sans-serif;
-      font-size: .7em;
+      font-family: 'Muli', sans-serif;
+      font-weight: 400;
+      font-size: .8em;
       text-decoration: none;
-      color: white;
+      color: #FFDF24;
+      -webkit-text-stroke: .4px #ff8c00;
     }
 
     input[type=image] {
-      width: 6vh;
+      padding: 5px 10px 5px 10px;
+      width: 5vh;
     }
   }
 }

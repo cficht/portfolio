@@ -9,8 +9,9 @@ export function createColoredMaterial(fromScheme) {
   return material;
 }
 
-export function projectChange(nextLast, data, cssObject, glScene, changeProject, newProject) {
-  cssObject.position.x += (100 * nextLast);
+export function projectChange(nextLast, data, cssObject, glScene, changeProject, newProject, frameObject) {
+  // cssObject.position.x += (100 * nextLast);
+  cssObject.position.x = frameObject.position.x + (100 * nextLast);
   if((cssObject.position.x * nextLast) >= 7000) cssObject.position.x = cssObject.position.x - (14000 * nextLast);
   glScene.children.map(child => {
     if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'background' || child.userData === 'CLOUD' || child.userData === 'ROCK' || child.userData === 'GRASS' || child.userData === 'PROJECTS') return;
@@ -19,6 +20,7 @@ export function projectChange(nextLast, data, cssObject, glScene, changeProject,
       if(changeProject && child.position.y < -2200) child.position.y += 100;
       return;
     }
+    // if(child.userData === 'SLIDE');
     child.position.x += (100 * nextLast); 
     if((child.position.x * nextLast) > 5000) child.visible = false;
     if((child.position.x * nextLast) > -5000 && (child.position.x * nextLast) < 5000) child.visible = true;
@@ -60,3 +62,11 @@ export function mobileDetect(desktopDepth, mobileDepth) {
   || navigator.userAgent.match(/Windows Phone/i)) return mobileDepth;
   else return desktopDepth;
 }
+
+export const loadingBar = (styles, modelsLoaded, modelsTotal) => {
+  let elem = document.getElementsByClassName(styles.bar)[0];
+  let elem2 = document.getElementsByClassName(styles.loading_text)[0];
+  const percentage = ((modelsLoaded / modelsTotal) * 100).toFixed(2);
+  elem.style.width = percentage + '%';
+  elem2.innerHTML = percentage + '%';
+};

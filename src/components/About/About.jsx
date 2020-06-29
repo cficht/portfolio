@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer, createPlane, createAboutCSSObject } from '../../utilities/initialize-page';
 import { createBackground, createTree, createGrass, createTreeTop, create3DText, createArrow, createPictureFrame, manager } from '../../utilities/create-objects';
+import { loadingBar } from '../../utilities/other';
 import { about } from '../../data/info';
 import { projectField } from '../../data/objects';
 import { aboutPos as initialPos } from '../../data/positions';
@@ -11,6 +12,8 @@ import styles from '../../Main.css';
 let 
   camera, 
   controls;
+let cameraDepth = 3700;
+let mobileDepth = 4900;
 
 const About = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -29,9 +32,10 @@ const About = () => {
 
   let arrowObjects = [];
 
+  let modelsLoaded = 0;
+  let modelsTotal = 0;
+
   let flipRight = false, flipLeft = false, backSide = false;
-  let cameraDepth = 3700;
-  let mobileDepth = 4900;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   const glScene = new THREE.Scene();
@@ -45,20 +49,20 @@ const About = () => {
     });
 
     manager.onStart = function(url, itemsLoaded, itemsTotal) {
-      console.log('Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
+      modelsLoaded = itemsLoaded;
+      modelsTotal = itemsTotal;
+      loadingBar(styles, modelsLoaded, modelsTotal);
     };
     manager.onLoad = function() {
-      console.log('Loading complete!');
       createAboutPages(1200, 800, initialPos.cssObject, new THREE.Vector3(0, 0, 0), about.bio);
       createAboutPages(1000, 600, initialPos.cssObject2, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0), about.other);
       update();
       setIsLoading(false);
     };
     manager.onProgress = function(url, itemsLoaded, itemsTotal) {
-      console.log('Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
-    };
-    manager.onError = function(url) {
-      console.log('There was an error loading ' + url);
+      modelsLoaded = itemsLoaded;
+      modelsTotal = itemsTotal;
+      loadingBar(styles, modelsLoaded, modelsTotal);
     };
 
     // CAMERA
@@ -134,7 +138,7 @@ const About = () => {
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
   function createProject3DGeometry() {  
-    create3DText('#228B22', initialPos.nameObject, 115, 115, 100, 'About', 'muli_regular')
+    create3DText('#ff8c00', initialPos.nameObject, 115, 115, 100, 'About', 'muli_regular')
       .then(name => nameObject = name)
       .then(() => glScene.add(nameObject));
 
@@ -223,7 +227,11 @@ const About = () => {
       return (
         <div className={styles.loading}>
           <div className={styles.loading_contents}>
-        Loading
+            Loading
+            <p className={styles.loading_text}>0%</p>
+            <div className={styles.progress}>
+              <div className={styles.bar}></div>
+            </div>
           </div>
         </div>
       );
