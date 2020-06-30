@@ -124,7 +124,8 @@ const About = () => {
     controls.target.set(initialPos.cameraMain.x, initialPos.cameraMain.y, initialPos.cameraMain.z);
 
     // EVENT LISTENERS
-    cssRenderer.domElement.addEventListener('click', onClick, true);
+    cssRenderer.domElement.addEventListener('mousedown', onClick, true);
+    cssRenderer.domElement.addEventListener('mousemove', onOver, true);
     window.addEventListener('resize', () => location.reload());
   }, []);
 
@@ -142,10 +143,10 @@ const About = () => {
       .then(name => nameObject = name)
       .then(() => glScene.add(nameObject));
 
-    arrowObjects = [...arrowObjects, createArrow('#ff8c00', initialPos.leftArrowObjectFront, new THREE.Euler(0, 0, 0), 'LAST', 1.2)];
-    arrowObjects = [...arrowObjects, createArrow('#ff8c00', initialPos.rightArrowObjectFront, new THREE.Euler(0, 0, -180 * THREE.MathUtils.DEG2RAD), 'NEXT', 1.2)];
-    arrowObjects = [...arrowObjects, createArrow('#ff8c00', initialPos.leftArrowObjectBack, new THREE.Euler(0, 0, 0), 'NEXT', 1.2)];
-    arrowObjects = [...arrowObjects, createArrow('#ff8c00', initialPos.rightArrowObjectBack, new THREE.Euler(0, 0, -180 * THREE.MathUtils.DEG2RAD), 'LAST', 1.2)];
+    arrowObjects = [...arrowObjects, createArrow('#ff8c00', initialPos.leftArrowObjectFront, new THREE.Euler(0, 0, 0), 'LAST', 1.2, true)];
+    arrowObjects = [...arrowObjects, createArrow('#ff8c00', initialPos.rightArrowObjectFront, new THREE.Euler(0, 0, -180 * THREE.MathUtils.DEG2RAD), 'NEXT', 1.2, true)];
+    arrowObjects = [...arrowObjects, createArrow('#ff8c00', initialPos.leftArrowObjectBack, new THREE.Euler(0, 0, 0), 'NEXT', 1.2, true)];
+    arrowObjects = [...arrowObjects, createArrow('#ff8c00', initialPos.rightArrowObjectBack, new THREE.Euler(0, 0, -180 * THREE.MathUtils.DEG2RAD), 'LAST', 1.2, true)];
     arrowObjects.map(arrow => glScene.add(arrow));
 
     createPictureFrame({ x: 700, y: 800, z: 512 }, initialPos.frameObject, new THREE.Euler(0, -180 * THREE.MathUtils.DEG2RAD, 0))
@@ -176,6 +177,24 @@ const About = () => {
         flipLeft = true;
       }
     }
+  }
+
+  function onOver(event) {
+    if(event.buttons > 0) return;
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    mouse.x = (event.clientX / setWidth) * 2 - 1;
+    mouse.y = - (event.clientY / setHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(glScene.children, true);
+    if(intersects.length > 0) {
+      selectedObject = intersects[0];
+      if(selectedObject.object.userData === 'NEXT' || selectedObject.object.userData === 'LAST') {
+        document.body.style.cursor = 'pointer';
+      } else {
+        document.body.style.cursor = 'default';
+      }
+    } 
   }
 
   function resetCamera() {
@@ -228,7 +247,7 @@ const About = () => {
         <div className={styles.loading}>
           <div className={styles.loading_contents}>
             Loading
-            <p className={styles.loading_text}>0%</p>
+            <p className={styles.loading_text}>0.00%</p>
             <div className={styles.progress}>
               <div className={styles.bar}></div>
             </div>

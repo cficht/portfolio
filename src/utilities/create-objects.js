@@ -80,7 +80,7 @@ export function createAirplane(width, height, position, scale) {
 
 export function createTree(width, height, position, scale, flip) {
   const tree_url = './images/common_images/tree.png';
-  const treeMaterial = new THREE.MeshToonMaterial({ map: textureLoader.load(tree_url), alphaTest: 0.4, transparent: true, side: THREE.DoubleSide, shininess: 0 });
+  const treeMaterial = new THREE.MeshToonMaterial({ map: textureLoader.load(tree_url), alphaTest: 0.9, side: THREE.DoubleSide, shininess: 0 });
   const treeGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
   treeGeometry.center();
   const treeMesh = new THREE.Mesh(treeGeometry, treeMaterial);
@@ -161,8 +161,7 @@ export function create3DText(color, position, width, height, depth, textContent,
   });
 }
 
-// REFACTOR
-export function createIcon(position, { model, color, width, height, depth, data }) {
+export function createIcon(position, { model, color, width, height, depth, data }, clickSphere, clickScale = 12.5, clickPos = -7.5) {
   return new Promise((resolve) => { stlLoader.load(model, function(geometry) {
     const material = new THREE.MeshToonMaterial({ color: color, flatShading: true });
     const mesh = new THREE.Mesh(geometry, material);
@@ -172,12 +171,20 @@ export function createIcon(position, { model, color, width, height, depth, data 
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     data ? mesh.userData = data : mesh.userData = '';
+    if(clickSphere) {
+      const clickGeo = new THREE.CylinderGeometry(clickScale, clickScale, clickScale * 2.15, clickScale);
+      const clickMat = new THREE.MeshBasicMaterial({ wireframe: true, transparent: true, opacity: 0 });
+      const clickSphere = new THREE.Mesh(clickGeo, clickMat);
+      data ? clickSphere.userData = data : clickSphere.userData = '';
+      clickSphere.position.y = clickPos;
+      mesh.add(clickSphere);
+    }
     resolve(mesh);
   });
   });
 }
 
-export function createArrow(color, position, rotation, data, scale) {
+export function createArrow(color, position, rotation, data, scale, clickSphere, clickScale = 1) {
   const triangleShape = new THREE.Shape()
     .moveTo(0, -100)
     .lineTo(0, 100)
@@ -188,6 +195,14 @@ export function createArrow(color, position, rotation, data, scale) {
   mesh.position.set(position.x, position.y, position.z);
   mesh.rotation.copy(rotation);
   mesh.userData = data;
+  if(clickSphere) {
+    const clickGeo = new THREE.BoxGeometry(200 * clickScale, 250 * clickScale, 0);
+    const clickMat = new THREE.MeshBasicMaterial({ wireframe: true, transparent: true, opacity: 0.0 });
+    const clickSphere = new THREE.Mesh(clickGeo, clickMat);
+    data ? clickSphere.userData = data : clickSphere.userData = '';
+    clickSphere.position.x = -65;
+    mesh.add(clickSphere);
+  }
   return mesh;  
 }
 
