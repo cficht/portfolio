@@ -127,6 +127,7 @@ const Tech = () => {
     glRenderer.domElement.addEventListener('mouseup', onUp, true);
     glRenderer.domElement.addEventListener('touchstart', onDown, true);
     glRenderer.domElement.addEventListener('touchend', onUp, true);
+    cssRenderer.domElement.addEventListener('mousemove', onOver, true);
     window.addEventListener('resize', () => location.reload());
   }, []);
 
@@ -164,13 +165,13 @@ const Tech = () => {
       .then(name => nameObject = name)
       .then(() => glScene.add(nameObject));
 
-    leftArrowObject = createArrow('#EFFD5F', initialPos.leftArrowObject, new THREE.Euler(0, 0, 0), 'LAST', .9);
+    leftArrowObject = createArrow('#EFFD5F', initialPos.leftArrowObject, new THREE.Euler(0, 0, 0), 'LAST', .9, true);
     glScene.add(leftArrowObject);
-    rightArrowObject = createArrow('#EFFD5F', initialPos.rightArrowObject, new THREE.Euler(0, 0, -180 * THREE.MathUtils.DEG2RAD), 'NEXT', .9);
+    rightArrowObject = createArrow('#EFFD5F', initialPos.rightArrowObject, new THREE.Euler(0, 0, -180 * THREE.MathUtils.DEG2RAD), 'NEXT', .9, true);
     glScene.add(rightArrowObject);
-    upArrowObject = createArrow('#EFFD5F', initialPos.upArrowObject, new THREE.Euler(0, 0, -90 * THREE.MathUtils.DEG2RAD), 'UP', .9);
+    upArrowObject = createArrow('#EFFD5F', initialPos.upArrowObject, new THREE.Euler(0, 0, -90 * THREE.MathUtils.DEG2RAD), 'UP', .9, true);
     glScene.add(upArrowObject);
-    downArrowObject = createArrow('#EFFD5F', initialPos.downArrowObject, new THREE.Euler(0, 0, -270 * THREE.MathUtils.DEG2RAD), 'DOWN', .9);
+    downArrowObject = createArrow('#EFFD5F', initialPos.downArrowObject, new THREE.Euler(0, 0, -270 * THREE.MathUtils.DEG2RAD), 'DOWN', .9, true);
     glScene.add(downArrowObject);
 
     techLogos.map((tech, j) => {
@@ -251,6 +252,24 @@ const Tech = () => {
     rotateRight = false;
   }
 
+  function onOver(event) {
+    if(event.buttons > 0) return;
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    mouse.x = (event.clientX / setWidth) * 2 - 1;
+    mouse.y = - (event.clientY / setHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(glScene.children, true);
+    if(intersects.length > 0) {
+      selectedObject = intersects[0];
+      if(selectedObject.object.userData === 'NEXT' || selectedObject.object.userData === 'LAST' || selectedObject.object.userData === 'UP' || selectedObject.object.userData === 'DOWN') {
+        document.body.style.cursor = 'pointer';
+      } else {
+        document.body.style.cursor = 'default';
+      }
+    } 
+  }
+
   function resetCamera() {
     controls.reset();
     camera.position.set(initialPos.cameraMain.x, initialPos.cameraMain.y, cameraDepth);
@@ -302,7 +321,7 @@ const Tech = () => {
         <div className={styles.loading}>
           <div className={styles.loading_contents}>
             Loading
-            <p className={styles.loading_text}>0%</p>
+            <p className={styles.loading_text}>0.00%</p>
             <div className={styles.progress}>
               <div className={styles.bar}></div>
             </div>

@@ -30,6 +30,7 @@ const Home = () => {
     treeObject, 
     rockObject, 
     grassObject, 
+    grassObject2,
     cssObject, 
     planeObject, 
     frameObject, 
@@ -49,6 +50,7 @@ const Home = () => {
   
   let cameraStart = false;
   let navigateOn = false;
+  let mobile = false;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   const glScene = new THREE.Scene();
@@ -90,6 +92,7 @@ const Home = () => {
     || navigator.userAgent.match(/Windows Phone/i)) { 
       cameraDepth = mobileDepth;
       initialPos = mobilePos;
+      mobile = true;
     } else {
       initialPos = desktopPos;
     }
@@ -137,6 +140,8 @@ const Home = () => {
     glScene.add(rockObject);
     grassObject = createGrass(1662, 81, initialPos.grassObject, .09);
     glScene.add(grassObject);
+    grassObject2 = createGrass(1662, 81, initialPos.grassObject2, .09);
+    glScene.add(grassObject2);
 
     createHomePage(1600, 900, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
     createHome3DGeometry();  
@@ -158,7 +163,8 @@ const Home = () => {
     controls.enabled = false;
 
     // EVENT LISTENERS
-    cssRenderer.domElement.addEventListener('click', onClick, true);
+    cssRenderer.domElement.addEventListener('mousedown', onClick, true);
+    cssRenderer.domElement.addEventListener('mousemove', onOver, true);
     window.addEventListener('resize', () => location.reload());
   }, []);
 
@@ -171,8 +177,6 @@ const Home = () => {
     cssScene.add(cssObject);
   }
 
-  // #228B22 DARK GREEN
-  // #558E40 LIGHT GREEN
   // SETUP OBJECTS THAT WILL NOT CHANGE
   function createHome3DGeometry() {  
     create3DText('#ff8c00', initialPos.nameObject, 100, 100, 100, 'Chris Ficht', 'muli_regular', 'NAME')
@@ -196,16 +200,16 @@ const Home = () => {
       .then(() => glScene.add(aboutObject));
 
 
-    createIcon(initialPos.projectIcon, project)
+    createIcon(initialPos.projectIcon, project, true)
       .then(projectIcon => projectIconObject = projectIcon)
       .then(() => glScene.add(projectIconObject));
-    createIcon(initialPos.techIcon, tech)
+    createIcon(initialPos.techIcon, tech, true)
       .then(techIcon => techIconObject = techIcon)
       .then(() => glScene.add(techIconObject));
-    createIcon(initialPos.contactIcon, contact)
+    createIcon(initialPos.contactIcon, contact, true)
       .then(contactIcon => contactIconObject = contactIcon)
       .then(() => glScene.add(contactIconObject));
-    createIcon(initialPos.aboutIcon, about)
+    createIcon(initialPos.aboutIcon, about, true)
       .then(aboutIcon => aboutIconObject = aboutIcon)
       .then(() => glScene.add(aboutIconObject));
 
@@ -256,6 +260,24 @@ const Home = () => {
     }
   }
 
+  function onOver(event) {
+    if(event.buttons > 0) return;
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    mouse.x = (event.clientX / setWidth) * 2 - 1;
+    mouse.y = - (event.clientY / setHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(glScene.children, true);
+    if(intersects.length > 0) {
+      selectedObject = intersects[0];
+      if(selectedObject.object.userData === 'PROJECTS' || selectedObject.object.userData === 'TECH' || selectedObject.object.userData === 'CONTACT' || selectedObject.object.userData === 'ABOUT') {
+        document.body.style.cursor = 'pointer';
+      } else {
+        document.body.style.cursor = 'default';
+      }
+    } 
+  }
+
   // CONSTANT UPDATE
   function update() { 
     if(cameraStart) {
@@ -287,7 +309,11 @@ const Home = () => {
       moveView(controls, targetObject);
       controls.update();    
       moveView(camera, targetObject);
-      if(camera.position.z < 0) {
+      if(camera.position.z < -1000 && !mobile) {
+        navigateOn = false;
+        window.location = targetObject.url;
+      }
+      if(camera.position.z < 0 && mobile) {
         navigateOn = false;
         window.location = targetObject.url;
       }
@@ -311,7 +337,7 @@ const Home = () => {
         <div className={styles.loading}>
           <div className={styles.loading_contents}>
             Loading
-            <p className={styles.loading_text}>0%</p>
+            <p className={styles.loading_text}>0.00%</p>
             <div className={styles.progress}>
               <div className={styles.bar}></div>
             </div>

@@ -130,7 +130,8 @@ const Contact = () => {
     controls.target.set(initialPos.cameraMain.x, initialPos.cameraMain.y, initialPos.cameraMain.z);
 
     // EVENT LISTENERS
-    cssRenderer.domElement.addEventListener('click', onClick, true);
+    cssRenderer.domElement.addEventListener('mousedown', onClick, true);
+    cssRenderer.domElement.addEventListener('mousemove', onOver, true);
     window.addEventListener('resize', () => location.reload());
   }, []);
 
@@ -149,13 +150,13 @@ const Contact = () => {
       .then(github => gitHubText = github)
       .then(() => glScene.add(gitHubText));
 
-    createIcon(initialPos.emailObject, email)
+    createIcon(initialPos.emailObject, email, true, 15)
       .then(email => emailObject = email)
       .then(() => glScene.add(emailObject));
-    createIcon(initialPos.linkedinObject, linkedin)
+    createIcon(initialPos.linkedinObject, linkedin, true, 15)
       .then(linkedin => linkedinObject = linkedin)
       .then(() => glScene.add(linkedinObject));
-    createIcon(initialPos.gitHubObject, githubContact)
+    createIcon(initialPos.gitHubObject, githubContact, true, 15)
       .then(github => gitHubObject = github)
       .then(() => glScene.add(gitHubObject));
   }
@@ -168,12 +169,32 @@ const Contact = () => {
     mouse.y = - (event.clientY / setHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(glScene.children, true);
-    if(intersects.length > 0) {
-      selectedObject = intersects[0];
+    const filteredIntersects = intersects.filter(intersect => intersect.object.userData !== 'CLOUD');
+    if(filteredIntersects.length > 0) {
+      selectedObject = filteredIntersects[0];
       if(selectedObject.object.userData === 'GITHUB') window.open('https://github.com/cficht', '_blank');
       if(selectedObject.object.userData === 'LINKEDIN') window.open('https://www.linkedin.com/in/chrisficht/', '_blank');
       if(selectedObject.object.userData === 'EMAIL') window.open('mailto:chris.ficht@gmail.com', '_blank');
     }
+  }
+
+  function onOver(event) {
+    if(event.buttons > 0) return;
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    mouse.x = (event.clientX / setWidth) * 2 - 1;
+    mouse.y = - (event.clientY / setHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(glScene.children, true);
+    const filteredIntersects = intersects.filter(intersect => intersect.object.userData !== 'CLOUD');
+    if(filteredIntersects.length > 0) {
+      selectedObject = filteredIntersects[0];
+      if(selectedObject.object.userData === 'GITHUB' || selectedObject.object.userData === 'LINKEDIN' || selectedObject.object.userData === 'EMAIL') {
+        document.body.style.cursor = 'pointer';
+      } else {
+        document.body.style.cursor = 'default';
+      }
+    } 
   }
 
   function resetCamera() {
@@ -208,7 +229,7 @@ const Contact = () => {
         <div className={styles.loading}>
           <div className={styles.loading_contents}>
             Loading
-            <p className={styles.loading_text}>0%</p>
+            <p className={styles.loading_text}>0.00%</p>
             <div className={styles.progress}>
               <div className={styles.bar}></div>
             </div>

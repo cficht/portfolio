@@ -134,7 +134,8 @@ const Projects = () => {
     controls.target.set(initialPos.cameraMain.x, initialPos.cameraMain.y, initialPos.cameraMain.z);
 
     // EVENT LISTENERS
-    cssRenderer.domElement.addEventListener('click', onClick, true);
+    cssRenderer.domElement.addEventListener('mousedown', onClick, true);
+    cssRenderer.domElement.addEventListener('mousemove', onOver, true);
     window.addEventListener('resize', () => location.reload());
   }, []);
 
@@ -168,9 +169,9 @@ const Projects = () => {
       .then(page => pageObject = page)
       .then(() => glScene.add(pageObject));
 
-    leftArrowObject = createArrow(projects[projectCount].secondaryColor, initialPos.leftArrowObject, new THREE.Euler(0, 0, 0), 'LAST');
+    leftArrowObject = createArrow(projects[projectCount].secondaryColor, initialPos.leftArrowObject, new THREE.Euler(0, 0, 0), 'LAST', 1, true);
     glScene.add(leftArrowObject);
-    rightArrowObject = createArrow(projects[projectCount].secondaryColor, initialPos.rightArrowObject, new THREE.Euler(0, 0, - 180 * THREE.MathUtils.DEG2RAD), 'NEXT');
+    rightArrowObject = createArrow(projects[projectCount].secondaryColor, initialPos.rightArrowObject, new THREE.Euler(0, 0, - 180 * THREE.MathUtils.DEG2RAD), 'NEXT', 1, true);
     glScene.add(rightArrowObject);
 
     projects.map(project => {
@@ -178,10 +179,10 @@ const Projects = () => {
         .then(projectName => projectObjects.push({ name: projectName }));
     });
     
-    createIcon(initialPos.gitHubObject, github)
+    createIcon(initialPos.gitHubObject, github, true, 10, 0)
       .then(gitHub => gitHubObject = gitHub)
       .then(() => glScene.add(gitHubObject));
-    createIcon(initialPos.siteObject, site)
+    createIcon(initialPos.siteObject, site, true, 10, 0)
       .then(site => siteObject = site)
       .then(() => glScene.add(siteObject));
 
@@ -220,6 +221,24 @@ const Projects = () => {
     }
   }
 
+  function onOver(event) {
+    if(event.buttons > 0) return;
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    mouse.x = (event.clientX / setWidth) * 2 - 1;
+    mouse.y = - (event.clientY / setHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(glScene.children, true);
+    if(intersects.length > 0) {
+      selectedObject = intersects[0];
+      if(selectedObject.object.userData === 'NEXT' || selectedObject.object.userData === 'LAST' || selectedObject.object.userData === 'GITHUB' || selectedObject.object.userData === 'SITE') {
+        document.body.style.cursor = 'pointer';
+      } else {
+        document.body.style.cursor = 'default';
+      }
+    } 
+  }
+
   // CHANGE PROJECT OR SLIDE
   function newProject(type) {
     if(type === 'Project') {
@@ -254,7 +273,6 @@ const Projects = () => {
 
   // CONSTANT UPDATE
   function update() { 
-    // if(cssObject) console.log(cssObject.element);
     if(nextSlide) {
       if(rockObject3.position.x < -7000) waitSlide = false;
       if(cssObject.quaternion._y >= 0) {
@@ -315,7 +333,7 @@ const Projects = () => {
         <div className={styles.loading}>
           <div className={styles.loading_contents}>
             Loading
-            <p className={styles.loading_text}>0%</p>
+            <p className={styles.loading_text}>0.00%</p>
             <div className={styles.progress}>
               <div className={styles.bar}></div>
             </div>
