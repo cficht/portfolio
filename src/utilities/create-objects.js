@@ -28,7 +28,7 @@ export function createBackground({ wall, ceiling, floor, width, height, depth, p
 
 export function createWall(width, height, position) {
   const wall_url = './images/common_images/walls/wall_no_clouds.png';
-  const wallMaterial = new THREE.MeshBasicMaterial({ map: textureLoader.load(wall_url), side: THREE.DoubleSide, shininess: 0 });
+  const wallMaterial = new THREE.MeshBasicMaterial({ map: textureLoader.load(wall_url), side: THREE.DoubleSide });
   const wallGeometry = new THREE.PlaneBufferGeometry(1, 1, 1);
   wallGeometry.center();
   const wallMesh = new THREE.Mesh(wallGeometry, wallMaterial);
