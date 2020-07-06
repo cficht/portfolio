@@ -9,6 +9,7 @@ const textureLoader = new THREE.TextureLoader(manager);
 const fontLoader = new THREE.FontLoader(manager);
 const stlLoader = new STLLoader(manager);
 const gltfLoader = new GLTFLoader(manager);
+const reuseablePlane = new THREE.PlaneBufferGeometry(20, 20, 20);
 
 export function createBackground({ wall, ceiling, floor, width, height, depth, position }) {
   const materials = [
@@ -43,8 +44,7 @@ export function createWall(width, height, position) {
 export function createClouds(clouds, yDiff = 0, zDiff = 0) {
   return clouds.map(cloud => {
     const cloudMaterial = new THREE.MeshBasicMaterial({ map: textureLoader.load(cloud.url), alphaTest: 0.2, side: THREE.DoubleSide });
-    const cloudGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
-    const cloudMesh = new THREE.Mesh(cloudGeometry, cloudMaterial);
+    const cloudMesh = new THREE.Mesh(reuseablePlane, cloudMaterial);
     cloudMesh.scale.set(cloud.scale.x * .25, cloud.scale.y * .25, 1);
     cloudMesh.position.set(cloud.position.x, cloud.position.y + yDiff, cloud.position.z + zDiff);
     cloudMesh.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0));
@@ -56,9 +56,7 @@ export function createClouds(clouds, yDiff = 0, zDiff = 0) {
 export function createSun(width, height, position, scale) {
   const sun_url = './images/common_images/sun.png';
   const sunMaterial = new THREE.MeshBasicMaterial({ color: '#ffc04c', map: textureLoader.load(sun_url), alphaTest: 0.9, side: THREE.DoubleSide });
-  const sunGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
-  sunGeometry.center();
-  const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
+  const sunMesh = new THREE.Mesh(reuseablePlane, sunMaterial);
   sunMesh.scale.set(width * scale, height * scale, 1);
   sunMesh.position.set(position.x, position.y, position.z);
   sunMesh.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0));
@@ -70,9 +68,7 @@ export function createSun(width, height, position, scale) {
 export function createAirplane(width, height, position, scale) {
   const plane_url = './images/common_images/airplane.png';
   const planeMaterial = new THREE.MeshBasicMaterial({ map: textureLoader.load(plane_url), alphaTest: 0.9, side: THREE.DoubleSide });
-  const planeGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
-  planeGeometry.center();
-  const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+  const planeMesh = new THREE.Mesh(reuseablePlane, planeMaterial);
   planeMesh.scale.set(width * scale, height * scale, 1);
   planeMesh.position.set(position.x, position.y, position.z);
   planeMesh.rotation.copy(new THREE.Euler(0, 0, 0));
@@ -84,9 +80,7 @@ export function createAirplane(width, height, position, scale) {
 export function createTree(width, height, position, scale, flip) {
   const tree_url = './images/common_images/tree.png';
   const treeMaterial = new THREE.MeshBasicMaterial({ map: textureLoader.load(tree_url), alphaTest: 0.9, side: THREE.DoubleSide });
-  const treeGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
-  treeGeometry.center();
-  const treeMesh = new THREE.Mesh(treeGeometry, treeMaterial);
+  const treeMesh = new THREE.Mesh(reuseablePlane, treeMaterial);
   treeMesh.scale.set(width * scale, height * scale, 1);
   treeMesh.position.set(position.x, position.y, position.z);
   flip ? treeMesh.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0)) : treeMesh.rotation.copy(new THREE.Euler(0, 0, 0));
@@ -103,9 +97,7 @@ export function createRock(width, height, position, scale, rockNumber, flip) {
     './images/common_images/rocks/rock4.png'
   ];
   const rockMaterial = new THREE.MeshBasicMaterial({ map: textureLoader.load(rocks[rockNumber]), alphaTest: 0.9, side: THREE.DoubleSide });
-  const rockGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
-  rockGeometry.center();
-  const rockMesh = new THREE.Mesh(rockGeometry, rockMaterial);
+  const rockMesh = new THREE.Mesh(reuseablePlane, rockMaterial);
   rockMesh.scale.set(width * scale, height * scale, 1);
   rockMesh.position.set(position.x, position.y, position.z);
   flip ? rockMesh.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0)) : rockMesh.rotation.copy(new THREE.Euler(0, 0, 0));
@@ -113,14 +105,11 @@ export function createRock(width, height, position, scale, rockNumber, flip) {
   return rockMesh;
 }
 
-// ???
 export function createGrass(width, height, position, scale, type) {
   let grass_url;
   type === 'tall' ? grass_url = './images/common_images/grass/grass_tall.png' : grass_url = './images/common_images/grass/grass.png';
   const grassMaterial = new THREE.MeshBasicMaterial({ map: textureLoader.load(grass_url), alphaTest: 0.9, side: THREE.DoubleSide });
-  const grassGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
-  grassGeometry.center();
-  const grassMesh = new THREE.Mesh(grassGeometry, grassMaterial);
+  const grassMesh = new THREE.Mesh(reuseablePlane, grassMaterial);
   grassMesh.scale.set(width * scale, height * scale, 1);
   grassMesh.position.set(position.x, position.y, position.z);
   grassMesh.rotation.copy(new THREE.Euler(0, 0, 0));
@@ -131,9 +120,7 @@ export function createGrass(width, height, position, scale, type) {
 export function createTreeTop(width, height, position, scale, flip) {
   const tree_url = './images/common_images/treetop.png';
   const treeMaterial = new THREE.MeshBasicMaterial({ map: textureLoader.load(tree_url), alphaTest: 0.9, side: THREE.DoubleSide });
-  const treeGeometry = new THREE.PlaneBufferGeometry(20, 20, 20);
-  treeGeometry.center();
-  const treeMesh = new THREE.Mesh(treeGeometry, treeMaterial);
+  const treeMesh = new THREE.Mesh(reuseablePlane, treeMaterial);
   treeMesh.scale.set(width * scale, height * scale, 1);
   treeMesh.position.set(position.x, position.y, position.z);
   flip ? treeMesh.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0)) : treeMesh.rotation.copy(new THREE.Euler(0, 0, 0));
