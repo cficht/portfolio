@@ -108,7 +108,7 @@ export function createRock(width, height, position, scale, rockNumber, flip) {
 export function createGrass(width, height, position, scale, type) {
   let grass_url;
   type === 'tall' ? grass_url = './images/common_images/grass/grass_tall.png' : grass_url = './images/common_images/grass/grass.png';
-  const grassMaterial = new THREE.MeshBasicMaterial({ map: textureLoader.load(grass_url), alphaTest: 0.9, side: THREE.DoubleSide });
+  const grassMaterial = new THREE.MeshBasicMaterial({ map: textureLoader.load(grass_url), alphaTest: 0.9, transparent: true, side: THREE.DoubleSide });
   const grassMesh = new THREE.Mesh(reuseablePlane, grassMaterial);
   grassMesh.scale.set(width * scale, height * scale, 1);
   grassMesh.position.set(position.x, position.y, position.z);
