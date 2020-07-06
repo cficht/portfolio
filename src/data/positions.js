@@ -54,7 +54,7 @@ export const mobilePositionsHome = (cameraDepth) => {
 
 export const aboutPos = {
   cameraMain: new THREE.Vector3(0, -850, 1400),
-  treeObject: new THREE.Vector3(200, 5100, 0),
+  treeObject: new THREE.Vector3(200, 4400, 0),
   treeTopObject: new THREE.Vector3(200, 2200, 25),
   treeTopObject2: new THREE.Vector3(200, 2200, -25),
   grassObject: new THREE.Vector3(0, -2250, 100),
