@@ -23,6 +23,7 @@ export function createBackground({ wall, ceiling, floor, width, height, depth, p
   const boxMesh = new THREE.Mesh(geometry, materials);
   position ? boxMesh.position.set(position.x, position.y, position.z) : boxMesh.position.set(0, 0, 0);
   boxMesh.name = 'background';
+  boxMesh.matrixAutoUpdate = false;
   return boxMesh;
 }
 
@@ -62,6 +63,7 @@ export function createSun(width, height, position, scale) {
   sunMesh.position.set(position.x, position.y, position.z);
   sunMesh.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0));
   sunMesh.userData = 'SUN';
+  sunMesh.matrixAutoUpdate = false;
   return sunMesh;
 }
 
@@ -75,6 +77,7 @@ export function createAirplane(width, height, position, scale) {
   planeMesh.position.set(position.x, position.y, position.z);
   planeMesh.rotation.copy(new THREE.Euler(0, 0, 0));
   planeMesh.userData = 'PLANE';
+  planeMesh.matrixAutoUpdate = false;
   return planeMesh;
 }
 
@@ -88,6 +91,7 @@ export function createTree(width, height, position, scale, flip) {
   treeMesh.position.set(position.x, position.y, position.z);
   flip ? treeMesh.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0)) : treeMesh.rotation.copy(new THREE.Euler(0, 0, 0));
   treeMesh.userData = 'TREE';
+  treeMesh.matrixAutoUpdate = false;
   return treeMesh;
 }
 
@@ -109,7 +113,7 @@ export function createRock(width, height, position, scale, rockNumber, flip) {
   return rockMesh;
 }
 
-
+// ???
 export function createGrass(width, height, position, scale, type) {
   let grass_url;
   type === 'tall' ? grass_url = './images/common_images/grass/grass_tall.png' : grass_url = './images/common_images/grass/grass.png';
@@ -134,6 +138,7 @@ export function createTreeTop(width, height, position, scale, flip) {
   treeMesh.position.set(position.x, position.y, position.z);
   flip ? treeMesh.rotation.copy(new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0)) : treeMesh.rotation.copy(new THREE.Euler(0, 0, 0));
   treeMesh.userData = 'TREETOP';
+  treeMesh.matrixAutoUpdate = false;
   return treeMesh;
 }
 

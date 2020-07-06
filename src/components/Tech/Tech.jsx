@@ -91,10 +91,8 @@ const Tech = () => {
     cssRenderer.domElement.appendChild(glRenderer.domElement);
   
     // LIGHTING
-    const ambientLight = new THREE.AmbientLight(0x555555);
-    glScene.add(ambientLight);
     const directionalLight = new THREE.DirectionalLight(0xffffff);
-    directionalLight.position.set(0, 0, 300).normalize();
+    directionalLight.position.set(0, 0, 500).normalize();
     glScene.add(directionalLight);
   
     // SCENE
@@ -107,8 +105,11 @@ const Tech = () => {
     cloudObjects = createClouds(cloudsTech);
     cloudObjects.map(cloudObject => glScene.add(cloudObject));
 
-    
     createProject3DGeometry();  
+
+    // STATIC OBJECT POSITIONS
+    backgroundObject.updateMatrix();
+    sunObject.updateMatrix();
 
     // CONTROLS
     controls = new OrbitControls(camera, glRenderer.domElement);

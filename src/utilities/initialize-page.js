@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { CSS3DRenderer, CSS3DObject } from '../renderers/CSS3DRenderer';
 
 export function createGlRenderer(width, height, style) {
-  const glRenderer = new THREE.WebGLRenderer({ alpha:true });  
+  const glRenderer = new THREE.WebGLRenderer({ alpha:true, powerPreference: 'high-performance' });
   glRenderer.setClearColor();
   glRenderer.setPixelRatio(window.devicePixelRatio);
   glRenderer.setSize(width, height);  

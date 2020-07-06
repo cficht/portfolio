@@ -320,7 +320,7 @@ export const techLogos = [
       },
       {
         model: './models/tech_logo_models/materialui_logo.stl',
-        color: '#0E76A8',
+        color: '#04B0FF',
         width: '20',
         height: '20',
         depth: '20',
