@@ -13,10 +13,10 @@ export function projectChange(nextLast, data, cssObject, glScene, changeProject,
   cssObject.position.x += (100 * nextLast);
   if((cssObject.position.x * nextLast) >= 7000) cssObject.position.x = cssObject.position.x - (14000 * nextLast);
   glScene.children.map(child => {
-    if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'background' || child.userData === 'CLOUD' || child.userData === 'ROCK' || child.userData === 'GRASS') return;
+    if(child.type === 'DirectionalLight' || child.type === 'AmbientLight' || child.name === 'background' || child.userData === 'CLOUD' || child.userData === 'ROCK' || child.userData === 'GRASS' || child.userData === 'PROJECTS') return;
     if(child.userData === 'NEXT' || child.userData === 'LAST' || child.userData === 'GITHUB' || child.userData === 'SITE') {
       if(!changeProject) child.position.y -= 100;
-      if(changeProject && child.position.y < -2100) child.position.y += 100;
+      if(changeProject && child.position.y < -2200) child.position.y += 100;
       return;
     }
     child.position.x += (100 * nextLast); 
@@ -33,30 +33,21 @@ export function projectChange(nextLast, data, cssObject, glScene, changeProject,
   return changeProject;
 }
 
-export function randomLogo(arr) {
-  const randomIndex = Math.floor(Math.random() * arr.length);
-  return arr[randomIndex];
-}
-
 export function moveView(viewObject, targetObject) {
   let objectType;
   if(viewObject.type === 'PerspectiveCamera') objectType = viewObject.position;
   else objectType = viewObject.target;
-  if(objectType.z > targetObject.position.z) objectType.z -= 25;
-  if(objectType.y > targetObject.position.y) objectType.y -= 15;
-  if(objectType.y < targetObject.position.y) objectType.y += 15;
-  if(objectType.x > targetObject.position.x) objectType.x -= 25;
-  if(objectType.x < targetObject.position.x) objectType.x += 25;
+  if(objectType.z > targetObject.position.z) objectType.z -= 30;
+  if(objectType.y > targetObject.position.y) objectType.y -= 20;
+  if(objectType.y < targetObject.position.y) objectType.y += 20;
+  if(objectType.x > targetObject.position.x) objectType.x -= 30;
+  if(objectType.x < targetObject.position.x) objectType.x += 30;
 }
 
-export function mobileDetect(desktopDepth, mobileDepth) {
-  if(navigator.userAgent.match(/Android/i) 
-  || navigator.userAgent.match(/webOS/i)
-  || navigator.userAgent.match(/webOS/i)
-  || navigator.userAgent.match(/iPhone/i)
-  || navigator.userAgent.match(/iPad/i)
-  || navigator.userAgent.match(/iPod/i)
-  || navigator.userAgent.match(/BlackBerry/i)
-  || navigator.userAgent.match(/Windows Phone/i)) return mobileDepth;
-  else return desktopDepth;
-}
+export const loadingBar = (styles, modelsLoaded, modelsTotal) => {
+  let elem = document.getElementsByClassName(styles.bar)[0];
+  let elem2 = document.getElementsByClassName(styles.loading_text)[0];
+  const percentage = ((modelsLoaded / modelsTotal) * 100).toFixed(2);
+  elem.style.width = percentage + '%';
+  elem2.innerHTML = percentage + '%';
+};

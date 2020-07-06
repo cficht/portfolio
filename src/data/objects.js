@@ -81,10 +81,11 @@ export const site = {
 export const fieldContact = {
   floor: './images/common_images/floors/floor.png',
   ceiling: './images/common_images/ceilings/ceiling.png',
-  wall: './images/common_images/walls/wall_no_clouds.png',
+  wall: './images/common_images/ceilings/ceiling.png',
   width: 30000,
-  height: 5000,
-  depth: 10000
+  height: 10000,
+  depth: 10000,
+  position: new THREE.Vector3(0, 2500, 0)
 };
 
 export const cloudsContact = [
@@ -197,7 +198,7 @@ export const sky = {
   ceiling: './images/common_images/ceilings/ceiling.png',
   wall: './images/common_images/ceilings/ceiling.png',
   width: 12000,
-  height: 10000,
+  height: 5000,
   depth: 15000
 };
 
@@ -245,7 +246,7 @@ export const techLogos = [
     models: [
       {
         model: './models/tech_logo_models/javascript_logo.stl',
-        color: '#FFCC00',
+        color: '#FFFF00',
         width: '20',
         height: '20',
         depth: '20',
@@ -319,7 +320,7 @@ export const techLogos = [
       },
       {
         model: './models/tech_logo_models/materialui_logo.stl',
-        color: '#0E76A8',
+        color: '#04B0FF',
         width: '20',
         height: '20',
         depth: '20',
@@ -466,92 +467,5 @@ export const techLogos = [
         name: 'Pro Tools'
       }
     ]
-  }
-];
-
-
- 
-  
-  
-  
-
-
-// ETC
-
-export const contactIcons = [
-  {
-    model: './models/common_models/email_icon.stl',
-    color: '#000000',
-    width: '15',
-    height: '15',
-    depth: '15',
-    data: '/contact'
-  },
-  {
-    model: './models/common_models/github_icon.stl',
-    color: '#000000',
-    width: '15',
-    height: '15',
-    depth: '15',
-    data: '/contact'
-  },
-  {
-    model: './models/common_models/linkedin_logo.stl',
-    color: '#000000',
-    width: '15',
-    height: '15',
-    depth: '15',
-    data: '/contact'
-  }
-];
-
-export const projectLogos = [
-  {
-    model: './models/project_logo_models/secretmenu_logo.stl',
-    color: '#FD7553',
-    width: '15',
-    height: '15',
-    depth: '15',
-    data: '/projects'
-  },
-  {
-    model: './models/project_logo_models/nintendoapi_logo.stl',
-    color: '#ED1C24',
-    width: '15',
-    height: '15',
-    depth: '15',
-    data: '/projects'
-  },
-  {
-    model: './models/project_logo_models/freshtrack_logo.stl',
-    color: '#205757',
-    width: '15',
-    height: '15',
-    depth: '15',
-    data: '/projects'
-  },
-  {
-    model: './models/project_logo_models/mosaic_logo.stl',
-    color: '#C144F3',
-    width: '15',
-    height: '15',
-    depth: '15',
-    data: '/projects'
-  },
-  {
-    model: './models/project_logo_models/chrystalsynth_logo.stl',
-    color: '#E80415',
-    width: '15',
-    height: '15',
-    depth: '15',
-    data: '/projects'
-  },
-  {
-    model: './models/project_logo_models/unimic_logo.stl',
-    color: '#FFFF4C',
-    width: '15',
-    height: '15',
-    depth: '15',
-    data: '/projects'
   }
 ];

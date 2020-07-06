@@ -3,12 +3,13 @@ import * as THREE from 'three';
 export const desktopPositionsHome = (cameraDepth) => {
   return {
     cameraMain: new THREE.Vector3(0, 0, cameraDepth),
-    cameraStart: new THREE.Vector3(0, 2250, cameraDepth),
+    cameraStart: new THREE.Vector3(0, 6500, cameraDepth),
     sunObject: new THREE.Vector3(3500, 1500, -4000),
     airplaneObject: new THREE.Vector3(-3500, 1500, -4000),
-    treeObject: new THREE.Vector3(-3500, -1800, -4000),
-    rockObject: new THREE.Vector3(3500, -2400, -4000),
-    grassObject: new THREE.Vector3(3500, -2415, -3990),
+    treeObject: new THREE.Vector3(-3500, -1850, -4000),
+    rockObject: new THREE.Vector3(3500, -2450, -4000),
+    grassObject: new THREE.Vector3(3500, -2465, -3990),
+    grassObject2: new THREE.Vector3(-3500, -2465, -3990),
     cssObject: new THREE.Vector3(0, 200, -2000),
     planeObject: new THREE.Vector3(0, 200, -2000),
     frameObject: new THREE.Vector3(0, 200, -2000),
@@ -28,12 +29,13 @@ export const desktopPositionsHome = (cameraDepth) => {
 export const mobilePositionsHome = (cameraDepth) => {
   return {
     cameraMain: new THREE.Vector3(0, 0, cameraDepth),
-    cameraStart: new THREE.Vector3(0, 2250, cameraDepth),
+    cameraStart: new THREE.Vector3(0, 6500, cameraDepth),
     sunObject: new THREE.Vector3(1000, 1500, -4000),
-    airplaneObject: new THREE.Vector3(-1000, 1500, -4000),
-    treeObject: new THREE.Vector3(-1000, -1800, -4000),
-    rockObject: new THREE.Vector3(1000, -2425, -4000),
-    grassObject: new THREE.Vector3(1000, -2435, -3990),
+    airplaneObject: new THREE.Vector3(-1100, 1500, -4000),
+    treeObject: new THREE.Vector3(-1000, -1850, -4000),
+    rockObject: new THREE.Vector3(1000, -2475, -4000),
+    grassObject: new THREE.Vector3(1000, -2490, -3990),
+    grassObject2: new THREE.Vector3(-1000, -2465, -3990),
     cssObject: new THREE.Vector3(0, 0, -1700),
     planeObject: new THREE.Vector3(0, 0, -1700),
     frameObject: new THREE.Vector3(0, 0, -1700),
@@ -52,7 +54,7 @@ export const mobilePositionsHome = (cameraDepth) => {
 
 export const aboutPos = {
   cameraMain: new THREE.Vector3(0, -850, 1400),
-  treeObject: new THREE.Vector3(200, 5100, 0),
+  treeObject: new THREE.Vector3(200, 4400, 0),
   treeTopObject: new THREE.Vector3(200, 2200, 25),
   treeTopObject2: new THREE.Vector3(200, 2200, -25),
   grassObject: new THREE.Vector3(0, -2250, 100),
@@ -75,31 +77,32 @@ export const aboutPos = {
 
 export const techPos = {
   cameraMain: new THREE.Vector3(0, 100, 400),
-  sunObject: new THREE.Vector3(0, 200, 0),
-  nameObject: new THREE.Vector3(0, 900, 1300),
-  leftArrowObject: new THREE.Vector3(-50, -350, 1300), 
-  rightArrowObject: new THREE.Vector3(50, -350, 1300),
-  categoryObject: new THREE.Vector3(-100, -675, 1300),
-  upArrowObject: new THREE.Vector3(300, -650, 1300), 
-  downArrowObject: new THREE.Vector3(300, -700, 1300)
+  sunObject: new THREE.Vector3(0, 250, 0),
+  nameObject: new THREE.Vector3(0, 1000, 1300),
+  leftArrowObject: new THREE.Vector3(-50, -300, 1300), 
+  rightArrowObject: new THREE.Vector3(50, -300, 1300),
+  categoryObject: new THREE.Vector3(-125, -650, 1300),
+  upArrowObject: new THREE.Vector3(325, -600, 1300), 
+  downArrowObject: new THREE.Vector3(325, -700, 1300)
 };
 
 export const projectPos = {
   cameraMain: new THREE.Vector3(0, -1500, -3500),
-  rockObject: new THREE.Vector3(-1500, -1950, -3450),
-  rockObject2: new THREE.Vector3(1500, -1850, -3450),
-  rockObject3: new THREE.Vector3(-1800, -1850, -3050),
-  rockObject4: new THREE.Vector3(1900, -2150, -2950),
-  grassObject: new THREE.Vector3(0, -2250, -2800),
-  cssObject: new THREE.Vector3(0, -1350, -3500),
-  planeObject: new THREE.Vector3(0, -1350, -3500),
-  frameObject: new THREE.Vector3(0, -1350, -3500),
-  nameObject: new THREE.Vector3(-10, -350, -3500),
+  rockObject: new THREE.Vector3(-1500, -2050, -3350),
+  rockObject2: new THREE.Vector3(1500, -1950, -3350),
+  rockObject3: new THREE.Vector3(-1800, -1950, -3050),
+  rockObject4: new THREE.Vector3(1900, -2250, -2950),
+  grassObject: new THREE.Vector3(0, -2350, -2800),
+  cssObject: new THREE.Vector3(0, -1450, -3500),
+  planeObject: new THREE.Vector3(0, -1450, -3500),
+  frameObject: new THREE.Vector3(0, -1450, -3500),
+  pageObject: new THREE.Vector3(-10, -300, -3500),
+  nameObject: new THREE.Vector3(-10, -625, -3500),
   logoObject: new THREE.Vector3(0, 900, -3500),
-  leftArrowObject: new THREE.Vector3(-100, -2100, -2500), 
-  rightArrowObject: new THREE.Vector3(100, -2100, -2500),
-  gitHubObject: new THREE.Vector3(-450, -2100, -2500),
-  siteObject: new THREE.Vector3(450, -2100, -2500)
+  leftArrowObject: new THREE.Vector3(-100, -2200, -2500), 
+  rightArrowObject: new THREE.Vector3(100, -2200, -2500),
+  gitHubObject: new THREE.Vector3(-450, -2200, -2500),
+  siteObject: new THREE.Vector3(450, -2200, -2500)
 };
 
 export const contactPos = {

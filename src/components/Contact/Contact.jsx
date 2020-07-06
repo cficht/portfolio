@@ -1,16 +1,44 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer } from '../../utilities/initialize-page';
-import { createBackground, createWall, createAirplane, createClouds, create3DText, createIcon } from '../../utilities/create-objects';
+import { createBackground, createWall, createAirplane, createClouds, create3DText, createIcon, manager } from '../../utilities/create-objects';
+import { loadingBar } from '../../utilities/other';
 import { fieldContact, cloudsContact, githubContact, linkedin, email } from '../../data/objects';
 import { contactPos as initialPos } from '../../data/positions';
 import styles from '../../Main.css';
 
+let
+  camera, 
+  controls;
+let cameraDepth = 300;
+let mobileDepth = 1500;
+
 const Contact = () => {
-  let camera, controls, glRenderer, cssRenderer, backgroundObject, airplaneObject, cloudObjects, movingWall, movingWall2, movingWall3, movingWall4, nameObject, gitHubObject, gitHubText, linkedinObject, linkedinText, emailObject, emailText, selectedObject;
-  let cameraDepth = 300;
-  let mobileDepth = 1500;
+  const [isLoading, setIsLoading] = useState(true);
+
+  let 
+    glRenderer, 
+    cssRenderer, 
+    selectedObject,
+    backgroundObject, 
+    airplaneObject, 
+    cloudObjects, 
+    movingWall, 
+    movingWall2, 
+    movingWall3, 
+    movingWall4, 
+    nameObject, 
+    gitHubObject, 
+    gitHubText, 
+    linkedinObject, 
+    linkedinText, 
+    emailObject, 
+    emailText; 
+
+  let modelsLoaded = 0;
+  let modelsTotal = 0;
+  
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   const glScene = new THREE.Scene();
@@ -23,6 +51,21 @@ const Contact = () => {
       if(event.persisted) location.reload();
     });
 
+    manager.onStart = function(url, itemsLoaded, itemsTotal) {
+      modelsLoaded = itemsLoaded;
+      modelsTotal = itemsTotal;
+      loadingBar(styles, modelsLoaded, modelsTotal);
+    };
+    manager.onLoad = function() {
+      update();
+      setIsLoading(false);
+    };
+    manager.onProgress = function(url, itemsLoaded, itemsTotal) {
+      modelsLoaded = itemsLoaded;
+      modelsTotal = itemsTotal;
+      loadingBar(styles, modelsLoaded, modelsTotal);
+    };
+
     // CAMERA
     if(navigator.userAgent.match(/Android/i) 
     || navigator.userAgent.match(/webOS/i)
@@ -33,7 +76,7 @@ const Contact = () => {
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) cameraDepth = mobileDepth;
  
-    camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 15000);
+    camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 10000);
     camera.position.set(0, 0, cameraDepth);
   
     // RENDERERS
@@ -46,10 +89,8 @@ const Contact = () => {
     cssRenderer.domElement.appendChild(glRenderer.domElement);
   
     // LIGHTING
-    const ambientLight = new THREE.AmbientLight(0x555555);
-    glScene.add(ambientLight);
     const directionalLight = new THREE.DirectionalLight(0xffffff);
-    directionalLight.position.set(0, 0, 300).normalize();
+    directionalLight.position.set(0, 0, 500).normalize();
     glScene.add(directionalLight);
   
     // SCENE
@@ -72,7 +113,10 @@ const Contact = () => {
     glScene.add(movingWall4);
 
     createProject3DGeometry();  
-    update();
+
+    // STATIC OBJECT POSITIONS
+    backgroundObject.updateMatrix();
+    airplaneObject.updateMatrix();
 
     // CONTROLS
     controls = new OrbitControls(camera, glRenderer.domElement);
@@ -88,27 +132,35 @@ const Contact = () => {
     controls.target.set(initialPos.cameraMain.x, initialPos.cameraMain.y, initialPos.cameraMain.z);
 
     // EVENT LISTENERS
-    cssRenderer.domElement.addEventListener('click', onClick, true);
+    cssRenderer.domElement.addEventListener('mousedown', onClick, true);
+    cssRenderer.domElement.addEventListener('mousemove', onOver, true);
     window.addEventListener('resize', () => location.reload());
   }, []);
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
   function createProject3DGeometry() {  
-    create3DText(nameObject, glScene, '#228B22', initialPos.nameObject, 115, 115, 100, 'Contact', 'muli_regular')
-      .then(name => nameObject = name);
-    create3DText(emailText, glScene, '#ff8c00', initialPos.emailText, 60, 60, 60, 'Email', 'muli_regular', 'EMAIL')
-      .then(email => emailText = email);
-    create3DText(linkedinText, glScene, '#ff8c00', initialPos.linkedinText, 60, 60, 60, 'LinkedIn', 'muli_regular', 'LINKEDIN')
-      .then(linkedin => linkedinText = linkedin);
-    create3DText(gitHubText, glScene, '#ff8c00', initialPos.gitHubText, 60, 60, 60, 'GitHub', 'muli_regular', 'GITHUB')
-      .then(github => gitHubText = github);
+    create3DText('#ff8c00', initialPos.nameObject, 115, 115, 100, 'Contact', 'muli_regular')
+      .then(name => nameObject = name)
+      .then(() => glScene.add(nameObject));
+    create3DText('#ff8c00', initialPos.emailText, 60, 60, 60, 'Email', 'muli_regular', 'EMAIL')
+      .then(email => emailText = email)
+      .then(() => glScene.add(emailText));
+    create3DText('#ff8c00', initialPos.linkedinText, 60, 60, 60, 'LinkedIn', 'muli_regular', 'LINKEDIN')
+      .then(linkedin => linkedinText = linkedin)
+      .then(() => glScene.add(linkedinText));
+    create3DText('#ff8c00', initialPos.gitHubText, 60, 60, 60, 'GitHub', 'muli_regular', 'GITHUB')
+      .then(github => gitHubText = github)
+      .then(() => glScene.add(gitHubText));
 
-    if(!emailObject) createIcon(glScene, initialPos.emailObject, email)
-      .then(email => emailObject = email);
-    if(!linkedinObject) createIcon(glScene, initialPos.linkedinObject, linkedin)
-      .then(linkedin => linkedinObject = linkedin);
-    if(!gitHubObject) createIcon(glScene, initialPos.gitHubObject, githubContact)
-      .then(github => gitHubObject = github);
+    createIcon(initialPos.emailObject, email, true, 15)
+      .then(email => emailObject = email)
+      .then(() => glScene.add(emailObject));
+    createIcon(initialPos.linkedinObject, linkedin, true, 15)
+      .then(linkedin => linkedinObject = linkedin)
+      .then(() => glScene.add(linkedinObject));
+    createIcon(initialPos.gitHubObject, githubContact, true, 15)
+      .then(github => gitHubObject = github)
+      .then(() => glScene.add(gitHubObject));
   }
 
   // INTERACTION
@@ -119,12 +171,32 @@ const Contact = () => {
     mouse.y = - (event.clientY / setHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(glScene.children, true);
-    if(intersects.length > 0) {
-      selectedObject = intersects[0];
+    const filteredIntersects = intersects.filter(intersect => intersect.object.userData !== 'CLOUD');
+    if(filteredIntersects.length > 0) {
+      selectedObject = filteredIntersects[0];
       if(selectedObject.object.userData === 'GITHUB') window.open('https://github.com/cficht', '_blank');
       if(selectedObject.object.userData === 'LINKEDIN') window.open('https://www.linkedin.com/in/chrisficht/', '_blank');
       if(selectedObject.object.userData === 'EMAIL') window.open('mailto:chris.ficht@gmail.com', '_blank');
     }
+  }
+
+  function onOver(event) {
+    if(event.buttons > 0) return;
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    mouse.x = (event.clientX / setWidth) * 2 - 1;
+    mouse.y = - (event.clientY / setHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(glScene.children, true);
+    const filteredIntersects = intersects.filter(intersect => intersect.object.userData !== 'CLOUD');
+    if(filteredIntersects.length > 0) {
+      selectedObject = filteredIntersects[0];
+      if(selectedObject.object.userData === 'GITHUB' || selectedObject.object.userData === 'LINKEDIN' || selectedObject.object.userData === 'EMAIL') {
+        document.body.style.cursor = 'pointer';
+      } else {
+        document.body.style.cursor = 'default';
+      }
+    } 
   }
 
   function resetCamera() {
@@ -153,8 +225,25 @@ const Contact = () => {
     requestAnimationFrame(update);
   }
 
+  const loadingScreen = () => {
+    if(isLoading) {
+      return (
+        <div className={styles.loading}>
+          <div className={styles.loading_contents}>
+            Loading
+            <p className={styles.loading_text}>0.00%</p>
+            <div className={styles.progress}>
+              <div className={styles.bar}></div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  };
+
   return (
     <>
+      { loadingScreen() }
       <div className={styles.hud_box}> 
         <div className={styles.hud_contents}>
           <a href="/">Home</a>
