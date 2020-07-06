@@ -97,7 +97,7 @@ const About = () => {
     // SCENE
     backgroundObject = createBackground(projectField);
     glScene.add(backgroundObject);
-    treeObject = createTree(5814, 7571, initialPos.treeObject, .11);
+    treeObject = createTree(2500, 2778, initialPos.treeObject, .27);
     glScene.add(treeObject);
     grassObject = createGrass(1662, 300, initialPos.grassObject, .2, 'tall');
     glScene.add(grassObject);

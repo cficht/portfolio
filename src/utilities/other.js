@@ -33,11 +33,6 @@ export function projectChange(nextLast, data, cssObject, glScene, changeProject,
   return changeProject;
 }
 
-export function randomLogo(arr) {
-  const randomIndex = Math.floor(Math.random() * arr.length);
-  return arr[randomIndex];
-}
-
 export function moveView(viewObject, targetObject) {
   let objectType;
   if(viewObject.type === 'PerspectiveCamera') objectType = viewObject.position;
@@ -47,18 +42,6 @@ export function moveView(viewObject, targetObject) {
   if(objectType.y < targetObject.position.y) objectType.y += 20;
   if(objectType.x > targetObject.position.x) objectType.x -= 30;
   if(objectType.x < targetObject.position.x) objectType.x += 30;
-}
-
-export function mobileDetect(desktopDepth, mobileDepth) {
-  if(navigator.userAgent.match(/Android/i) 
-  || navigator.userAgent.match(/webOS/i)
-  || navigator.userAgent.match(/webOS/i)
-  || navigator.userAgent.match(/iPhone/i)
-  || navigator.userAgent.match(/iPad/i)
-  || navigator.userAgent.match(/iPod/i)
-  || navigator.userAgent.match(/BlackBerry/i)
-  || navigator.userAgent.match(/Windows Phone/i)) return mobileDepth;
-  else return desktopDepth;
 }
 
 export const loadingBar = (styles, modelsLoaded, modelsTotal) => {
