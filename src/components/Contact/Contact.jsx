@@ -76,7 +76,7 @@ const Contact = () => {
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) cameraDepth = mobileDepth;
  
-    camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 15000);
+    camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 10000);
     camera.position.set(0, 0, cameraDepth);
   
     // RENDERERS
@@ -89,10 +89,8 @@ const Contact = () => {
     cssRenderer.domElement.appendChild(glRenderer.domElement);
   
     // LIGHTING
-    const ambientLight = new THREE.AmbientLight(0x555555);
-    glScene.add(ambientLight);
     const directionalLight = new THREE.DirectionalLight(0xffffff);
-    directionalLight.position.set(0, 0, 300).normalize();
+    directionalLight.position.set(0, 0, 500).normalize();
     glScene.add(directionalLight);
   
     // SCENE
@@ -115,6 +113,10 @@ const Contact = () => {
     glScene.add(movingWall4);
 
     createProject3DGeometry();  
+
+    // STATIC OBJECT POSITIONS
+    backgroundObject.updateMatrix();
+    airplaneObject.updateMatrix();
 
     // CONTROLS
     controls = new OrbitControls(camera, glRenderer.domElement);

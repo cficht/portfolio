@@ -85,7 +85,7 @@ const Projects = () => {
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) cameraDepth = mobileDepth;
     
-    camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 15000);
+    camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 7500);
     camera.position.set(0, 0, cameraDepth);
   
     // RENDERERS
@@ -98,10 +98,8 @@ const Projects = () => {
     cssRenderer.domElement.appendChild(glRenderer.domElement);
   
     // LIGHTING
-    const ambientLight = new THREE.AmbientLight(0x555555);
-    glScene.add(ambientLight);
     const directionalLight = new THREE.DirectionalLight(0xffffff);
-    directionalLight.position.set(0, 0, 300).normalize();
+    directionalLight.position.set(0, 0, 500).normalize();
     glScene.add(directionalLight);
   
     // SCENE
@@ -119,6 +117,9 @@ const Projects = () => {
     glScene.add(grassObject);
 
     createProject3DGeometry();  
+
+    // STATIC OBJECT POSITIONS
+    backgroundObject.updateMatrix();
 
     // CONTROLS
     controls = new OrbitControls(camera, glRenderer.domElement);
@@ -156,11 +157,14 @@ const Projects = () => {
     }
 
     let nameObjPos;
-    if(nameObject) nameObjPos = nameObject.position;
-    glScene.remove(nameObject);
+    if(nameObject) { 
+      nameObjPos = nameObject.position;
+      nameObject.material.visible = false;
+    }
     nameObject = projectObjects[number].name;
+    nameObject.material.visible = true;
     if(nameObjPos) nameObject.position.set(nameObjPos.x, nameObjPos.y, nameObjPos.z);
-    glScene.add(nameObject);
+    if(!glScene.children.find(child => child === nameObject)) glScene.add(nameObject);
   }
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
@@ -175,7 +179,7 @@ const Projects = () => {
     glScene.add(rightArrowObject);
 
     projects.map(project => {
-      create3DText(project.logoColor, initialPos.nameObject, 85, 85, 85, project.name, 'muli_regular')
+      create3DText(project.logoColor, initialPos.nameObject, 85, 85, 85, project.name, 'muli_regular', 'PROJECTNAME')
         .then(projectName => projectObjects.push({ name: projectName }));
     });
     
