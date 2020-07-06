@@ -19,6 +19,7 @@ const Tech = () => {
 
   let 
     pivot, 
+    pivotSphere,
     glRenderer, 
     cssRenderer, 
     selectedObject,
@@ -133,30 +134,51 @@ const Tech = () => {
 
   // SETUP OBJECTS THAT WILL CHANGE
   function createTech(newYPos = 0) {  
-    pivot = new THREE.Group();
-    pivot.position.set(0.0, newYPos, 0);
-    glScene.add(pivot);
-    
-    const pivotGeometry = new THREE.SphereGeometry(0.01);
-    const pivotSphere = new THREE.Mesh(pivotGeometry);
-    pivotSphere.position.set(0, 0, 0);
-    pivotSphere.position.z = 0.1;
-    glScene.add(pivotSphere);
-    
-    glScene.add(new THREE.AxesHelper());
+    if(!glScene.children.find(child => child === pivot)) {
+      pivot = new THREE.Group();
+      pivot.position.set(0.0, newYPos, 0);
+      glScene.add(pivot);
+      
+      const pivotGeometry = new THREE.SphereGeometry(0.01);
+      pivotSphere = new THREE.Mesh(pivotGeometry);
+      pivotSphere.position.set(0, 0, 0);
+      pivotSphere.position.z = 0.1;
+      glScene.add(pivotSphere);
+      
+      glScene.add(new THREE.AxesHelper());
+  
+      let lastCatPos;
+      if(categoryObject) lastCatPos = categoryObject.position;
+      categoryObject = techObjects[techCount].category;
+      if(lastCatPos) categoryObject.position.set(lastCatPos.x, lastCatPos.y, lastCatPos.z);
+      glScene.add(categoryObject);
+  
+      techObjects[techCount].tech.map(techData => {
+        techData.icon.rotation.set(0, 0, Math.PI / 2);
+        techData.name.rotation.set(0, 0, Math.PI / 2);
+        pivot.add(techData.icon);
+        pivot.add(techData.name);
+      });
+    } else {
+      pivot.children = [];
+      pivot.position.set(0.0, newYPos, 0);
+      pivot.rotation.set(0, 0, 0);
+      pivotSphere.position.set(0, 0, 0);
+      pivotSphere.position.z = 0.1;
 
-    let lastCatPos;
-    if(categoryObject) lastCatPos = categoryObject.position;
-    categoryObject = techObjects[techCount].category;
-    if(lastCatPos) categoryObject.position.set(lastCatPos.x, lastCatPos.y, lastCatPos.z);
-    glScene.add(categoryObject);
+      let lastCatPos;
+      if(categoryObject) lastCatPos = categoryObject.position;
+      categoryObject = techObjects[techCount].category;
+      if(lastCatPos) categoryObject.position.set(lastCatPos.x, lastCatPos.y, lastCatPos.z);
+      if(!glScene.children.find(child => child === categoryObject)) glScene.add(categoryObject);
 
-    techObjects[techCount].tech.map(techData => {
-      techData.icon.rotation.set(0, 0, Math.PI / 2);
-      techData.name.rotation.set(0, 0, Math.PI / 2);
-      pivot.add(techData.icon);
-      pivot.add(techData.name);
-    });
+      techObjects[techCount].tech.map(techData => {
+        techData.icon.rotation.set(0, 0, Math.PI / 2);
+        techData.name.rotation.set(0, 0, Math.PI / 2);
+        pivot.add(techData.icon);
+        pivot.add(techData.name);
+      });
+    }
   }
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
@@ -299,7 +321,6 @@ const Tech = () => {
       upArrowObject.position.y -= 100;
       downArrowObject.position.y -= 100;
       if(pivot.position.y > 5000) {
-        glScene.remove(pivot);
         createTech(5000);
         changeTech = false;
       }

@@ -246,7 +246,7 @@ export const techLogos = [
     models: [
       {
         model: './models/tech_logo_models/javascript_logo.stl',
-        color: '#FFCC00',
+        color: '#FFFF00',
         width: '20',
         height: '20',
         depth: '20',

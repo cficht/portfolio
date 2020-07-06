@@ -156,11 +156,14 @@ const Projects = () => {
     }
 
     let nameObjPos;
-    if(nameObject) nameObjPos = nameObject.position;
-    glScene.remove(nameObject);
+    if(nameObject) { 
+      nameObjPos = nameObject.position;
+      nameObject.material.visible = false;
+    }
     nameObject = projectObjects[number].name;
+    nameObject.material.visible = true;
     if(nameObjPos) nameObject.position.set(nameObjPos.x, nameObjPos.y, nameObjPos.z);
-    glScene.add(nameObject);
+    if(!glScene.children.find(child => child === nameObject)) glScene.add(nameObject);
   }
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
@@ -175,7 +178,7 @@ const Projects = () => {
     glScene.add(rightArrowObject);
 
     projects.map(project => {
-      create3DText(project.logoColor, initialPos.nameObject, 85, 85, 85, project.name, 'muli_regular')
+      create3DText(project.logoColor, initialPos.nameObject, 85, 85, 85, project.name, 'muli_regular', 'PROJECTNAME')
         .then(projectName => projectObjects.push({ name: projectName }));
     });
     
