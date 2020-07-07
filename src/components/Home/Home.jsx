@@ -161,10 +161,10 @@ const Home = () => {
     controls.enableKeys = false;
 
     // ON START
-    camera.position.set(initialPos.cameraStart.x, initialPos.cameraStart.y, cameraDepth);
-    camera.rotation.x = 0;
-    cameraStart = true;
-    controls.enabled = false;
+    // camera.position.set(initialPos.cameraStart.x, initialPos.cameraStart.y, cameraDepth);
+    // camera.rotation.x = 0;
+    // cameraStart = true;
+    // controls.enabled = false;
 
     // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('mousedown', onClick, true);
