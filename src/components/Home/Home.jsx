@@ -159,6 +159,10 @@ const Home = () => {
     controls.minDistance = cameraDepth - 1100;
     controls.maxDistance = cameraDepth;
     controls.enableKeys = false;
+    controls.mouseButtons = {
+      ORBIT: THREE.MOUSE.ROTATE,
+      ZOOM: THREE.MOUSE.DOLLY,
+    };
 
     // ON START
     // camera.position.set(initialPos.cameraStart.x, initialPos.cameraStart.y, cameraDepth);
