@@ -141,7 +141,7 @@ const Home = () => {
     grassObject2 = createGrass(1662, 81, initialPos.grassObject2, .09);
     glScene.add(grassObject2);
 
-    createHomePage(1600, 900, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
+    createHomePage(1600, 1000, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
     createHome3DGeometry();  
 
     // STATIC OBJECT POSITIONS

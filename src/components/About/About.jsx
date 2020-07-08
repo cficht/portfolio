@@ -54,8 +54,8 @@ const About = () => {
       loadingBar(styles, modelsLoaded, modelsTotal);
     };
     manager.onLoad = function() {
-      createAboutPages(1200, 800, initialPos.cssObject, new THREE.Vector3(0, 0, 0), about.bio);
-      createAboutPages(1000, 600, initialPos.cssObject2, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0), about.other);
+      createAboutPages(1200, 1000, initialPos.cssObject, new THREE.Vector3(0, 0, 0), about.bio);
+      createAboutPages(1000, 800, initialPos.cssObject2, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0), about.other);
       update();
       setIsLoading(false);
     };
