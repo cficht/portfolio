@@ -130,6 +130,10 @@ const Projects = () => {
     controls.minDistance = cameraDepth + 2400;
     controls.maxDistance = cameraDepth + 3500;
     controls.enableKeys = false;
+    controls.mouseButtons = {
+      ORBIT: THREE.MOUSE.ROTATE,
+      ZOOM: THREE.MOUSE.DOLLY,
+    };
     
     camera.position.set(initialPos.cameraMain.x, initialPos.cameraMain.y, cameraDepth);
     controls.target.set(initialPos.cameraMain.x, initialPos.cameraMain.y, initialPos.cameraMain.z);
