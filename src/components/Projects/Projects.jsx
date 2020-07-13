@@ -85,7 +85,7 @@ const Projects = () => {
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) cameraDepth = mobileDepth;
     
-    camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 7500);
+    camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 15000);
     camera.position.set(0, 0, cameraDepth);
   
     // RENDERERS
