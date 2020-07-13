@@ -12,7 +12,7 @@ import styles from '../../Main.css';
 let 
   camera, 
   controls;
-let cameraDepth = 3700;
+let cameraDepth = 3500;
 let mobileDepth = 4900;
 
 const About = () => {
@@ -121,7 +121,7 @@ const About = () => {
     controls.maxPolarAngle = 1.75;
     controls.minPolarAngle = 1.25;
     controls.minDistance = cameraDepth - 2500;
-    controls.maxDistance = cameraDepth - 1400;
+    controls.maxDistance = cameraDepth;
     controls.enableKeys = false;
     controls.mouseButtons = {
       ORBIT: THREE.MOUSE.ROTATE,
