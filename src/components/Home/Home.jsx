@@ -11,8 +11,8 @@ import styles from '../../Main.css';
 let
   camera, 
   controls;
-let cameraDepth = 2650;
-let mobileDepth = 4900;
+let cameraDepth = 4650;
+let mobileDepth = 6900;
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -97,7 +97,7 @@ const Home = () => {
       initialPos = desktopPos;
     }
     camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 15000);
-    camera.position.set(0, 0, cameraDepth);
+    camera.position.set(0, 0, cameraDepth - 2000);
   
     // RENDERERS
     glRenderer = createGlRenderer(setWidth, setHeight, styles.three_box);
@@ -169,6 +169,7 @@ const Home = () => {
     // camera.rotation.x = 0;
     // cameraStart = true;
     // controls.enabled = false;
+    controls.target.set(initialPos.cameraMain.x, initialPos.cameraMain.y, initialPos.cameraMain.z);
 
     // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('mousedown', onClick, true);
@@ -317,6 +318,7 @@ const Home = () => {
       moveView(controls, targetObject);
       controls.update();    
       moveView(camera, targetObject);
+      console.log(camera.position.z);
       if(camera.position.z < -1000 && !mobile) {
         navigateOn = false;
         window.location = targetObject.url;

@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 export const desktopPositionsHome = (cameraDepth) => {
   return {
-    cameraMain: new THREE.Vector3(0, 0, cameraDepth),
+    cameraMain: new THREE.Vector3(0, 0, -2000),
     cameraStart: new THREE.Vector3(0, 6500, cameraDepth),
     sunObject: new THREE.Vector3(3500, 1500, -4000),
     airplaneObject: new THREE.Vector3(-3500, 1500, -4000),
@@ -28,7 +28,7 @@ export const desktopPositionsHome = (cameraDepth) => {
 
 export const mobilePositionsHome = (cameraDepth) => {
   return {
-    cameraMain: new THREE.Vector3(0, 0, cameraDepth),
+    cameraMain: new THREE.Vector3(0, 0, -2000),
     cameraStart: new THREE.Vector3(0, 6500, cameraDepth),
     sunObject: new THREE.Vector3(1000, 1500, -4000),
     airplaneObject: new THREE.Vector3(-1100, 1500, -4000),
@@ -53,7 +53,7 @@ export const mobilePositionsHome = (cameraDepth) => {
 };
 
 export const aboutPos = {
-  cameraMain: new THREE.Vector3(0, -850, 1400),
+  cameraMain: new THREE.Vector3(0, -850, 0),
   treeObject: new THREE.Vector3(200, 4400, 0),
   treeTopObject: new THREE.Vector3(200, 2200, 25),
   treeTopObject2: new THREE.Vector3(200, 2200, -25),

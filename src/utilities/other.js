@@ -37,7 +37,7 @@ export function moveView(viewObject, targetObject) {
   let objectType;
   if(viewObject.type === 'PerspectiveCamera') objectType = viewObject.position;
   else objectType = viewObject.target;
-  if(objectType.z > targetObject.position.z) objectType.z -= 30;
+  if(objectType.z > targetObject.position.z - 2000) objectType.z -= 30;
   if(objectType.y > targetObject.position.y) objectType.y -= 30;
   if(objectType.y < targetObject.position.y) objectType.y += 30;
   if(objectType.x > targetObject.position.x) objectType.x -= 30;

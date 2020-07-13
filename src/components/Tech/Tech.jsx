@@ -168,6 +168,7 @@ const Tech = () => {
       pivot.children = [];
       pivot.position.set(0.0, newYPos, 0);
       pivot.rotation.set(0, 0, 0);
+      if(techObjects[techCount].tech.length === 2) pivot.rotation.set(0, Math.PI / 2, 0); // MORE DATABASE MODELS
       pivotSphere.position.set(0, 0, 0);
       pivotSphere.position.z = 0.1;
 
@@ -180,6 +181,8 @@ const Tech = () => {
       techObjects[techCount].tech.map(techData => {
         techData.icon.rotation.set(0, 0, Math.PI / 2);
         techData.name.rotation.set(0, 0, Math.PI / 2);
+        if(techObjects[techCount].tech.length === 2) techData.icon.rotation.set(0, -(Math.PI / 2), Math.PI / 2); // MORE DATABASE MODELS
+        if(techObjects[techCount].tech.length === 2) techData.name.rotation.set(0, -(Math.PI / 2), Math.PI / 2); // MORE DATABASE MODELS
         pivot.add(techData.icon);
         pivot.add(techData.name);
       });
@@ -209,7 +212,7 @@ const Tech = () => {
       });
 
       tech.models.map((tech, i) => {
-        const logoPosition = new THREE.Vector3(1300 * Math.sin(THREE.Math.degToRad(360 * (i / techLogos[j].models.length))), 225, 1300 * Math.cos(THREE.Math.degToRad(360 * (i / techLogos[j].models.length))));
+        const logoPosition = new THREE.Vector3(1300 * Math.sin(THREE.Math.degToRad(360 * (i / techLogos[j].models.length))), 225, 1300 * Math.cos(THREE.Math.degToRad(360 * (i / techLogos[j].models.length)))); 
         const logoIcon = createIcon(logoPosition, tech)
           .then(logo => {
             logo.geometry.rotateZ(THREE.Math.degToRad(270));
