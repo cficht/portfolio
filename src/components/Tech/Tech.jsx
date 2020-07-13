@@ -142,7 +142,6 @@ const Tech = () => {
     if(!glScene.children.find(child => child === pivot)) {
       pivot = new THREE.Group();
       pivot.position.set(0.0, newYPos, 0);
-      // pivot.rotation.set(0, Math.PI / 2, 0);
       glScene.add(pivot);
       
       const pivotGeometry = new THREE.SphereGeometry(0.01);
@@ -169,8 +168,7 @@ const Tech = () => {
       pivot.children = [];
       pivot.position.set(0.0, newYPos, 0);
       pivot.rotation.set(0, 0, 0);
-      if(techObjects[techCount].tech.length === 2) pivot.rotation.set(0, Math.PI / 2, 0);
-      // pivot.rotation.set(0, Math.PI / 2, 0);
+      if(techObjects[techCount].tech.length === 2) pivot.rotation.set(0, Math.PI / 2, 0); // MORE DATABASE MODELS
       pivotSphere.position.set(0, 0, 0);
       pivotSphere.position.z = 0.1;
 
@@ -183,8 +181,8 @@ const Tech = () => {
       techObjects[techCount].tech.map(techData => {
         techData.icon.rotation.set(0, 0, Math.PI / 2);
         techData.name.rotation.set(0, 0, Math.PI / 2);
-        if(techObjects[techCount].tech.length === 2) techData.icon.rotation.set(0, -(Math.PI / 2), Math.PI / 2);
-        if(techObjects[techCount].tech.length === 2) techData.name.rotation.set(0, -(Math.PI / 2), Math.PI / 2);
+        if(techObjects[techCount].tech.length === 2) techData.icon.rotation.set(0, -(Math.PI / 2), Math.PI / 2); // MORE DATABASE MODELS
+        if(techObjects[techCount].tech.length === 2) techData.name.rotation.set(0, -(Math.PI / 2), Math.PI / 2); // MORE DATABASE MODELS
         pivot.add(techData.icon);
         pivot.add(techData.name);
       });
