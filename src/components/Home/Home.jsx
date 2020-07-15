@@ -10,8 +10,7 @@ import styles from '../../Main.css';
 
 let
   camera, 
-  controls,
-  isLandscape;
+  controls;
 let cameraDepth = 4650;
 let mobileDepth = 6900;
 let maxAz = .3;
@@ -93,7 +92,6 @@ const Home = () => {
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) { 
-      if(Math.abs(window.orientation) === 90) isLandscape = true;
       cameraDepth = mobileDepth;
       initialPos = mobilePos;
       mobile = true;
@@ -360,22 +358,17 @@ const Home = () => {
     }
   };
 
-  const landscapeOn = () => {
-    if(isLandscape) {
-      return (
-        <div className={styles.landscape_detected}>
-          <div className={styles.landscape_contents}>
-        This website does not support landscape mode yet. We appologize for the inconvience.
-          </div>
-        </div>
-      );
-    }
-  };
+
+        
 
   return (
     <>
       { loadingScreen() }
-      { landscapeOn() }
+      <div className={styles.landscape_detected}>
+        <div className={styles.landscape_contents}>
+        This website does not support landscape mode yet. We appologize for the inconvience.
+        </div>
+      </div>
       <div ref={ref => (ref)} />
     </>
   );
