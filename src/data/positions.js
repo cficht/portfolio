@@ -81,9 +81,9 @@ export const techPos = {
   nameObject: new THREE.Vector3(0, 1000, 1300),
   leftArrowObject: new THREE.Vector3(-50, -300, 1300), 
   rightArrowObject: new THREE.Vector3(50, -300, 1300),
-  categoryObject: new THREE.Vector3(-125, -650, 1300),
-  upArrowObject: new THREE.Vector3(325, -600, 1300), 
-  downArrowObject: new THREE.Vector3(325, -700, 1300)
+  categoryObject: new THREE.Vector3(-125, -575, 1300),
+  upArrowObject: new THREE.Vector3(325, -525, 1300), 
+  downArrowObject: new THREE.Vector3(325, -625, 1300)
 };
 
 export const projectPos = {

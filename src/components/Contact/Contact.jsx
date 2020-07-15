@@ -13,6 +13,8 @@ let
   controls;
 let cameraDepth = 300;
 let mobileDepth = 1500;
+let maxAz = .3;
+let minAz = -.3;
 
 const Contact = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -74,7 +76,15 @@ const Contact = () => {
     || navigator.userAgent.match(/iPad/i)
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
-    || navigator.userAgent.match(/Windows Phone/i)) cameraDepth = mobileDepth;
+    || navigator.userAgent.match(/Windows Phone/i)) {
+      if(screen.orientation.type === 'portrait-primary' || screen.orientation.type === 'portrait-secondary' || screen.orientation.type === 'portrait') {
+        cameraDepth = mobileDepth;
+      }
+      else {
+        maxAz = .1;
+        minAz = -.1;
+      }
+    }
  
     camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 10000);
     camera.position.set(0, 0, cameraDepth);
@@ -120,8 +130,8 @@ const Contact = () => {
 
     // CONTROLS
     controls = new OrbitControls(camera, glRenderer.domElement);
-    controls.maxAzimuthAngle = .3;
-    controls.minAzimuthAngle = -.3;
+    controls.maxAzimuthAngle = maxAz;
+    controls.minAzimuthAngle = minAz;
     controls.maxPolarAngle = 1.75;
     controls.minPolarAngle = 1.25;
     controls.minDistance = cameraDepth + 2400;
