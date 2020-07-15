@@ -79,7 +79,7 @@ const Tech = () => {
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) {
-      if(screen.orientation.type === 'portrait-primary' || screen.orientation.type === 'portrait-secondary' || screen.orientation.type === 'portrait') {
+      if(window.orientation === 0 || window.orientation === 180) {
         cameraDepth = mobileDepth;
       }
       else {
