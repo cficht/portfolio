@@ -357,8 +357,6 @@ const Home = () => {
       );
     }
   };
-
-
         
 
   return (
