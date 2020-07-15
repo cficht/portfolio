@@ -41,6 +41,7 @@ const Contact = () => {
   let modelsLoaded = 0;
   let modelsTotal = 0;
   
+  let mobile = false;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   const glScene = new THREE.Scene();
@@ -77,6 +78,7 @@ const Contact = () => {
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) {
+      mobile = true;
       if(window.orientation !== 0) window.location = '/landscape/contact';
       cameraDepth = mobileDepth;
     }
@@ -216,7 +218,7 @@ const Contact = () => {
 
   // CONSTANT UPDATE
   function update() { 
-    if(window.orientation !== 0) window.location = '/landscape/contact';
+    if(mobile && window.orientation !== 0) window.location = '/landscape/contact';
 
     if(movingWall) movingWall.position.x -= 10;
     if(movingWall2) movingWall2.position.x -= 10;

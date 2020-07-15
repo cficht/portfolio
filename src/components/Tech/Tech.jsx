@@ -42,6 +42,7 @@ const Tech = () => {
   
   let rotateRight = false, rotateLeft = false, changeTech = false;
   let techCount = 0;
+  let mobile = false;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   const glScene = new THREE.Scene();
@@ -79,6 +80,7 @@ const Tech = () => {
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) {
+      mobile = true;
       if(window.orientation !== 0) window.location = '/landscape/tech';
       cameraDepth = mobileDepth;
     }
@@ -313,7 +315,7 @@ const Tech = () => {
 
   // CONSTANT UPDATE
   function update() { 
-    if(window.orientation !== 0) window.location = '/landscape/tech';
+    if(mobile && window.orientation !== 0) window.location = '/landscape/tech';
     cloudObjects.map(cloud => cloud.position.x <= -7000 ? cloud.position.x = 7000 : cloud.position.x -= 10);
     if(rotateRight) {
       pivot.rotation.y += 0.02;

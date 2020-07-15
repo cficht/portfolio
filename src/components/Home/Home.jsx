@@ -292,7 +292,7 @@ const Home = () => {
 
   // CONSTANT UPDATE
   function update() { 
-    if(window.orientation !== 0) window.location = '/landscape/home';
+    if(mobile && window.orientation !== 0) window.location = '/landscape/home';
     if(cameraStart) {
       if(camera.position.y > initialPos.cameraMain.y) camera.position.y -= 30;
       else {
