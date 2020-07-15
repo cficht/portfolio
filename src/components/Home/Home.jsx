@@ -92,6 +92,7 @@ const Home = () => {
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) { 
+      if(window.orientation !== 0) window.location = '/landscape';
       cameraDepth = mobileDepth;
       initialPos = mobilePos;
       mobile = true;
