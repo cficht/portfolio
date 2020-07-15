@@ -21,7 +21,7 @@ export default function App() {
         <Route path="/contact" exact component={Contact} />
         <Route path="/tech" exact component={Tech} />
         <Route path="/projects" exact component={Projects} />  
-        <Route path="/landscape" exact component={Landscape} />      
+        <Route path="/landscape/:redirect" component={Landscape} />      
       </Switch>
     </Router>
   );

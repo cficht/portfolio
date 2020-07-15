@@ -79,7 +79,7 @@ const Tech = () => {
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) {
-      if(window.orientation !== 0) window.location = '/landscape';
+      if(window.orientation !== 0) window.location = '/landscape/tech';
       cameraDepth = mobileDepth;
     }
      
@@ -313,6 +313,7 @@ const Tech = () => {
 
   // CONSTANT UPDATE
   function update() { 
+    if(window.orientation !== 0) window.location = '/landscape/tech';
     cloudObjects.map(cloud => cloud.position.x <= -7000 ? cloud.position.x = 7000 : cloud.position.x -= 10);
     if(rotateRight) {
       pivot.rotation.y += 0.02;

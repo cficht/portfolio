@@ -92,7 +92,7 @@ const Home = () => {
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) { 
-      if(window.orientation !== 0) window.location = '/landscape';
+      if(window.orientation !== 0) window.location = '/landscape/home';
       cameraDepth = mobileDepth;
       initialPos = mobilePos;
       mobile = true;
@@ -292,7 +292,7 @@ const Home = () => {
 
   // CONSTANT UPDATE
   function update() { 
-    if(window.orientation !== 0) window.location = '/landscape';
+    if(window.orientation !== 0) window.location = '/landscape/home';
     if(cameraStart) {
       if(camera.position.y > initialPos.cameraMain.y) camera.position.y -= 30;
       else {

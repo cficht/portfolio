@@ -76,7 +76,7 @@ const About = () => {
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) {
-      if(window.orientation !== 0) window.location = '/landscape';
+      if(window.orientation !== 0) window.location = '/landscape/about';
       cameraDepth = mobileDepth;
     }
       
@@ -219,6 +219,7 @@ const About = () => {
 
   // CONSTANT UPDATE
   function update() { 
+    if(window.orientation !== 0) window.location = '/landscape/about';
     if(flipRight) {
       if(cssScene.quaternion._y <= -.999999 && backSide) {
         flipRight = false;
