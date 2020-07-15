@@ -362,11 +362,11 @@ const Home = () => {
   return (
     <>
       { loadingScreen() }
-      <div className={styles.landscape_detected}>
+      {/* <div className={styles.landscape_detected}>
         <div className={styles.landscape_contents}>
         This website does not support landscape mode yet. We appologize for the inconvience.
         </div>
-      </div>
+      </div> */}
       <div ref={ref => (ref)} />
     </>
   );
