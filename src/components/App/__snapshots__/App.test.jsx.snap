@@ -28,6 +28,10 @@ exports[`App component renders App 1`] = `
       exact={true}
       path="/projects"
     />
+    <Route
+      component={[Function]}
+      path="/landscape/:redirect"
+    />
   </Switch>
 </BrowserRouter>
 `;

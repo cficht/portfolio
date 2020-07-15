@@ -77,15 +77,10 @@ const Contact = () => {
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) {
-      if(window.orientation === 0 || window.orientation === 180) {
-        cameraDepth = mobileDepth;
-      }
-      else {
-        maxAz = .1;
-        minAz = -.1;
-      }
+      if(window.orientation !== 0) window.location = '/landscape/contact';
+      cameraDepth = mobileDepth;
     }
- 
+      
     camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 10000);
     camera.position.set(0, 0, cameraDepth);
   
@@ -221,6 +216,8 @@ const Contact = () => {
 
   // CONSTANT UPDATE
   function update() { 
+    if(window.orientation !== 0) window.location = '/landscape/contact';
+
     if(movingWall) movingWall.position.x -= 10;
     if(movingWall2) movingWall2.position.x -= 10;
     if(movingWall3) movingWall3.position.x -= 10;

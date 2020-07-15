@@ -86,13 +86,8 @@ const Projects = () => {
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) {
-      if(window.orientation === 0 || window.orientation === 180) {
-        cameraDepth = mobileDepth;
-      }
-      else {
-        maxAz = .1;
-        minAz = -.1;
-      }
+      if(window.orientation !== 0) window.location = '/landscape/projects';
+      cameraDepth = mobileDepth;
     }
     
     camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 15000);
@@ -291,6 +286,7 @@ const Projects = () => {
 
   // CONSTANT UPDATE
   function update() { 
+    if(window.orientation !== 0) window.location = '/landscape/projects';
     if(nextSlide) {
       if(rockObject3.position.x < -7000) waitSlide = false;
       if(cssObject.quaternion._y >= 0) {
