@@ -356,11 +356,11 @@ const Projects = () => {
   return (
     <>
       { loadingScreen() }
-      <div className={styles.landscape_detected}>
+      {/* <div className={styles.landscape_detected}>
         <div className={styles.landscape_contents}>
         This website does not support landscape mode yet. We appologize for the inconvience.
         </div>
-      </div>
+      </div> */}
       <div className={styles.hud_box}> 
         <div className={styles.hud_contents}>
           <a href="/">Home</a>
