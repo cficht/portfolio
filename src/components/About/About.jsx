@@ -38,6 +38,7 @@ const About = () => {
   let modelsTotal = 0;
 
   let flipRight = false, flipLeft = false, backSide = false;
+  let mobile = false;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   const glScene = new THREE.Scene();
@@ -76,6 +77,7 @@ const About = () => {
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) {
+      mobile = true;
       if(window.orientation !== 0) window.location = '/landscape/about';
       cameraDepth = mobileDepth;
     }
@@ -219,7 +221,7 @@ const About = () => {
 
   // CONSTANT UPDATE
   function update() { 
-    if(window.orientation !== 0) window.location = '/landscape/about';
+    if(mobile && window.orientation !== 0) window.location = '/landscape/about';
     if(flipRight) {
       if(cssScene.quaternion._y <= -.999999 && backSide) {
         flipRight = false;
