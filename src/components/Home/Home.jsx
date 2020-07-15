@@ -92,6 +92,7 @@ const Home = () => {
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) { 
+      if(window.orientation !== 0) window.location = '/landscape';
       cameraDepth = mobileDepth;
       initialPos = mobilePos;
       mobile = true;
@@ -362,11 +363,6 @@ const Home = () => {
   return (
     <>
       { loadingScreen() }
-      {/* <div className={styles.landscape_detected}>
-        <div className={styles.landscape_contents}>
-        This website does not support landscape mode yet. We appologize for the inconvience.
-        </div>
-      </div> */}
       <div ref={ref => (ref)} />
     </>
   );
