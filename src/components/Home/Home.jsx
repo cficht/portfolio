@@ -13,6 +13,8 @@ let
   controls;
 let cameraDepth = 4650;
 let mobileDepth = 6900;
+let maxAz = .3;
+let minAz = -.3;
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -90,9 +92,15 @@ const Home = () => {
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) { 
-      cameraDepth = mobileDepth;
-      initialPos = mobilePos;
-      mobile = true;
+      if(screen.orientation.type === 'portrait-primary' || screen.orientation.type === 'portrait-secondary' || screen.orientation.type === 'portrait') {
+        cameraDepth = mobileDepth;
+        initialPos = mobilePos;
+        mobile = true;
+      } else {
+        initialPos = desktopPos;
+        maxAz = .1;
+        minAz = -.1;
+      }
     } else {
       initialPos = desktopPos;
     }
@@ -152,8 +160,8 @@ const Home = () => {
 
     // CONTROLS
     controls = new OrbitControls(camera, glRenderer.domElement);
-    controls.maxAzimuthAngle = .3;
-    controls.minAzimuthAngle = -.3;
+    controls.maxAzimuthAngle = maxAz;
+    controls.minAzimuthAngle = minAz;
     controls.maxPolarAngle = 1.75;
     controls.minPolarAngle = 1.25;
     controls.minDistance = cameraDepth - 1100;
@@ -318,7 +326,6 @@ const Home = () => {
       moveView(controls, targetObject);
       controls.update();    
       moveView(camera, targetObject);
-      console.log(camera.position.z);
       if(camera.position.z < -1000 && !mobile) {
         navigateOn = false;
         window.location = targetObject.url;
