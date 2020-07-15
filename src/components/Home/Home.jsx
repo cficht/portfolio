@@ -92,16 +92,19 @@ const Home = () => {
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) { 
-      if(window.orientation === 0 || window.orientation === 180) {
-        cameraDepth = mobileDepth;
-        initialPos = mobilePos;
-        mobile = true;
-      } else {
-        mobile = true;
-        initialPos = desktopPos;
-        maxAz = .1;
-        minAz = -.1;
+      if(window.chrome) {
+        if(window.orientation === 0 || window.orientation === 180) {
+          cameraDepth = mobileDepth;
+          initialPos = mobilePos;
+          mobile = true;
+        } else {
+          mobile = true;
+          initialPos = desktopPos;
+          maxAz = .1;
+          minAz = -.1;
+        }
       }
+      
     } else {
       initialPos = desktopPos;
     }
