@@ -92,7 +92,6 @@ const Home = () => {
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) { 
-      if(window.orientation !== 0) window.location = '/landscape';
       cameraDepth = mobileDepth;
       initialPos = mobilePos;
       mobile = true;
@@ -177,10 +176,7 @@ const Home = () => {
     // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('mousedown', onClick, true);
     cssRenderer.domElement.addEventListener('mousemove', onOver, true);
-    window.addEventListener('resize', () => {
-      if(window.orientation !== 0) window.location = '/landscape';
-      else location.reload();
-    });
+    window.addEventListener('resize', () => location.reload());
   }, []);
 
   // SETUP OBJECTS THAT WILL CHANGE
@@ -295,6 +291,7 @@ const Home = () => {
 
   // CONSTANT UPDATE
   function update() { 
+    if(window.orientation !== 0) window.location = '/landscape';
     if(cameraStart) {
       if(camera.position.y > initialPos.cameraMain.y) camera.position.y -= 30;
       else {
