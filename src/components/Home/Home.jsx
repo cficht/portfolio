@@ -177,7 +177,10 @@ const Home = () => {
     // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('mousedown', onClick, true);
     cssRenderer.domElement.addEventListener('mousemove', onOver, true);
-    window.addEventListener('resize', () => location.reload());
+    window.addEventListener('resize', () => {
+      if(window.orientation !== 0) window.location = '/landscape';
+      else location.reload();
+    });
   }, []);
 
   // SETUP OBJECTS THAT WILL CHANGE
