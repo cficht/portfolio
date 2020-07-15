@@ -76,7 +76,10 @@ const Contact = () => {
     || navigator.userAgent.match(/iPad/i)
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
-    || navigator.userAgent.match(/Windows Phone/i)) cameraDepth = mobileDepth;
+    || navigator.userAgent.match(/Windows Phone/i)) {
+      if(window.orientation !== 0) window.location = '/landscape';
+      cameraDepth = mobileDepth;
+    }
       
     camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 10000);
     camera.position.set(0, 0, cameraDepth);
@@ -250,11 +253,6 @@ const Contact = () => {
   return (
     <>
       { loadingScreen() }
-      {/* <div className={styles.landscape_detected}>
-        <div className={styles.landscape_contents}>
-        This website does not support landscape mode yet. We appologize for the inconvience.
-        </div>
-      </div> */}
       <div className={styles.hud_box}> 
         <div className={styles.hud_contents}>
           <a href="/">Home</a>

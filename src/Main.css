@@ -9,7 +9,6 @@
   top: 0;
   text-align: center;
   z-index: 266;
-  visibility: hidden;
 }
 
 .landscape_contents {
@@ -26,6 +25,10 @@
   text-decoration: none;
   color: #FFDF24;
   -webkit-text-stroke: .6px #ff8c00;
+
+  p {
+    width: 75%;
+  }
 }
 
 .three_box {
