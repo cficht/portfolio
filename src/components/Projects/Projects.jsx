@@ -49,6 +49,7 @@ const Projects = () => {
   let projectCount = 0;
   let slideCount = 0;
   const slideMax = 2;
+  let mobile = false;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   const glScene = new THREE.Scene();
@@ -86,6 +87,7 @@ const Projects = () => {
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) {
+      mobile = true;
       if(window.orientation !== 0) window.location = '/landscape/projects';
       cameraDepth = mobileDepth;
     }
@@ -286,7 +288,7 @@ const Projects = () => {
 
   // CONSTANT UPDATE
   function update() { 
-    if(window.orientation !== 0) window.location = '/landscape/projects';
+    if(mobile && window.orientation !== 0) window.location = '/landscape/projects';
     if(nextSlide) {
       if(rockObject3.position.x < -7000) waitSlide = false;
       if(cssObject.quaternion._y >= 0) {
