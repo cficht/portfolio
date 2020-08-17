@@ -281,6 +281,15 @@ export const techLogos = [
         position: new THREE.Vector3(1100 * Math.sin(THREE.Math.degToRad(216)), 0, 1100 * Math.cos(THREE.Math.degToRad(216)))
       },
       {
+        model: './models/tech_logo_models/graphql_logo.stl',
+        color: '#DC0194',
+        width: '20',
+        height: '20',
+        depth: '20',
+        name: 'GraphQL',
+        position: new THREE.Vector3(1100 * Math.sin(THREE.Math.degToRad(216)), 0, 1100 * Math.cos(THREE.Math.degToRad(216)))
+      },
+      {
         model: './models/tech_logo_models/max7_logo.stl',
         color: '#53565D',
         width: '20',
@@ -311,12 +320,36 @@ export const techLogos = [
         name: 'Redux'
       },
       {
+        model: './models/tech_logo_models/nextjs_logo.stl',
+        color: '#000000',
+        width: '20',
+        height: '20',
+        depth: '20',
+        name: 'Next.js'
+      },
+      {
+        model: './models/tech_logo_models/amplify_logo.stl',
+        color: '#FFAC00',
+        width: '20',
+        height: '20',
+        depth: '20',
+        name: 'Amplify'
+      },
+      {
         model: './models/tech_logo_models/threejs_logo.stl',
         color: '#3FB280',
         width: '20',
         height: '20',
         depth: '20',
         name: 'Three.js'
+      },
+      {
+        model: './models/tech_logo_models/sass_logo.stl',
+        color: '#CD669A',
+        width: '20',
+        height: '20',
+        depth: '20',
+        name: 'Sass'
       },
       {
         model: './models/tech_logo_models/materialui_logo.stl',
@@ -375,6 +408,14 @@ export const techLogos = [
         height: '20',
         depth: '20',
         name: 'PostgreSQL'
+      },
+      {
+        model: './models/tech_logo_models/dynamo_logo.stl',
+        color: '#2D72B8',
+        width: '20',
+        height: '20',
+        depth: '20',
+        name: 'DynamoDB'
       }
     ]
   },
@@ -417,6 +458,14 @@ export const techLogos = [
         height: '20',
         depth: '20',
         name: 'GitHub'
+      },
+      {
+        model: './models/tech_logo_models/aws_logo.stl',
+        color: '#FF9A00',
+        width: '20',
+        height: '20',
+        depth: '20',
+        name: 'AWS'
       },
       {
         model: './models/tech_logo_models/vscode_logo.stl',

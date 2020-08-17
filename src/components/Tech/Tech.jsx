@@ -278,8 +278,16 @@ const Tech = () => {
       techCount++;
       changeTech = true;
     }
-    if(selectedObject.object.userData === 'DOWN' && techCount > 0) { 
+    else if(selectedObject.object.userData === 'UP' && techCount === techLogos.length - 1) {
+      techCount = 0;
+      changeTech = true;
+    }
+    else if(selectedObject.object.userData === 'DOWN' && techCount > 0) { 
       techCount--;
+      changeTech = true;
+    }
+    else if(selectedObject.object.userData === 'DOWN' && techCount === 0) { 
+      techCount = techLogos.length - 1;
       changeTech = true;
     }
   }
