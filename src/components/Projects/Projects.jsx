@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import * as THREE from "three";
-import ThreeOrbitControls from "three-orbit-controls";
+import React, { useEffect, useState } from 'react';
+import * as THREE from 'three';
+import ThreeOrbitControls from 'three-orbit-controls';
 import {
   createGlRenderer,
   createCssRenderer,
   createPlane,
   createProjectCssObject,
   updateProjectCssObject,
-} from "../../utilities/initialize-page";
+} from '../../utilities/initialize-page';
 import {
   createBackground,
   createRock,
@@ -17,12 +17,12 @@ import {
   createArrow,
   createPictureFrame,
   manager,
-} from "../../utilities/create-objects";
-import { projectChange, loadingBar } from "../../utilities/other";
-import { projects } from "../../data/info";
-import { projectField, github, site } from "../../data/objects";
-import { projectPos as initialPos } from "../../data/positions";
-import styles from "../../Main.css";
+} from '../../utilities/create-objects';
+import { projectChange, loadingBar } from '../../utilities/other';
+import { projects } from '../../data/info';
+import { projectField, github, site } from '../../data/objects';
+import { projectPos as initialPos } from '../../data/positions';
+import styles from '../../Main.css';
 
 let camera, controls;
 let cameraDepth = 200;
@@ -75,16 +75,16 @@ const Projects = () => {
 
   // INITIALIZE PAGE
   useEffect(() => {
-    window.addEventListener("pageshow", function (event) {
-      if (event.persisted) location.reload();
+    window.addEventListener('pageshow', function(event) {
+      if(event.persisted) location.reload();
     });
 
-    manager.onStart = function (url, itemsLoaded, itemsTotal) {
+    manager.onStart = function(url, itemsLoaded, itemsTotal) {
       modelsLoaded = itemsLoaded;
       modelsTotal = itemsTotal;
       loadingBar(styles, modelsLoaded, modelsTotal);
     };
-    manager.onLoad = function () {
+    manager.onLoad = function() {
       createProjectPage(
         1900,
         1200,
@@ -95,14 +95,14 @@ const Projects = () => {
       update();
       setIsLoading(false);
     };
-    manager.onProgress = function (url, itemsLoaded, itemsTotal) {
+    manager.onProgress = function(url, itemsLoaded, itemsTotal) {
       modelsLoaded = itemsLoaded;
       modelsTotal = itemsTotal;
       loadingBar(styles, modelsLoaded, modelsTotal);
     };
 
     // CAMERA
-    if (
+    if(
       navigator.userAgent.match(/Android/i) ||
       navigator.userAgent.match(/webOS/i) ||
       navigator.userAgent.match(/webOS/i) ||
@@ -113,7 +113,7 @@ const Projects = () => {
       navigator.userAgent.match(/Windows Phone/i)
     ) {
       mobile = true;
-      if (window.orientation !== 0) window.location = "/landscape/projects";
+      if(window.orientation !== 0) window.location = '/landscape/projects';
       cameraDepth = mobileDepth;
     }
 
@@ -123,7 +123,7 @@ const Projects = () => {
     // RENDERERS
     glRenderer = createGlRenderer(setWidth, setHeight, styles.three_box);
     cssRenderer = createCssRenderer(setWidth, setHeight, styles.three_box);
-    const holder = document.createElement("div");
+    const holder = document.createElement('div');
     holder.className = styles.three_box;
     document.body.appendChild(holder);
     holder.appendChild(cssRenderer.domElement);
@@ -145,7 +145,7 @@ const Projects = () => {
     glScene.add(rockObject3);
     rockObject4 = createRock(348, 259, initialPos.rockObject4, 0.25, 3);
     glScene.add(rockObject4);
-    grassObject = createGrass(1662, 300, initialPos.grassObject, 0.18, "tall");
+    grassObject = createGrass(1662, 300, initialPos.grassObject, 0.18, 'tall');
     glScene.add(grassObject);
 
     createProject3DGeometry();
@@ -179,19 +179,19 @@ const Projects = () => {
     );
 
     // EVENT LISTENERS
-    cssRenderer.domElement.addEventListener("mousedown", onClick, true);
-    cssRenderer.domElement.addEventListener("mousemove", onOver, true);
-    window.addEventListener("resize", () => location.reload());
+    cssRenderer.domElement.addEventListener('mousedown', onClick, true);
+    cssRenderer.domElement.addEventListener('mousemove', onOver, true);
+    window.addEventListener('resize', () => location.reload());
   }, []);
 
   // SETUP OBJECTS THAT WILL CHANGE
   function createProjectPage(width, height, position, rotation, number) {
-    if (!planeObject) {
+    if(!planeObject) {
       planeObject = createPlane(width, height, position, rotation);
       glScene.add(planeObject);
     }
 
-    if (!cssObject) {
+    if(!cssObject) {
       cssObject = createProjectCssObject(
         width,
         height,
@@ -217,29 +217,29 @@ const Projects = () => {
     }
 
     let nameObjPos;
-    if (nameObject) {
+    if(nameObject) {
       nameObjPos = nameObject.position;
       nameObject.material.visible = false;
     }
     nameObject = projectObjects[number].name;
     nameObject.material.visible = true;
-    if (nameObjPos)
+    if(nameObjPos)
       nameObject.position.set(nameObjPos.x, nameObjPos.y, nameObjPos.z);
-    if (!glScene.children.find((child) => child === nameObject))
+    if(!glScene.children.find((child) => child === nameObject))
       glScene.add(nameObject);
   }
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
   function createProject3DGeometry() {
     create3DText(
-      "#ff8c00",
+      '#ff8c00',
       initialPos.pageObject,
       120,
       120,
       120,
-      "Projects",
-      "muli_regular",
-      "PROJECTS"
+      'Projects',
+      'muli_regular',
+      'PROJECTS'
     )
       .then((page) => (pageObject = page))
       .then(() => glScene.add(pageObject));
@@ -248,7 +248,7 @@ const Projects = () => {
       projects[projectCount].secondaryColor,
       initialPos.leftArrowObject,
       new THREE.Euler(0, 0, 0),
-      "LAST",
+      'LAST',
       1,
       true
     );
@@ -257,7 +257,7 @@ const Projects = () => {
       projects[projectCount].secondaryColor,
       initialPos.rightArrowObject,
       new THREE.Euler(0, 0, -180 * THREE.MathUtils.DEG2RAD),
-      "NEXT",
+      'NEXT',
       1,
       true
     );
@@ -271,8 +271,8 @@ const Projects = () => {
         85,
         85,
         project.name,
-        "muli_regular",
-        "PROJECTNAME"
+        'muli_regular',
+        'PROJECTNAME'
       ).then((projectName) => projectObjects.push({ name: projectName }));
     });
 
@@ -294,79 +294,79 @@ const Projects = () => {
 
   // INTERACTION
   function onClick(event) {
-    if (nextProject || lastProject || nextSlide || waitSlide) return;
+    if(nextProject || lastProject || nextSlide || waitSlide) return;
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     mouse.x = (event.clientX / setWidth) * 2 - 1;
     mouse.y = -(event.clientY / setHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(glScene.children, true);
-    if (intersects.length > 0) {
+    if(intersects.length > 0) {
       selectedObject = intersects[0];
-      if (
-        selectedObject.object.userData === "NEXT" &&
+      if(
+        selectedObject.object.userData === 'NEXT' &&
         projectCount < projects.length - 1
       ) {
         lastProject = false;
         nextProject = true;
         projectCount++;
-      } else if (
-        selectedObject.object.userData === "NEXT" &&
+      } else if(
+        selectedObject.object.userData === 'NEXT' &&
         projectCount === projects.length - 1
       ) {
         lastProject = false;
         nextProject = true;
         projectCount = 0;
-      } else if (
-        selectedObject.object.userData === "LAST" &&
+      } else if(
+        selectedObject.object.userData === 'LAST' &&
         projectCount > 0
       ) {
         nextProject = false;
         lastProject = true;
         projectCount--;
-      } else if (
-        selectedObject.object.userData === "LAST" &&
+      } else if(
+        selectedObject.object.userData === 'LAST' &&
         projectCount === 0
       ) {
         nextProject = false;
         lastProject = true;
         projectCount = projects.length - 1;
-      } else if (selectedObject.object.userData === "SLIDE") {
+      } else if(selectedObject.object.userData === 'SLIDE') {
         nextSlide = true;
         waitSlide = true;
-      } else if (selectedObject.object.userData === "GITHUB")
-        window.open(projects[projectCount].github, "_blank");
-      else if (selectedObject.object.userData === "SITE")
-        window.open(projects[projectCount].site, "_blank");
+      } else if(selectedObject.object.userData === 'GITHUB')
+        window.open(projects[projectCount].github, '_blank');
+      else if(selectedObject.object.userData === 'SITE' && projects[projectCount].site !== 'none')
+        window.open(projects[projectCount].site, '_blank');
     }
   }
 
   function onOver(event) {
-    if (event.buttons > 0) return;
+    if(event.buttons > 0) return;
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     mouse.x = (event.clientX / setWidth) * 2 - 1;
     mouse.y = -(event.clientY / setHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(glScene.children, true);
-    if (intersects.length > 0) {
+    if(intersects.length > 0) {
       selectedObject = intersects[0];
-      if (
-        selectedObject.object.userData === "NEXT" ||
-        selectedObject.object.userData === "LAST" ||
-        selectedObject.object.userData === "GITHUB" ||
-        selectedObject.object.userData === "SITE"
+      if(
+        selectedObject.object.userData === 'NEXT' ||
+        selectedObject.object.userData === 'LAST' ||
+        selectedObject.object.userData === 'GITHUB' ||
+        (selectedObject.object.userData === 'SITE' && projects[projectCount].site !== 'none')
       ) {
-        document.body.style.cursor = "pointer";
+        document.body.style.cursor = 'pointer';
       } else {
-        document.body.style.cursor = "default";
+        document.body.style.cursor = 'default';
       }
     }
   }
 
   // CHANGE PROJECT OR SLIDE
   function newProject(type) {
-    if (type === "Project") {
+    if(type === 'Project') {
       slideCount = 0;
       leftArrowObject.material.color.set(projects[projectCount].secondaryColor);
       rightArrowObject.material.color.set(
@@ -375,9 +375,16 @@ const Projects = () => {
     } else {
       slideCount < slideMax ? slideCount++ : (slideCount = 0);
     }
+    if(projects[projectCount].site === 'none') {
+      siteObject.material.transparent = true;
+      siteObject.material.opacity = 0.3;
+    } else if(projects[projectCount].site !== 'none' && siteObject.material.transparent === true) {
+      siteObject.material.transparent = false;
+      siteObject.material.opacity = 1;
+    }
     createProjectPage(
       1900,
-      type === "Project" ? 1200 : 1200,
+      type === 'Project' ? 1200 : 1200,
       initialPos.cssObject,
       cssObject.rotation,
       projectCount
@@ -414,16 +421,16 @@ const Projects = () => {
 
   // CONSTANT UPDATE
   function update() {
-    if (mobile && window.orientation !== 0)
-      window.location = "/landscape/projects";
-    if (nextSlide) {
-      if (rockObject3.position.x < -7000) waitSlide = false;
-      if (cssObject.quaternion._y >= 0) {
-        if (cssObject.quaternion._y >= 0.99 && changeSlide === false) {
-          newProject("Slide");
+    if(mobile && window.orientation !== 0)
+      window.location = '/landscape/projects';
+    if(nextSlide) {
+      if(rockObject3.position.x < -7000) waitSlide = false;
+      if(cssObject.quaternion._y >= 0) {
+        if(cssObject.quaternion._y >= 0.99 && changeSlide === false) {
+          newProject('Slide');
           changeSlide = true;
         }
-        if (!waitSlide) {
+        if(!waitSlide) {
           frameObject.rotation.y += 0.06;
           cssObject.rotation.y += 0.06;
           planeObject.rotation.y += 0.06;
@@ -439,23 +446,23 @@ const Projects = () => {
       }
     }
 
-    if (waitSlide && !changeSlide) {
+    if(waitSlide && !changeSlide) {
       rockObject.position.x -= 150;
       rockObject2.position.x += 150;
       rockObject3.position.x -= 150;
       rockObject4.position.x += 150;
       grassObject.position.y -= 150;
     }
-    if (waitSlide && changeSlide) {
-      if (rockObject.position.x < initialPos.rockObject.x)
+    if(waitSlide && changeSlide) {
+      if(rockObject.position.x < initialPos.rockObject.x)
         rockObject.position.x += 150;
-      if (rockObject2.position.x > initialPos.rockObject2.x)
+      if(rockObject2.position.x > initialPos.rockObject2.x)
         rockObject2.position.x -= 150;
-      if (rockObject3.position.x < initialPos.rockObject3.x)
+      if(rockObject3.position.x < initialPos.rockObject3.x)
         rockObject3.position.x += 150;
-      if (rockObject4.position.x > initialPos.rockObject4.x)
+      if(rockObject4.position.x > initialPos.rockObject4.x)
         rockObject4.position.x -= 150;
-      if (grassObject.position.y < initialPos.grassObject.y)
+      if(grassObject.position.y < initialPos.grassObject.y)
         grassObject.position.y += 150;
       else {
         waitSlide = false;
@@ -463,32 +470,32 @@ const Projects = () => {
       }
     }
 
-    if (nextProject) {
+    if(nextProject) {
       changeProject = projectChange(
         -1,
-        "PICTURE",
+        'PICTURE',
         cssObject,
         glScene,
         changeProject,
         newProject
       );
-      if (
+      if(
         (leftArrowObject.position.y === initialPos.leftArrowObject.y) &
         (changeProject === true)
       )
         resetPositions();
     }
 
-    if (lastProject) {
+    if(lastProject) {
       changeProject = projectChange(
         1,
-        "PICTURE",
+        'PICTURE',
         cssObject,
         glScene,
         changeProject,
         newProject
       );
-      if (
+      if(
         (rightArrowObject.position.y === initialPos.rightArrowObject.y) &
         (changeProject === true)
       )
@@ -500,7 +507,7 @@ const Projects = () => {
   }
 
   const loadingScreen = () => {
-    if (isLoading) {
+    if(isLoading) {
       return (
         <div className={styles.loading}>
           <div className={styles.loading_contents}>
