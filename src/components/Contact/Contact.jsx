@@ -5,7 +5,7 @@ import { createGlRenderer, createCssRenderer } from '../../utilities/initialize-
 import { createBackground, createWall, createAirplane, createClouds, create3DText, createIcon, manager } from '../../utilities/create-objects';
 import { loadingBar } from '../../utilities/other';
 import { fieldContact, cloudsContact, githubContact, linkedin, email, resume } from '../../data/objects';
-import { contactPos as initialPos } from '../../data/positions';
+import { contactPosDesktop, contactPosMobile } from '../../data/positions';
 import styles from '../../Main.css';
 
 let
@@ -38,7 +38,8 @@ const Contact = () => {
     emailObject, 
     emailText,
     resumeObject,
-    resumeText;
+    resumeText,
+    initialPos
 
   let modelsLoaded = 0;
   let modelsTotal = 0;
@@ -83,6 +84,9 @@ const Contact = () => {
       mobile = true;
       if(window.orientation !== 0) window.location = '/landscape/contact';
       cameraDepth = mobileDepth;
+      initialPos = contactPosMobile;
+    } else {
+      initialPos = contactPosDesktop;
     }
       
     camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 10000);

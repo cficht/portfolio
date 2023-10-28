@@ -105,16 +105,30 @@ export const projectPos = {
   siteObject: new THREE.Vector3(450, -2200, -2500)
 };
 
-export const contactPos = {
+export const contactPosDesktop = {
   cameraMain: new THREE.Vector3(0, -50, -3500),
   airplaneObject: new THREE.Vector3(0, 200, -3500),
   nameObject: new THREE.Vector3(-10, 1000, -3500),
-  emailObject: new THREE.Vector3(-975, -650, -3500),
-  emailText: new THREE.Vector3(-975, -950, -3500),
-  linkedinObject: new THREE.Vector3(-325, -650, -3500),
-  linkedinText: new THREE.Vector3(-325, -950, -3500),
-  gitHubObject: new THREE.Vector3(325, -650, -3500),
-  gitHubText: new THREE.Vector3(325, -950, -3500),
-  resumeObject: new THREE.Vector3(975, -650, -3500),
-  resumeText: new THREE.Vector3(975, -950, -3500)
+  emailObject: new THREE.Vector3(-825, -650, -3500),
+  emailText: new THREE.Vector3(-825, -950, -3500),
+  linkedinObject: new THREE.Vector3(-275, -650, -3500),
+  linkedinText: new THREE.Vector3(-275, -950, -3500),
+  gitHubObject: new THREE.Vector3(275, -650, -3500),
+  gitHubText: new THREE.Vector3(275, -950, -3500),
+  resumeObject: new THREE.Vector3(825, -650, -3500),
+  resumeText: new THREE.Vector3(825, -950, -3500)
+};
+
+export const contactPosMobile = {
+  cameraMain: new THREE.Vector3(0, -50, -3500),
+  airplaneObject: new THREE.Vector3(0, 200, -3500),
+  nameObject: new THREE.Vector3(-10, 1000, -3500),
+  emailObject: new THREE.Vector3(-275, -1350, -3500),
+  emailText: new THREE.Vector3(-275, -1650, -3500),
+  linkedinObject: new THREE.Vector3(-275, -650, -3500),
+  linkedinText: new THREE.Vector3(-275, -950, -3500),
+  gitHubObject: new THREE.Vector3(275, -650, -3500),
+  gitHubText: new THREE.Vector3(275, -950, -3500),
+  resumeObject: new THREE.Vector3(275, -1350, -3500),
+  resumeText: new THREE.Vector3(275, -1650, -3500)
 };
