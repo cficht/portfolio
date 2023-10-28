@@ -120,13 +120,13 @@ const Home = () => {
     backgroundObject = createBackground(fieldContact);
     glScene.add(backgroundObject);
 
-    const wall1 = createWall(10000, 5000, new THREE.Vector3(0, 0, -4990));
+    const wall1 = createWall(10000, 5000, new THREE.Vector3(0, 0, -4890));
     glScene.add(wall1);
-    const wall2 = createWall(10000, 5000, new THREE.Vector3(10000, 0, -4990));
+    const wall2 = createWall(10000, 5000, new THREE.Vector3(10000, 0, -4890));
     glScene.add(wall2);
-    const wall3 = createWall(10000, 5000, new THREE.Vector3(-10000, 0, -4990));
+    const wall3 = createWall(10000, 5000, new THREE.Vector3(-10000, 0, -4890));
     glScene.add(wall3);
-    const wall4 = createWall(10000, 5000, new THREE.Vector3(20000, 0, -4990));
+    const wall4 = createWall(10000, 5000, new THREE.Vector3(20000, 0, -4890));
     glScene.add(wall4);
 
     cloudObjects = createClouds(clouds);
