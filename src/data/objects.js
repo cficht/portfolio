@@ -240,10 +240,20 @@ export const cloudsTech = [
   }
 ];
 
+// STLS FROM SELVA3D.COM
 export const techLogos = [
   {
     category: 'Languages',
     models: [
+      {
+        model: './models/tech_logo_models/typescript_logo.stl',
+        color: '#007ACC',
+        width: '20',
+        height: '20',
+        depth: '20',
+        name: 'TypeScript',
+        position: new THREE.Vector3(1100 * Math.sin(THREE.Math.degToRad(0)), 0, 1100 * Math.cos(THREE.Math.degToRad(0)))
+      },
       {
         model: './models/tech_logo_models/javascript_logo.stl',
         color: '#FFFF00',
@@ -381,6 +391,14 @@ export const techLogos = [
         name: 'Express'
       },
       {
+        model: './models/tech_logo_models/socket_logo.stl',
+        color: '#000000',
+        width: '20',
+        height: '20',
+        depth: '20',
+        name: 'Socket.IO'
+      },
+      {
         model: './models/tech_logo_models/cheerio_logo.stl',
         color: '#BC9A65',
         width: '20',
@@ -394,12 +412,12 @@ export const techLogos = [
     category: 'Databases',
     models: [
       {
-        model: './models/tech_logo_models/mongodb_logo.stl',
-        color: '#429643',
+        model: './models/tech_logo_models/mysql_logo.stl',
+        color: '#00758F',
         width: '20',
         height: '20',
         depth: '20',
-        name: 'MongoDB'
+        name: 'MySQL'
       },
       {
         model: './models/tech_logo_models/postgresql_logo.stl',
@@ -408,6 +426,22 @@ export const techLogos = [
         height: '20',
         depth: '20',
         name: 'PostgreSQL'
+      },
+      {
+        model: './models/tech_logo_models/redis_logo.stl',
+        color: '#D82C20',
+        width: '20',
+        height: '20',
+        depth: '20',
+        name: 'Redis'
+      },
+      {
+        model: './models/tech_logo_models/mongodb_logo.stl',
+        color: '#429643',
+        width: '20',
+        height: '20',
+        depth: '20',
+        name: 'MongoDB'
       },
       {
         model: './models/tech_logo_models/dynamo_logo.stl',

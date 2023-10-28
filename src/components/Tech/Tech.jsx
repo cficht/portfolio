@@ -202,13 +202,13 @@ const Tech = () => {
       .then(name => nameObject = name)
       .then(() => glScene.add(nameObject));
 
-    leftArrowObject = createArrow('#EFFD5F', initialPos.leftArrowObject, new THREE.Euler(0, 0, 0), 'LAST', .9, true);
+    leftArrowObject = createArrow('#EFFD5F', initialPos.leftArrowObject, new THREE.Euler(0, 0, 0), 'NEXT', .9, true);
     glScene.add(leftArrowObject);
-    rightArrowObject = createArrow('#EFFD5F', initialPos.rightArrowObject, new THREE.Euler(0, 0, -180 * THREE.MathUtils.DEG2RAD), 'NEXT', .9, true);
+    rightArrowObject = createArrow('#EFFD5F', initialPos.rightArrowObject, new THREE.Euler(0, 0, -180 * THREE.MathUtils.DEG2RAD), 'LAST', .9, true);
     glScene.add(rightArrowObject);
-    upArrowObject = createArrow('#EFFD5F', initialPos.upArrowObject, new THREE.Euler(0, 0, -90 * THREE.MathUtils.DEG2RAD), 'UP', .9, true);
+    upArrowObject = createArrow('#EFFD5F', initialPos.upArrowObject, new THREE.Euler(0, 0, -90 * THREE.MathUtils.DEG2RAD), 'DOWN', .9, true);
     glScene.add(upArrowObject);
-    downArrowObject = createArrow('#EFFD5F', initialPos.downArrowObject, new THREE.Euler(0, 0, -270 * THREE.MathUtils.DEG2RAD), 'DOWN', .9, true);
+    downArrowObject = createArrow('#EFFD5F', initialPos.downArrowObject, new THREE.Euler(0, 0, -270 * THREE.MathUtils.DEG2RAD), 'UP', .9, true);
     glScene.add(downArrowObject);
 
     techLogos.map((tech, j) => {
