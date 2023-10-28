@@ -153,6 +153,15 @@ export const email =   {
   data: 'EMAIL'
 };
 
+export const resume =   {
+  model: './models/common_models/resume_icon.stl',
+  color: '#000000',
+  width: '15',
+  height: '15',
+  depth: '15',
+  data: 'RESUME'
+};
+
 //// HOME
 
 export const project = {

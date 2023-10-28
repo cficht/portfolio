@@ -4,7 +4,7 @@ import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer } from '../../utilities/initialize-page';
 import { createBackground, createWall, createAirplane, createClouds, create3DText, createIcon, manager } from '../../utilities/create-objects';
 import { loadingBar } from '../../utilities/other';
-import { fieldContact, cloudsContact, githubContact, linkedin, email } from '../../data/objects';
+import { fieldContact, cloudsContact, githubContact, linkedin, email, resume } from '../../data/objects';
 import { contactPos as initialPos } from '../../data/positions';
 import styles from '../../Main.css';
 
@@ -36,7 +36,9 @@ const Contact = () => {
     linkedinObject, 
     linkedinText, 
     emailObject, 
-    emailText; 
+    emailText,
+    resumeObject,
+    resumeText;
 
   let modelsLoaded = 0;
   let modelsTotal = 0;
@@ -162,6 +164,9 @@ const Contact = () => {
     create3DText('#ff8c00', initialPos.gitHubText, 60, 60, 60, 'GitHub', 'muli_regular', 'GITHUB')
       .then(github => gitHubText = github)
       .then(() => glScene.add(gitHubText));
+    create3DText('#ff8c00', initialPos.resumeText, 60, 60, 60, 'Resume', 'muli_regular', 'RESUME')
+      .then(resume => resumeText = resume)
+      .then(() => glScene.add(resumeText));
 
     createIcon(initialPos.emailObject, email, true, 15)
       .then(email => emailObject = email)
@@ -172,6 +177,9 @@ const Contact = () => {
     createIcon(initialPos.gitHubObject, githubContact, true, 15)
       .then(github => gitHubObject = github)
       .then(() => glScene.add(gitHubObject));
+    createIcon(initialPos.resumeObject, resume, true, 15)
+      .then(resume => resumeObject = resume)
+      .then(() => glScene.add(resumeObject));
   }
 
   // INTERACTION
@@ -188,6 +196,7 @@ const Contact = () => {
       if(selectedObject.object.userData === 'GITHUB') window.open('https://github.com/cficht', '_blank');
       if(selectedObject.object.userData === 'LINKEDIN') window.open('https://www.linkedin.com/in/chrisficht/', '_blank');
       if(selectedObject.object.userData === 'EMAIL') window.open('mailto:chris.ficht@gmail.com', '_blank');
+      if(selectedObject.object.userData === 'RESUME') window.open('./resume/chris_ficht_resume.pdf', '_blank');
     }
   }
 
@@ -202,7 +211,12 @@ const Contact = () => {
     const filteredIntersects = intersects.filter(intersect => intersect.object.userData !== 'CLOUD');
     if(filteredIntersects.length > 0) {
       selectedObject = filteredIntersects[0];
-      if(selectedObject.object.userData === 'GITHUB' || selectedObject.object.userData === 'LINKEDIN' || selectedObject.object.userData === 'EMAIL') {
+      if(
+        selectedObject.object.userData === 'GITHUB' ||
+        selectedObject.object.userData === 'LINKEDIN' ||
+        selectedObject.object.userData === 'EMAIL' ||
+        selectedObject.object.userData === 'RESUME'
+      ) {
         document.body.style.cursor = 'pointer';
       } else {
         document.body.style.cursor = 'default';
@@ -233,6 +247,7 @@ const Contact = () => {
     if(emailObject) emailObject.rotation.y += .03;
     if(linkedinObject) linkedinObject.rotation.y += .03;
     if(gitHubObject) gitHubObject.rotation.y += .03;
+    if(resumeObject) resumeObject.rotation.y += .03;
     glRenderer.render(glScene, camera);  
     cssRenderer.render(cssScene, camera);
     requestAnimationFrame(update);
