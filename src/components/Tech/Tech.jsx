@@ -12,7 +12,7 @@ let
   camera, 
   controls;
 let cameraDepth = 4000;
-let mobileDepth = 5200;
+let mobileDepth = 5000;
 let maxAz = .3;
 let minAz = -.3;
 

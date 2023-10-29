@@ -164,7 +164,7 @@ const About = () => {
     arrowObjects = [...arrowObjects, createArrow('#ff8c00', initialPos.rightArrowObjectBack, new THREE.Euler(0, 0, -180 * THREE.MathUtils.DEG2RAD), 'LAST', 1.2, true)];
     arrowObjects.map(arrow => glScene.add(arrow));
 
-    createPictureFrame({ x: 700, y: 800, z: 512 }, initialPos.frameObject, new THREE.Euler(0, -180 * THREE.MathUtils.DEG2RAD, 0))
+    createPictureFrame({ x: 700, y: 800, z: 492 }, initialPos.frameObject, new THREE.Euler(0, -180 * THREE.MathUtils.DEG2RAD, 0))
       .then(frame => glScene.add(frame));
     createPictureFrame({ x: 600, y: 600, z: 512 }, initialPos.frameObject2, new THREE.Euler(0, 0, 0))
       .then(frame => glScene.add(frame));

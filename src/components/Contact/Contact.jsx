@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer } from '../../utilities/initialize-page';
@@ -18,6 +18,7 @@ let minAz = -.3;
 
 const Contact = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const initialPos = useRef(null);
 
   let 
     glRenderer, 
@@ -38,8 +39,7 @@ const Contact = () => {
     emailObject, 
     emailText,
     resumeObject,
-    resumeText,
-    initialPos
+    resumeText;
 
   let modelsLoaded = 0;
   let modelsTotal = 0;
@@ -84,9 +84,9 @@ const Contact = () => {
       mobile = true;
       if(window.orientation !== 0) window.location = '/landscape/contact';
       cameraDepth = mobileDepth;
-      initialPos = contactPosMobile;
+      initialPos.current = contactPosMobile;
     } else {
-      initialPos = contactPosDesktop;
+      initialPos.current = contactPosDesktop;
     }
       
     camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 10000);
@@ -110,7 +110,7 @@ const Contact = () => {
     backgroundObject = createBackground(fieldContact);
     glScene.add(backgroundObject);
 
-    airplaneObject = createAirplane(920, 311, initialPos.airplaneObject, .1);
+    airplaneObject = createAirplane(920, 311, initialPos.current.airplaneObject, .1);
     glScene.add(airplaneObject);
 
     cloudObjects = createClouds(cloudsContact);
@@ -145,8 +145,8 @@ const Contact = () => {
       ZOOM: THREE.MOUSE.DOLLY,
     };
     
-    camera.position.set(initialPos.cameraMain.x, initialPos.cameraMain.y, cameraDepth);
-    controls.target.set(initialPos.cameraMain.x, initialPos.cameraMain.y, initialPos.cameraMain.z);
+    camera.position.set(initialPos.current.cameraMain.x, initialPos.current.cameraMain.y, cameraDepth);
+    controls.target.set(initialPos.current.cameraMain.x, initialPos.current.cameraMain.y, initialPos.current.cameraMain.z);
 
     // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('mousedown', onClick, true);
@@ -156,32 +156,32 @@ const Contact = () => {
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
   function createProject3DGeometry() {  
-    create3DText('#ff8c00', initialPos.nameObject, 115, 115, 100, 'Contact', 'muli_regular')
+    create3DText('#ff8c00', initialPos.current.nameObject, 115, 115, 100, 'Contact', 'muli_regular')
       .then(name => nameObject = name)
       .then(() => glScene.add(nameObject));
-    create3DText('#ff8c00', initialPos.emailText, 60, 60, 60, 'Email', 'muli_regular', 'EMAIL')
+    create3DText('#ff8c00', initialPos.current.emailText, 60, 60, 60, 'Email', 'muli_regular', 'EMAIL')
       .then(email => emailText = email)
       .then(() => glScene.add(emailText));
-    create3DText('#ff8c00', initialPos.linkedinText, 60, 60, 60, 'LinkedIn', 'muli_regular', 'LINKEDIN')
+    create3DText('#ff8c00', initialPos.current.linkedinText, 60, 60, 60, 'LinkedIn', 'muli_regular', 'LINKEDIN')
       .then(linkedin => linkedinText = linkedin)
       .then(() => glScene.add(linkedinText));
-    create3DText('#ff8c00', initialPos.gitHubText, 60, 60, 60, 'GitHub', 'muli_regular', 'GITHUB')
+    create3DText('#ff8c00', initialPos.current.gitHubText, 60, 60, 60, 'GitHub', 'muli_regular', 'GITHUB')
       .then(github => gitHubText = github)
       .then(() => glScene.add(gitHubText));
-    create3DText('#ff8c00', initialPos.resumeText, 60, 60, 60, 'Resume', 'muli_regular', 'RESUME')
+    create3DText('#ff8c00', initialPos.current.resumeText, 60, 60, 60, 'Resume', 'muli_regular', 'RESUME')
       .then(resume => resumeText = resume)
       .then(() => glScene.add(resumeText));
 
-    createIcon(initialPos.emailObject, email, true, 15)
+    createIcon(initialPos.current.emailObject, email, true, 15)
       .then(email => emailObject = email)
       .then(() => glScene.add(emailObject));
-    createIcon(initialPos.linkedinObject, linkedin, true, 15)
+    createIcon(initialPos.current.linkedinObject, linkedin, true, 15)
       .then(linkedin => linkedinObject = linkedin)
       .then(() => glScene.add(linkedinObject));
-    createIcon(initialPos.gitHubObject, githubContact, true, 15)
+    createIcon(initialPos.current.gitHubObject, githubContact, true, 15)
       .then(github => gitHubObject = github)
       .then(() => glScene.add(gitHubObject));
-    createIcon(initialPos.resumeObject, resume, true, 15)
+    createIcon(initialPos.current.resumeObject, resume, true, 15)
       .then(resume => resumeObject = resume)
       .then(() => glScene.add(resumeObject));
   }
@@ -230,8 +230,8 @@ const Contact = () => {
 
   function resetCamera() {
     controls.reset();
-    camera.position.set(initialPos.cameraMain.x, initialPos.cameraMain.y, cameraDepth);
-    controls.target.set(initialPos.cameraMain.x, initialPos.cameraMain.y, initialPos.cameraMain.z);
+    camera.position.set(initialPos.current.cameraMain.x, initialPos.current.cameraMain.y, cameraDepth);
+    controls.target.set(initialPos.current.cameraMain.x, initialPos.current.cameraMain.y, initialPos.current.cameraMain.z);
   }
 
   // CONSTANT UPDATE
