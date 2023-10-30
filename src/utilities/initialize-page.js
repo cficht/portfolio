@@ -15,7 +15,8 @@ export function createGlRenderer(width, height, style) {
 
 export function createCssRenderer(width, height, style) {  
   const cssRenderer = new CSS3DRenderer();  
-  cssRenderer.setSize(width, height);  
+  cssRenderer.setSize(width, height);
+  cssRenderer.domElement.style.backgroundColor = 'black';
   cssRenderer.domElement.style.position = 'absolute';
   cssRenderer.domElement.style.zIndex = 0;
   cssRenderer.domElement.style.top = 0;  

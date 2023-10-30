@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React from 'react';
 import {
   BrowserRouter as Router,
@@ -13,6 +14,8 @@ import Landscape from '../Landscape/Landscape';
 import './App.css';
 
 export default function App() {
+  console.warn = () => {};
+
   return (
     <Router>
       <Switch>
