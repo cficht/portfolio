@@ -82,7 +82,7 @@ export const fieldContact = {
   floor: './images/common_images/floors/floor.png',
   ceiling: './images/common_images/ceilings/ceiling.png',
   wall: './images/common_images/ceilings/ceiling.png',
-  width: 30000,
+  width: 50000,
   height: 10000,
   depth: 10000,
   position: new THREE.Vector3(0, 2500, 0)

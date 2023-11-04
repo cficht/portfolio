@@ -86,7 +86,6 @@ const Contact = () => {
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) {
       mobile = true;
-      if(window.orientation !== 0) window.location = '/landscape/contact';
       cameraDepth = mobileDepth;
       initialPos.current = contactPosMobile;
     } else {
@@ -156,6 +155,21 @@ const Contact = () => {
     cssRenderer.domElement.addEventListener('mousedown', onClick, true);
     cssRenderer.domElement.addEventListener('mousemove', onOver, true);
     window.addEventListener('resize', () => location.reload());
+  }, []);
+
+  useEffect(() => {
+    const ratio = (window.innerWidth / window.innerHeight);
+    const coverLeft = document.getElementsByClassName(styles.cover_left)[0];
+    const coverRight = document.getElementsByClassName(styles.cover_right)[0];
+    const hudBox = document.getElementsByClassName(styles.hud_box)[0];
+    if(coverLeft && coverRight && hudBox) {
+      coverLeft.style.width = `${ratio * 10}%`;
+      coverRight.style.width = `${ratio * 10}%`;
+      hudBox.style.width = `calc(${(100 - ((ratio * 10) * 2))}% - 64px)`;
+    }
+    if(ratio > 3.37) {
+      window.location = '/aspect/contact';
+    }
   }, []);
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
@@ -240,8 +254,6 @@ const Contact = () => {
 
   // CONSTANT UPDATE
   function update() { 
-    if(mobile && window.orientation !== 0) window.location = '/landscape/contact';
-
     if(movingWall) movingWall.position.x -= 10;
     if(movingWall2) movingWall2.position.x -= 10;
     if(movingWall3) movingWall3.position.x -= 10;
@@ -280,16 +292,20 @@ const Contact = () => {
   return (
     <>
       { loadingScreen() }
-      <div className={styles.hud_box}> 
+      <div className={styles.cover_left}/>
+      <div className={styles.hud_box}>
         <div className={styles.hud_contents}>
           <Link to="/">Home</Link>
           <Link to="/about">About</Link>
           <a style={{ opacity: 0.5, pointerEvents: 'none' }}>Contact</a>
           <Link to="/tech">Tech</Link>
           <Link to="/projects">Projects</Link>
-          <input type="image" src="./images/common_images/camera.png" alt="center camera" onClick={() => resetCamera()}/>
-        </div>       
+          <div className={styles.camera} onClick={() => resetCamera()}>
+            <img src="./images/common_images/camera.png"/>
+          </div>
+        </div>
       </div>
+      <div className={styles.cover_right}/>    
       <div ref={ref => (ref)} />
     </>
   );

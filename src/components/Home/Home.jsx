@@ -15,8 +15,8 @@ let
   controls;
 let cameraDepth = 4650;
 let mobileDepth = 6900;
-let maxAz = .3;
-let minAz = -.3;
+let maxAz = .2;
+let minAz = -.2;
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -101,13 +101,13 @@ const Home = () => {
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) { 
-      if(window.orientation !== 0) window.location = '/landscape/home';
       cameraDepth = mobileDepth;
       initialPos = mobilePos;
       mobile = true;
     } else {
       initialPos = desktopPos;
     }
+    
     camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 15000);
     camera.position.set(0, 0, cameraDepth - 2000);
   
@@ -137,6 +137,10 @@ const Home = () => {
     glScene.add(wall3);
     const wall4 = createWall(10000, 5000, new THREE.Vector3(20000, 0, -4890));
     glScene.add(wall4);
+    const wall5 = createWall(10000, 5000, new THREE.Vector3(30000, 0, -4890));
+    glScene.add(wall5);
+    const wall6 = createWall(10000, 5000, new THREE.Vector3(-20000, 0, -4890));
+    glScene.add(wall6);
 
     cloudObjects = createClouds(clouds);
     cloudObjects.map(cloudObject => glScene.add(cloudObject));
@@ -187,6 +191,19 @@ const Home = () => {
     cssRenderer.domElement.addEventListener('mousedown', onClick, true);
     cssRenderer.domElement.addEventListener('mousemove', onOver, true);
     window.addEventListener('resize', () => location.reload());
+  }, []);
+
+  useEffect(() => {
+    const ratio = (window.innerWidth / window.innerHeight);
+    const coverLeft = document.getElementsByClassName(styles.cover_left)[0];
+    const coverRight = document.getElementsByClassName(styles.cover_right)[0];
+    if(coverLeft && coverRight) {
+      coverLeft.style.width = `${ratio * 10}%`;
+      coverRight.style.width = `${ratio * 10}%`;
+    }
+    if(ratio > 3.37) {
+      window.location = '/aspect/home';
+    }
   }, []);
 
   // SETUP OBJECTS THAT WILL CHANGE
@@ -292,15 +309,13 @@ const Home = () => {
       camera.quaternion.copy(startRotation);
 
       quaternionTween = new TWEEN.Tween(camera.quaternion)
-        .to(endRotation, 1000)
+        .to(endRotation, 3000)
         .easing(TWEEN.Easing.Quadratic.InOut)
-        .onComplete(() => {
-          positionTween = new TWEEN.Tween(originalCameraPosition)
-            .to(targetObject.position, 1000)
-            .easing(TWEEN.Easing.Quadratic.In)
-            .start();
-        });
-      quaternionTween.start();
+        .start();
+      positionTween = new TWEEN.Tween(originalCameraPosition)
+        .to(targetObject.position, 2000)
+        .easing(TWEEN.Easing.Quadratic.In)
+        .start();
     }
   }
 
@@ -324,7 +339,6 @@ const Home = () => {
 
   // CONSTANT UPDATE
   function update() { 
-    if(mobile && window.orientation !== 0) window.location = '/landscape/home';
     if(cameraStart) {
       if(camera.position.y > initialPos.cameraMain.y) camera.position.y -= 30;
       else {
@@ -351,14 +365,10 @@ const Home = () => {
       frameObject.position.y += 150;
 
       controls.enabled = false;
-
       quaternionTween.update();
+      positionTween.update();
 
-      if(positionTween) {
-        positionTween.update();
-      }
-
-      if(camera.position.z < -1000 && !mobile) {
+      if(camera.position.z < -2500 && !mobile) {
         navigateOn = false;
         history.push(targetObject.url);
       }
@@ -400,6 +410,8 @@ const Home = () => {
   return (
     <>
       { loadingScreen() }
+      <div className={styles.cover_left}/>
+      <div className={styles.cover_right}/> 
       <div ref={ref => (ref)} />
     </>
   );

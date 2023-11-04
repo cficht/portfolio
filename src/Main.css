@@ -115,6 +115,22 @@ body {
   }
 }
 
+.camera {
+  display: flex;
+  padding: 5px 10px 5px 10px;
+  border-radius: 20px;
+  outline-width: 0;
+
+  img {
+    width: 21px;
+  }
+}
+
+.camera:hover {
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
 .hud_contents {
   display: flex;
   justify-content: space-evenly;
@@ -137,13 +153,6 @@ body {
 
   a:active {
     background-color: rgba(255, 255, 255, 0.3);
-  }
-
-  input[type='image'] {
-    padding: 8px 10px 5px 10px;
-    width: 6vh;
-    border-radius: 20px;
-    outline-width: 0;
   }
 
   input[type='image']:active {
@@ -262,5 +271,32 @@ body {
 
   img {
     width: 95%;
+  }
+}
+
+.cover_left,
+.cover_right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  z-index: 265;
+  background-color: black;
+  display: none;
+  overflow: hidden;
+}
+
+.cover_left {
+  left: 0;
+}
+
+.cover_right {
+  right: 0;
+}
+
+@media (min-aspect-ratio: 19/9) {
+  .cover_left,
+  .cover_right {
+    display: block;
   }
 }
