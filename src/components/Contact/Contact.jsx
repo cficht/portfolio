@@ -7,6 +7,7 @@ import { loadingBar } from '../../utilities/other';
 import { fieldContact, cloudsContact, githubContact, linkedin, email, resume } from '../../data/objects';
 import { contactPosDesktop, contactPosMobile } from '../../data/positions';
 import styles from '../../Main.css';
+import { Link } from 'react-router-dom/cjs/react-router-dom';
 
 let
   camera, 
@@ -60,16 +61,19 @@ const Contact = () => {
     manager.onStart = function(url, itemsLoaded, itemsTotal) {
       modelsLoaded = itemsLoaded;
       modelsTotal = itemsTotal;
-      loadingBar(styles, modelsLoaded, modelsTotal);
     };
     manager.onLoad = function() {
-      update();
-      setIsLoading(false);
+      setTimeout(() => {
+        update();
+        setIsLoading(false);
+      }, 500);
     };
     manager.onProgress = function(url, itemsLoaded, itemsTotal) {
-      modelsLoaded = itemsLoaded;
-      modelsTotal = itemsTotal;
-      loadingBar(styles, modelsLoaded, modelsTotal);
+      setTimeout(() => {
+        modelsLoaded = itemsLoaded;
+        modelsTotal = itemsTotal;
+        loadingBar(styles, modelsLoaded, modelsTotal);
+      }, 500);
     };
 
     // CAMERA
@@ -278,11 +282,11 @@ const Contact = () => {
       { loadingScreen() }
       <div className={styles.hud_box}> 
         <div className={styles.hud_contents}>
-          <a href="/">Home</a>
-          <a href="/about">About</a>
-          <a>Contact</a>
-          <a href="/tech">Tech</a>
-          <a href="/projects">Projects</a>
+          <Link to="/">Home</Link>
+          <Link to="/about">About</Link>
+          <a style={{ opacity: 0.5, pointerEvents: 'none' }}>Contact</a>
+          <Link to="/tech">Tech</Link>
+          <Link to="/projects">Projects</Link>
           <input type="image" src="./images/common_images/camera.png" alt="center camera" onClick={() => resetCamera()}/>
         </div>       
       </div>

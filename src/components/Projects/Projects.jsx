@@ -23,6 +23,7 @@ import { projects } from '../../data/info';
 import { projectField, github, site } from '../../data/objects';
 import { projectPos as initialPos } from '../../data/positions';
 import styles from '../../Main.css';
+import { Link } from 'react-router-dom/cjs/react-router-dom';
 
 let camera, controls;
 let cameraDepth = 200;
@@ -82,23 +83,26 @@ const Projects = () => {
     manager.onStart = function(url, itemsLoaded, itemsTotal) {
       modelsLoaded = itemsLoaded;
       modelsTotal = itemsTotal;
-      loadingBar(styles, modelsLoaded, modelsTotal);
     };
     manager.onLoad = function() {
-      createProjectPage(
-        1900,
-        1200,
-        initialPos.cssObject,
-        new THREE.Vector3(0, 0, 0),
-        0
-      );
-      update();
-      setIsLoading(false);
+      setTimeout(() => {
+        createProjectPage(
+          1900,
+          1200,
+          initialPos.cssObject,
+          new THREE.Vector3(0, 0, 0),
+          0
+        );
+        update();
+        setIsLoading(false);
+      }, 500);
     };
     manager.onProgress = function(url, itemsLoaded, itemsTotal) {
-      modelsLoaded = itemsLoaded;
-      modelsTotal = itemsTotal;
-      loadingBar(styles, modelsLoaded, modelsTotal);
+      setTimeout(() => {
+        modelsLoaded = itemsLoaded;
+        modelsTotal = itemsTotal;
+        loadingBar(styles, modelsLoaded, modelsTotal);
+      }, 500);
     };
 
     // CAMERA
@@ -527,11 +531,11 @@ const Projects = () => {
       {loadingScreen()}
       <div className={styles.hud_box}>
         <div className={styles.hud_contents}>
-          <a href="/">Home</a>
-          <a href="/about">About</a>
-          <a href="/contact">Contact</a>
-          <a href="/tech">Tech</a>
-          <a>Projects</a>
+          <Link to="/">Home</Link>
+          <Link to="/about">About</Link>
+          <Link to="/contact">Contact</Link>
+          <Link to="/tech">Tech</Link>
+          <a style={{ opacity: 0.5, pointerEvents: 'none' }}>Projects</a>
           <input
             type="image"
             src="./images/common_images/camera.png"

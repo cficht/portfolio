@@ -7,6 +7,7 @@ import { loadingBar } from '../../utilities/other';
 import { sky, techLogos, cloudsTech } from '../../data/objects';
 import { techPos as initialPos } from '../../data/positions';
 import styles from '../../Main.css';
+import { Link } from 'react-router-dom/cjs/react-router-dom';
 
 let 
   camera, 
@@ -58,17 +59,20 @@ const Tech = () => {
     manager.onStart = function(url, itemsLoaded, itemsTotal) {
       modelsLoaded = itemsLoaded;
       modelsTotal = itemsTotal;
-      loadingBar(styles, modelsLoaded, modelsTotal);
     };
     manager.onLoad = function() {
-      createTech();
-      update();
-      setIsLoading(false);
+      setTimeout(() => {
+        createTech();
+        update();
+        setIsLoading(false);
+      }, 500);
     };
     manager.onProgress = function(url, itemsLoaded, itemsTotal) {
-      modelsLoaded = itemsLoaded;
-      modelsTotal = itemsTotal;
-      loadingBar(styles, modelsLoaded, modelsTotal);
+      setTimeout(() => {
+        modelsLoaded = itemsLoaded;
+        modelsTotal = itemsTotal;
+        loadingBar(styles, modelsLoaded, modelsTotal);
+      }, 500);
     };
 
     // CAMERA
@@ -381,11 +385,11 @@ const Tech = () => {
       { loadingScreen() }
       <div className={styles.hud_box}> 
         <div className={styles.hud_contents}>
-          <a href="/">Home</a>
-          <a href="/about">About</a>
-          <a href="/contact">Contact</a>
-          <a>Tech</a>
-          <a href="/projects">Projects</a>
+          <Link to="/">Home</Link>
+          <Link to="/about">About</Link>
+          <Link to="/contact">Contact</Link>
+          <a style={{ opacity: 0.5, pointerEvents: 'none' }}>Tech</a>
+          <Link to="/projects">Projects</Link>
           <input type="image" src="./images/common_images/camera.png" alt="center camera" onClick={() => resetCamera()}/>
         </div>       
       </div>

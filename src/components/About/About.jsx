@@ -8,6 +8,7 @@ import { about } from '../../data/info';
 import { projectField } from '../../data/objects';
 import { aboutPos as initialPos } from '../../data/positions';
 import styles from '../../Main.css';
+import { Link } from 'react-router-dom/cjs/react-router-dom';
 
 let 
   camera, 
@@ -54,18 +55,21 @@ const About = () => {
     manager.onStart = function(url, itemsLoaded, itemsTotal) {
       modelsLoaded = itemsLoaded;
       modelsTotal = itemsTotal;
-      loadingBar(styles, modelsLoaded, modelsTotal);
     };
     manager.onLoad = function() {
-      createAboutPages(1400, 1000, initialPos.cssObject, new THREE.Vector3(0, 0, 0), about.bio);
-      createAboutPages(1200, 800, initialPos.cssObject2, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0), about.other);
-      update();
-      setIsLoading(false);
+      setTimeout(() => {
+        createAboutPages(1400, 1000, initialPos.cssObject, new THREE.Vector3(0, 0, 0), about.bio);
+        createAboutPages(1200, 800, initialPos.cssObject2, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0), about.other);
+        update();
+        setIsLoading(false);
+      }, 500);
     };
     manager.onProgress = function(url, itemsLoaded, itemsTotal) {
-      modelsLoaded = itemsLoaded;
-      modelsTotal = itemsTotal;
-      loadingBar(styles, modelsLoaded, modelsTotal);
+      setTimeout(() => {
+        modelsLoaded = itemsLoaded;
+        modelsTotal = itemsTotal;
+        loadingBar(styles, modelsLoaded, modelsTotal);
+      }, 500);
     };
 
     // CAMERA
@@ -278,11 +282,11 @@ const About = () => {
       { loadingScreen() }
       <div className={styles.hud_box}> 
         <div className={styles.hud_contents}>
-          <a href="/">Home</a>
-          <a>About</a>
-          <a href="/contact">Contact</a>
-          <a href="/tech">Tech</a>
-          <a href="/projects">Projects</a>
+          <Link to="/">Home</Link>
+          <a style={{ opacity: 0.5, pointerEvents: 'none' }}>About</a>
+          <Link to="/contact">Contact</Link>
+          <Link to="/tech">Tech</Link>
+          <Link to="/projects">Projects</Link>
           <input type="image" src="./images/common_images/camera.png" alt="center camera" onClick={() => resetCamera()}/>
         </div>       
       </div>

@@ -47,6 +47,11 @@ export function moveView(viewObject, targetObject) {
 export const loadingBar = (styles, modelsLoaded, modelsTotal) => {
   let elem = document.getElementsByClassName(styles.bar)[0];
   let elem2 = document.getElementsByClassName(styles.loading_text)[0];
+  if(!modelsLoaded || !modelsTotal) {
+    elem.style.width = '0%';
+    elem2.innerHTML = '0%';
+    return;
+  }
   const percentage = ((modelsLoaded / modelsTotal) * 100).toFixed(2);
   elem.style.width = percentage + '%';
   elem2.innerHTML = percentage + '%';

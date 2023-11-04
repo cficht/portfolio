@@ -3,10 +3,12 @@ import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer, createPlane, createBlankCSSObject } from '../../utilities/initialize-page';
 import { createBackground, createWall, createClouds, createSun, createAirplane, createTree, createRock, createGrass, create3DText, createIcon, createPictureFrame, manager } from '../../utilities/create-objects';
-import { moveView, loadingBar } from '../../utilities/other';
+import { loadingBar } from '../../utilities/other';
 import { clouds, project, tech, contact, about, fieldContact } from '../../data/objects';
 import { desktopPositionsHome, mobilePositionsHome } from '../../data/positions';
 import styles from '../../Main.css';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom';
+import * as TWEEN from '@tweenjs/tween.js';
 
 let
   camera, 
@@ -18,6 +20,8 @@ let minAz = -.3;
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
+
+  const history = useHistory();
 
   let 
     glRenderer, 
@@ -45,7 +49,9 @@ const Home = () => {
     contactObject, 
     contactIconObject, 
     aboutObject, 
-    aboutIconObject;
+    aboutIconObject,
+    quaternionTween,
+    positionTween;
 
   let modelsLoaded = 0;
   let modelsTotal = 0;
@@ -71,16 +77,19 @@ const Home = () => {
     manager.onStart = function(url, itemsLoaded, itemsTotal) {
       modelsLoaded = itemsLoaded;
       modelsTotal = itemsTotal;
-      loadingBar(styles, modelsLoaded, modelsTotal);
     };
     manager.onLoad = function() {
-      update();
-      setIsLoading(false);
+      setTimeout(() => {
+        update();
+        setIsLoading(false);
+      }, 500);
     };
     manager.onProgress = function(url, itemsLoaded, itemsTotal) {
-      modelsLoaded = itemsLoaded;
-      modelsTotal = itemsTotal;
-      loadingBar(styles, modelsLoaded, modelsTotal);
+      setTimeout(() => {
+        modelsLoaded = itemsLoaded;
+        modelsTotal = itemsTotal;
+        loadingBar(styles, modelsLoaded, modelsTotal);
+      }, 500);
     };
 
     // CAMERA
@@ -243,13 +252,15 @@ const Home = () => {
       selectedObject = intersects[0];
       if(selectedObject.object.userData === 'PROJECTS') {
         targetObject = { 
+          q: selectedObject.object.quaternion,
           position: initialPos.rockObject,
           url: '/projects'
         };
         navigateOn = true;
       }
       if(selectedObject.object.userData === 'TECH') {
-        targetObject = { 
+        targetObject = {
+          q: selectedObject.object.quaternion,
           position: initialPos.sunObject,
           url: '/tech'
         };
@@ -257,6 +268,7 @@ const Home = () => {
       }
       if(selectedObject.object.userData === 'CONTACT') {
         targetObject = { 
+          q: selectedObject.object.quaternion,
           position: initialPos.airplaneObject,
           url: '/contact'
         };
@@ -264,11 +276,31 @@ const Home = () => {
       }
       if(selectedObject.object.userData === 'ABOUT') {
         targetObject = { 
+          q: selectedObject.object.quaternion,
           position: initialPos.treeObject,
           url: '/about'
         };
         navigateOn = true;
       }
+
+      if(!navigateOn) return;
+
+      const originalCameraPosition = camera.position;
+      const startRotation = camera.quaternion.clone();
+      camera.lookAt(targetObject.position);
+      const endRotation = camera.quaternion.clone();
+      camera.quaternion.copy(startRotation);
+
+      quaternionTween = new TWEEN.Tween(camera.quaternion)
+        .to(endRotation, 1000)
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .onComplete(() => {
+          positionTween = new TWEEN.Tween(originalCameraPosition)
+            .to(targetObject.position, 1000)
+            .easing(TWEEN.Easing.Quadratic.In)
+            .start();
+        });
+      quaternionTween.start();
     }
   }
 
@@ -319,16 +351,20 @@ const Home = () => {
       frameObject.position.y += 150;
 
       controls.enabled = false;
-      moveView(controls, targetObject);
-      controls.update();    
-      moveView(camera, targetObject);
+
+      quaternionTween.update();
+
+      if(positionTween) {
+        positionTween.update();
+      }
+
       if(camera.position.z < -1000 && !mobile) {
         navigateOn = false;
-        window.location = targetObject.url;
+        history.push(targetObject.url);
       }
       if(camera.position.z < 0 && mobile) {
         navigateOn = false;
-        window.location = targetObject.url;
+        history.push(targetObject.url);
       }
     }
 
