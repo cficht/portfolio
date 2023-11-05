@@ -67,7 +67,6 @@ const Projects = () => {
   let projectCount = 0;
   let slideCount = 0;
   const slideMax = 2;
-  let mobile = false;
   const setWidth = window.innerWidth;
   const setHeight = window.innerHeight;
   const glScene = new THREE.Scene();
@@ -116,7 +115,6 @@ const Projects = () => {
       navigator.userAgent.match(/BlackBerry/i) ||
       navigator.userAgent.match(/Windows Phone/i)
     ) {
-      mobile = true;
       cameraDepth = mobileDepth;
     }
 
@@ -192,7 +190,7 @@ const Projects = () => {
     const coverLeft = document.getElementsByClassName(styles.cover_left)[0];
     const coverRight = document.getElementsByClassName(styles.cover_right)[0];
     const hudBox = document.getElementsByClassName(styles.hud_box)[0];
-    if(coverLeft && coverRight && hudBox) {
+    if(coverLeft && coverRight && hudBox && ratio > 2.11) {
       coverLeft.style.width = `${ratio * 10}%`;
       coverRight.style.width = `${ratio * 10}%`;
       hudBox.style.width = `calc(${(100 - ((ratio * 10) * 2))}% - 64px)`;

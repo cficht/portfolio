@@ -6,10 +6,8 @@ export default function Landscape() {
   const { redirect } = useParams();
 
   window.addEventListener('orientationchange', () => {
-    if(window.orientation === 0) {
-      if(redirect === 'home') window.location = '/';
-      else window.location = `/${redirect}`;
-    }
+    if(redirect === 'home') window.location = '/';
+    else window.location = `/${redirect}`;
   });
 
   window.addEventListener('resize', () => {
