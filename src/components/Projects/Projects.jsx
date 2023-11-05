@@ -193,7 +193,9 @@ const Projects = () => {
     if(coverLeft && coverRight && hudBox && ratio > 2.11) {
       coverLeft.style.width = `${ratio * 10}%`;
       coverRight.style.width = `${ratio * 10}%`;
-      hudBox.style.width = `calc(${(100 - ((ratio * 10) * 2))}% - 64px)`;
+      hudBox.style.width = `calc(${(100 - ((ratio * 10) * 2))}%)`;
+      hudBox.children[0].style.borderTopLeftRadius = '0px';
+      hudBox.children[0].style.borderTopRightRadius = '0px';
     }
     if(ratio > 3.37) {
       window.location = '/aspect/projects';
