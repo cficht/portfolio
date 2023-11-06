@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import ThreeOrbitControls from 'three-orbit-controls';
 import { createGlRenderer, createCssRenderer, createPlane, createBlankCSSObject } from '../../utilities/initialize-page';
@@ -20,6 +20,7 @@ let minAz = -.2;
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const initialPos = useRef(null);
 
   const history = useHistory();
 
@@ -28,7 +29,6 @@ const Home = () => {
     cssRenderer, 
     selectedObject, 
     targetObject,
-    initialPos, 
     backgroundObject, 
     cloudObjects, 
     sunObject, 
@@ -102,10 +102,12 @@ const Home = () => {
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i)) { 
       cameraDepth = mobileDepth;
-      initialPos = mobilePos;
+      initialPos.current = window.orientation !== 0
+        ? desktopPos
+        : mobilePos;
       mobile = true;
     } else {
-      initialPos = desktopPos;
+      initialPos.current = desktopPos;
     }
     
     camera = new THREE.PerspectiveCamera(45, setWidth / setHeight, 1, 15000);
@@ -144,20 +146,20 @@ const Home = () => {
 
     cloudObjects = createClouds(clouds);
     cloudObjects.map(cloudObject => glScene.add(cloudObject));
-    sunObject = createSun(973, 973, initialPos.sunObject, .1);
+    sunObject = createSun(973, 973, initialPos.current.sunObject, .1);
     glScene.add(sunObject);
-    airplaneObject = createAirplane(920, 311, initialPos.airplaneObject, .05);
+    airplaneObject = createAirplane(920, 311, initialPos.current.airplaneObject, .05);
     glScene.add(airplaneObject);
-    treeObject = createTree(6814, 7571, initialPos.treeObject, .01);
+    treeObject = createTree(6814, 7571, initialPos.current.treeObject, .01);
     glScene.add(treeObject);
-    rockObject = createRock(797, 340, initialPos.rockObject, .02, 0);
+    rockObject = createRock(797, 340, initialPos.current.rockObject, .02, 0);
     glScene.add(rockObject);
-    grassObject = createGrass(1662, 81, initialPos.grassObject, .09);
+    grassObject = createGrass(1662, 81, initialPos.current.grassObject, .09);
     glScene.add(grassObject);
-    grassObject2 = createGrass(1662, 81, initialPos.grassObject2, .09);
+    grassObject2 = createGrass(1662, 81, initialPos.current.grassObject2, .09);
     glScene.add(grassObject2);
 
-    createHomePage(1600, 1000, initialPos.cssObject, new THREE.Vector3(0, 0, 0), 0);
+    createHomePage(1600, 1000, initialPos.current.cssObject, new THREE.Vector3(0, 0, 0), 0);
     createHome3DGeometry();  
 
     // STATIC OBJECT POSITIONS
@@ -181,11 +183,7 @@ const Home = () => {
     };
 
     // ON START
-    // camera.position.set(initialPos.cameraStart.x, initialPos.cameraStart.y, cameraDepth);
-    // camera.rotation.x = 0;
-    // cameraStart = true;
-    // controls.enabled = false;
-    controls.target.set(initialPos.cameraMain.x, initialPos.cameraMain.y, initialPos.cameraMain.z);
+    controls.target.set(initialPos.current.cameraMain.x, initialPos.current.cameraMain.y, initialPos.current.cameraMain.z);
 
     // EVENT LISTENERS
     cssRenderer.domElement.addEventListener('mousedown', onClick, true);
@@ -217,41 +215,41 @@ const Home = () => {
 
   // SETUP OBJECTS THAT WILL NOT CHANGE
   function createHome3DGeometry() {  
-    create3DText('#ff8c00', initialPos.nameObject, 100, 100, 100, 'Chris Ficht', 'muli_regular', 'NAME')
+    create3DText('#ff8c00', initialPos.current.nameObject, 100, 100, 100, 'Chris Ficht', 'muli_regular', 'NAME')
       .then(name => nameObject = name)
       .then(() => glScene.add(nameObject));
-    create3DText('#ff8c00', initialPos.titleObject, 60, 60, 60, 'Software Developer', 'muli_regular', 'TITLE')
+    create3DText('#ff8c00', initialPos.current.titleObject, 60, 60, 60, 'Software Developer', 'muli_regular', 'TITLE')
       .then(title => titleObject = title)
       .then(() => glScene.add(titleObject));
 
-    create3DText('#ff8c00', initialPos.projectObject, 60, 60, 60, 'Projects', 'muli_regular', 'PROJECTS')
+    create3DText('#ff8c00', initialPos.current.projectObject, 60, 60, 60, 'Projects', 'muli_regular', 'PROJECTS')
       .then(project => projectObject = project)
       .then(() => glScene.add(projectObject));
-    create3DText('#ff8c00', initialPos.techObject, 60, 60, 60, 'Tech', 'muli_regular', 'TECH')
+    create3DText('#ff8c00', initialPos.current.techObject, 60, 60, 60, 'Tech', 'muli_regular', 'TECH')
       .then(tech => techObject = tech)
       .then(() => glScene.add(techObject));
-    create3DText('#ff8c00', initialPos.contactObject, 60, 60, 60, 'Contact', 'muli_regular', 'CONTACT')
+    create3DText('#ff8c00', initialPos.current.contactObject, 60, 60, 60, 'Contact', 'muli_regular', 'CONTACT')
       .then(contact => contactObject = contact)
       .then(() => glScene.add(contactObject));
-    create3DText('#ff8c00', initialPos.aboutObject, 60, 60, 60, 'About', 'muli_regular', 'ABOUT')
+    create3DText('#ff8c00', initialPos.current.aboutObject, 60, 60, 60, 'About', 'muli_regular', 'ABOUT')
       .then(about => aboutObject = about)
       .then(() => glScene.add(aboutObject));
 
 
-    createIcon(initialPos.projectIcon, project, true)
+    createIcon(initialPos.current.projectIcon, project, true)
       .then(projectIcon => projectIconObject = projectIcon)
       .then(() => glScene.add(projectIconObject));
-    createIcon(initialPos.techIcon, tech, true)
+    createIcon(initialPos.current.techIcon, tech, true)
       .then(techIcon => techIconObject = techIcon)
       .then(() => glScene.add(techIconObject));
-    createIcon(initialPos.contactIcon, contact, true)
+    createIcon(initialPos.current.contactIcon, contact, true)
       .then(contactIcon => contactIconObject = contactIcon)
       .then(() => glScene.add(contactIconObject));
-    createIcon(initialPos.aboutIcon, about, true)
+    createIcon(initialPos.current.aboutIcon, about, true)
       .then(aboutIcon => aboutIconObject = aboutIcon)
       .then(() => glScene.add(aboutIconObject));
 
-    createPictureFrame({ x: 800, y: 800, z: 512 }, initialPos.frameObject, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0))
+    createPictureFrame({ x: 800, y: 800, z: 512 }, initialPos.current.frameObject, new THREE.Euler(0, - 180 * THREE.MathUtils.DEG2RAD, 0))
       .then(frame => frameObject = frame)
       .then(() => glScene.add(frameObject));
   }
@@ -270,7 +268,7 @@ const Home = () => {
       if(selectedObject.object.userData === 'PROJECTS') {
         targetObject = { 
           q: selectedObject.object.quaternion,
-          position: initialPos.rockObject,
+          position: initialPos.current.rockObject,
           url: '/projects'
         };
         navigateOn = true;
@@ -278,7 +276,7 @@ const Home = () => {
       if(selectedObject.object.userData === 'TECH') {
         targetObject = {
           q: selectedObject.object.quaternion,
-          position: initialPos.sunObject,
+          position: initialPos.current.sunObject,
           url: '/tech'
         };
         navigateOn = true;
@@ -286,7 +284,7 @@ const Home = () => {
       if(selectedObject.object.userData === 'CONTACT') {
         targetObject = { 
           q: selectedObject.object.quaternion,
-          position: initialPos.airplaneObject,
+          position: initialPos.current.airplaneObject,
           url: '/contact'
         };
         navigateOn = true;
@@ -294,7 +292,7 @@ const Home = () => {
       if(selectedObject.object.userData === 'ABOUT') {
         targetObject = { 
           q: selectedObject.object.quaternion,
-          position: initialPos.treeObject,
+          position: initialPos.current.treeObject,
           url: '/about'
         };
         navigateOn = true;
@@ -309,11 +307,11 @@ const Home = () => {
       camera.quaternion.copy(startRotation);
 
       quaternionTween = new TWEEN.Tween(camera.quaternion)
-        .to(endRotation, 3000)
+        .to(endRotation, 3500)
         .easing(TWEEN.Easing.Quadratic.InOut)
         .start();
       positionTween = new TWEEN.Tween(originalCameraPosition)
-        .to(targetObject.position, 2000)
+        .to(targetObject.position, 2500)
         .easing(TWEEN.Easing.Quadratic.In)
         .start();
     }
@@ -340,9 +338,9 @@ const Home = () => {
   // CONSTANT UPDATE
   function update() { 
     if(cameraStart) {
-      if(camera.position.y > initialPos.cameraMain.y) camera.position.y -= 30;
+      if(camera.position.y > initialPos.current.cameraMain.y) camera.position.y -= 30;
       else {
-        camera.position.set(initialPos.cameraMain.x, initialPos.cameraMain.y, cameraDepth);
+        camera.position.set(initialPos.current.cameraMain.x, initialPos.current.cameraMain.y, cameraDepth);
         camera.rotation.x = 0;
         cameraStart = false;
         controls.enabled = true;
@@ -368,11 +366,11 @@ const Home = () => {
       quaternionTween.update();
       positionTween.update();
 
-      if(camera.position.z < -2500 && !mobile) {
+      if(camera.position.z < -2500 && (!mobile || (mobile && window.orientation !== 0))) {
         navigateOn = false;
         history.push(targetObject.url);
       }
-      if(camera.position.z < 0 && mobile) {
+      if(camera.position.z < -1500 && mobile && window.orientation === 0) {
         navigateOn = false;
         history.push(targetObject.url);
       }

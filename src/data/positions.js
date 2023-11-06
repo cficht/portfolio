@@ -121,14 +121,14 @@ export const contactPosDesktop = {
 
 export const contactPosMobile = {
   cameraMain: new THREE.Vector3(0, -50, -3500),
-  airplaneObject: new THREE.Vector3(0, 200, -3500),
-  nameObject: new THREE.Vector3(-10, 1000, -3500),
-  emailObject: new THREE.Vector3(-275, -1300, -3500),
-  emailText: new THREE.Vector3(-275, -1600, -3500),
-  linkedinObject: new THREE.Vector3(-275, -600, -3500),
-  linkedinText: new THREE.Vector3(-275, -900, -3500),
-  gitHubObject: new THREE.Vector3(275, -600, -3500),
-  gitHubText: new THREE.Vector3(275, -900, -3500),
-  resumeObject: new THREE.Vector3(275, -1300, -3500),
-  resumeText: new THREE.Vector3(275, -1600, -3500)
+  airplaneObject: new THREE.Vector3(0, 500, -3500),
+  nameObject: new THREE.Vector3(-10, 1200, -3500),
+  emailObject: new THREE.Vector3(-275, -1000, -3500),
+  emailText: new THREE.Vector3(-275, -1300, -3500),
+  linkedinObject: new THREE.Vector3(-275, -300, -3500),
+  linkedinText: new THREE.Vector3(-275, -600, -3500),
+  gitHubObject: new THREE.Vector3(275, -300, -3500),
+  gitHubText: new THREE.Vector3(275, -600, -3500),
+  resumeObject: new THREE.Vector3(275, -1000, -3500),
+  resumeText: new THREE.Vector3(275, -1300, -3500)
 };

@@ -88,12 +88,15 @@ body {
 .loading_text {
   display: flex;
   justify-content: center;
-  margin-top: 50px;
   align-items: center;
   font-weight: 300;
   font-size: 0.4em;
   color: #ffdf24;
   -webkit-text-stroke: 0.6px #ff8c00;
+
+  p {
+    margin-block-end: 0px;
+  }
 }
 
 .hud_box {
